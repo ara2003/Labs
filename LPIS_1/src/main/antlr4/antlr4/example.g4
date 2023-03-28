@@ -1,21 +1,45 @@
 grammar example;
 
-
-// BEGIN: '{';
-// END: '}';
 tokens { BEGIN, END }
 
+@lexer::header {
+import java.util.LinkedList;
+import java.util.Queue;
+}
+
 @lexer::members {
+private int lastDepth = 0;
 
-public void printHello() {
-    System.out.println("Hello world");
+private final Queue<Token> buffer = new LinkedList<>();
+
+public boolean atStart() {
+    return getCharIndex() == 0;
 }
 
-
-
+public void bufferEmit(Token token) {
+    buffer.add(token);
 }
 
+private static int solveDepth(String string) {
+    var index = string.indexOf('\t');
+    if(index < 0)
+        return 0;
+    return string.length() - index;
+}
 
+public Token nextToken() {
+    if(buffer.isEmpty()) {
+        var next = super.nextToken();
+        if(!buffer.isEmpty()) {
+            var result = buffer.poll();
+            buffer.add(next);
+            return result;
+        }
+        return next;
+    }
+    return buffer.poll();
+}
+}
 
 
 
@@ -80,15 +104,38 @@ ID: [a-zA-Z][a-zA-Z0-9_]*;
 
 NUMBER: [0-9]+;
 
-NEWLINE: '{BEGIN}';
+NEWLINE
+ : (  '\n' '\t'* )
+   {
+    skip();
+
+    var text = getText();
+    var depth = solveDepth(text);
+
+    while(depth < lastDepth) {
+        lastDepth--;
+        bufferEmit(new CommonToken(exampleParser.END, "}"));
+    }
+    while(depth > lastDepth) {
+        lastDepth++;
+        bufferEmit(new CommonToken(exampleParser.BEGIN, "{"));
+    }
+   }
+ ;
+
 
 SKIP_
  : ( SPACES | COMMENT ) -> channel(HIDDEN)
  ;
+
 fragment COMMENT
- : '\\' ~[\r\n\f]*
- |  '/*' .* '*/'
+ : '#' ~[\r\n\f]*
  ;
+
+fragment TABS
+ : [\t]+
+ ;
+
 fragment SPACES
- : [ \t]+
+ : [ \r\f]+
  ;

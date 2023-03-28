@@ -39,7 +39,7 @@ public class exampleParser extends Parser {
 		return new String[] {
 			null, "'='", "'('", "')'", "':'", "'in'", "'['", "']'", "','", "'func'", 
 			null, null, "'++'", "'--'", "'list'", "'element'", "'for'", "'while'", 
-			"'if'", "'else'", "'switch'", "'case'", null, null, "'{BEGIN}'"
+			"'if'", "'else'", "'switch'", "'case'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();

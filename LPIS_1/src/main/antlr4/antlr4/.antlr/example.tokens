@@ -44,4 +44,3 @@ END=27
 'else'=19
 'switch'=20
 'case'=21
-'{BEGIN}'=24
