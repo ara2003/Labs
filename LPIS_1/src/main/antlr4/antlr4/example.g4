@@ -35,61 +35,115 @@ public Token nextToken() {
             buffer.add(next);
             return result;
         }
+        if(next.getType() == Token.EOF) {
+            while(lastDepth-- > 0)
+                buffer.add(new CommonToken(exampleParser.END, "}"));
+            buffer.add(next);
+            return nextToken();
+        }
         return next;
     }
     return buffer.poll();
 }
 }
 
+program
+ : code EOF
+ ;
+
+code: stmt *;
+stmt
+ : funcDefStmt
+ | assignStmt
+ | whileStmt
+ | forStmt
+ | ifStmt
+ | funcCallStmt
+ | codeBlockStmt
+ | breakStmt
+ | continueStmt
+ | returnStmt
+ ;
 
 
-code: (funcDef | assignExp | whileExp | forExp | ifExp | funcCall | codeBlock)*;
+codeBlockStmt: BEGIN code END;
 
-codeBlock: BEGIN code END;
+assignStmt: lvalue '=' rvalue;
 
-assignExp: ID '=' expr;
-
-funcDef: FUNC ID '(' paramiters? ')' ':' BEGIN code END; 
-
-funcCall: ID '(' arguments? ')';
-
-whileExp: WHILE expr ':' BEGIN code END;
-
-forExp: FOR ID 'in' expr ':' BEGIN code END;
-
-ifExp: IF expr ':' BEGIN code END;
-
-expr
-    : mult_expr (SUM_OPERATION mult_expr)*
-    ;
-
-mult_expr
-    : atom_expr (MULT_OPERATION atom_expr)*
-    ;
-
-atom_expr
-    : number_expr
-    | new_list
-    | funcCall
-    | id_expr
-    ;
-
-number_expr: NUMBER;
-id_expr: ID;
-
-new_list: '[' numbers? ']';
-numbers: NUMBER (',' NUMBER)*;
+funcDefStmt: FUNC ID '(' paramiters? ')' ':' BEGIN code END; 
 paramiters: paramiter (',' paramiter)*;
 paramiter: type? ID;
-arguments: ID (',' ID)*;
-type: ELEMENT | LIST;
 
+funcCallStmt: ID '(' arguments? ')';
+arguments: rvalue (',' rvalue)*;
+
+whileStmt: WHILE rvalue ':' BEGIN code END;
+
+forStmt: FOR ID 'in' rvalue ':' BEGIN code END;
+
+ifStmt: IF rvalue ':' BEGIN code END;
+
+lvalue
+ : ID
+ ;
+
+rvalue: logicExpr;
+
+logicExpr
+    : compareExpr (LOGIC_OPERATION compareExpr)*
+    ;
+compareExpr
+    : sumExpr (COMPARE_OPERATION sumExpr)*
+    ;
+sumExpr
+    : multExpr (SUM_OPERATION multExpr)*
+    ;
+multExpr
+    : unaryExpr (MULT_OPERATION unaryExpr)*
+    ;
+unaryExpr
+    : prefix_unary_operation? atomExpr syfix_unary_operation?
+    ;
+
+
+prefix_unary_operation
+ : INC_OPERATION
+ | DEC_OPERATION
+ | NOT_OPERATION
+ | PLUS_OPERATION
+ | MINUS_OPERATION
+ ;
+syfix_unary_operation
+ : INC_OPERATION
+ | DEC_OPERATION
+ ;
+atomExpr
+    : lvalue
+    | newList
+    | numberExpr
+    | funcCallStmt
+    | '(' rvalue ')'
+    ;
+
+numberExpr: NUMBER;
+
+newList: '[' numbers? ']';
+numbers: NUMBER (',' NUMBER)*;
+type: ELEMENT | LIST;
+breakStmt: BREAK ;
+continueStmt: CONTINUE ;
+returnStmt: RETURN rvalue?;
 
 FUNC: 'func';
-SUM_OPERATION: '+' | '-';
+NOT_OPERATION: 'not';
+LOGIC_OPERATION: 'and' | 'or';
+COMPARE_OPERATION: '<' | '>' | '>=' | '<=' |  '==' | '!=';
+SUM_OPERATION: PLUS_OPERATION | MINUS_OPERATION;
 MULT_OPERATION: '*' | '/' | '%';
 INC_OPERATION: '++';
 DEC_OPERATION: '--';
+PLUS_OPERATION: '+';
+MINUS_OPERATION: '-';
 
 LIST: 'list';
 ELEMENT: 'element';
@@ -99,6 +153,10 @@ IF: 'if';
 ELSE: 'else';
 SWITCH: 'switch';
 CASE: 'case';
+
+RETURN: 'return';
+BREAK: 'break';
+CONTINUE: 'continue';
 
 ID: [a-zA-Z][a-zA-Z0-9_]*;
 
@@ -129,7 +187,7 @@ SKIP_
  ;
 
 fragment COMMENT
- : '#' ~[\r\n\f]*
+ : '//' ~[\r\n\f]*
  ;
 
 fragment TABS

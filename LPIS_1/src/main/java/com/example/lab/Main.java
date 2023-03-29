@@ -17,15 +17,19 @@ import antlr4.exampleParser;
 
 public class Main {
 	
+	
 	public static void main(String[] args) throws IOException {
 		var stream = CharStreams.fromStream(Main.class.getClassLoader().getResourceAsStream("test.txt"));
 		var lexer = new exampleLexer(stream);
 		var tokens = new CommonTokenStream(lexer);
 		var parser = new exampleParser(tokens);
 		
-		var code = parser.code();
+		var code = parser.program();
+		
+		System.out.println(code.getText());
 		System.out.println(tokens.getTokens().stream().filter(x -> x.getChannel() == 0).mapToInt(x -> x.getType())
-				.mapToObj(x -> parser.getVocabulary().getDisplayName(x)).toList());
+				.mapToObj(x -> parser.getVocabulary().getDisplayName(x)).reduce((a, b) -> a + " " + b).get());
+		System.out.println(tokens.getTokens().stream().filter(x -> x.getChannel() == 0).map(x -> x.getText()).toList());
 		
 		var listener = new PrintAllTreeListener(parser);
 		var t = new ParseTreeWalker();
@@ -39,7 +43,46 @@ public class Main {
 		return string.length() - index;
 	}
 	
+	public static final class FuncPrintAllTreeListener implements ParseTreeListener {
+		
+		private final Parser parser;
+		
+		
+		public FuncPrintAllTreeListener(Parser parser) {
+			this.parser = parser;
+		}
+		
+		@Override
+		public void enterEveryRule(ParserRuleContext ctx) {
+			//			System.out.print(parser.getRuleNames()[ctx.getRuleIndex()]);
+			//			System.out.print('(');
+			//			System.out.print(' ');
+		}
+		
+		@Override
+		public void exitEveryRule(ParserRuleContext ctx) {
+			//			System.out.print(' ');
+			//			System.out.print(')');
+		}
+		
+		@Override
+		public void visitErrorNode(ErrorNode node) {
+		}
+		
+		@Override
+		public void visitTerminal(TerminalNode node) {
+			System.out.print(parser.getVocabulary().getDisplayName(node.getSymbol().getType()));
+			System.out.print('(');
+			System.out.print(node.getText());
+			System.out.print(')');
+		}
+		
+	}
+	
 	public static final class MyListener extends exampleBaseListener {
+		
+		
+		
 	}
 	
 	public static final class PrintAllTreeListener implements ParseTreeListener {
@@ -54,7 +97,7 @@ public class Main {
 		
 		@Override
 		public void enterEveryRule(ParserRuleContext ctx) {
-			System.out.print(" ".repeat(depth));
+			System.out.print("  ".repeat(depth));
 			System.out.println(parser.getRuleNames()[ctx.getRuleIndex()]);
 			depth++;
 		}
@@ -66,15 +109,16 @@ public class Main {
 		
 		@Override
 		public void visitErrorNode(ErrorNode node) {
-			System.err.print(" ".repeat(depth));
+			System.err.print("  ".repeat(depth));
 			System.err.println(node.getText());
 		}
 		
 		@Override
 		public void visitTerminal(TerminalNode node) {
-			System.out.print(" ".repeat(depth));
+			System.out.print("  ".repeat(depth));
+			System.out.print(parser.getVocabulary().getDisplayName(node.getSymbol().getType()));
+			System.out.print("  ");
 			System.out.println(node.getText());
-			//			System.out.println(parser.getVocabulary().getDisplayName(node.getSymbol().getType()));
 		}
 		
 	}
