@@ -2,6 +2,11 @@ grammar example;
 
 tokens { BEGIN, END }
 
+
+options {
+	language='Java';
+}
+
 @lexer::header {
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,11 +25,12 @@ public void bufferEmit(Token token) {
     buffer.add(token);
 }
 
-private static int solveDepth(String string) {
-    var index = string.indexOf('\t');
-    if(index < 0)
-        return 0;
-    return string.length() - index;
+private static int solveDepth(String text) {
+    return text.chars().map(x -> (switch(x) {
+        case '\t' -> 4;
+        case ' ' -> 1;
+        default -> 0;
+    })).sum() / 4;
 }
 
 public Token nextToken() {
@@ -51,7 +57,11 @@ program
  : code EOF
  ;
 
-code: stmt *;
+code
+ : stmt*
+ | passStat
+ ;
+
 stmt
  : funcDefStmt
  | assignStmt
@@ -63,25 +73,30 @@ stmt
  | breakStmt
  | continueStmt
  | returnStmt
+ | switchStmt
  ;
 
-
+passStat: PASS;
 codeBlockStmt: BEGIN code END;
 
 assignStmt: lvalue '=' rvalue;
 
-funcDefStmt: FUNC ID '(' paramiters? ')' ':' BEGIN code END; 
+
+funcDefStmt: FUNC ID '(' paramiters? ')' ':' codeBlockStmt; 
 paramiters: paramiter (',' paramiter)*;
 paramiter: type? ID;
 
 funcCallStmt: ID '(' arguments? ')';
 arguments: rvalue (',' rvalue)*;
 
-whileStmt: WHILE rvalue ':' BEGIN code END;
+whileStmt: WHILE rvalue ':' codeBlockStmt;
+switchStmt: SWITCH rvalue ':' BEGIN (caseStat | defaultStat)* END;
+caseStat: CASE NUMBER ':' codeBlockStmt;
+defaultStat: DEFAULT ':' codeBlockStmt;
 
-forStmt: FOR ID 'in' rvalue ':' BEGIN code END;
+forStmt: FOR ID 'in' rvalue ':' codeBlockStmt;
 
-ifStmt: IF rvalue ':' BEGIN code END;
+ifStmt: IF rvalue ':' codeBlockStmt;
 
 lvalue
  : ID
@@ -101,21 +116,15 @@ sumExpr
 multExpr
     : unaryExpr (MULT_OPERATION unaryExpr)*
     ;
+
 unaryExpr
-    : prefix_unary_operation? atomExpr syfix_unary_operation?
+    : prefix_unary_operation? atomExpr
     ;
 
-
 prefix_unary_operation
- : INC_OPERATION
- | DEC_OPERATION
- | NOT_OPERATION
+ : NOT_OPERATION
  | PLUS_OPERATION
  | MINUS_OPERATION
- ;
-syfix_unary_operation
- : INC_OPERATION
- | DEC_OPERATION
  ;
 atomExpr
     : lvalue
@@ -135,15 +144,14 @@ continueStmt: CONTINUE ;
 returnStmt: RETURN rvalue?;
 
 FUNC: 'func';
+PASS: 'pass';
 NOT_OPERATION: 'not';
 LOGIC_OPERATION: 'and' | 'or';
 COMPARE_OPERATION: '<' | '>' | '>=' | '<=' |  '==' | '!=';
-SUM_OPERATION: PLUS_OPERATION | MINUS_OPERATION;
-MULT_OPERATION: '*' | '/' | '%';
-INC_OPERATION: '++';
-DEC_OPERATION: '--';
+MULT_OPERATION: '*' | '/' | '%' | '^';
 PLUS_OPERATION: '+';
 MINUS_OPERATION: '-';
+fragment SUM_OPERATION: PLUS_OPERATION | MINUS_OPERATION;
 
 LIST: 'list';
 ELEMENT: 'element';
@@ -152,6 +160,7 @@ WHILE: 'while';
 IF: 'if';
 ELSE: 'else';
 SWITCH: 'switch';
+DEFAULT: 'default';
 CASE: 'case';
 
 RETURN: 'return';
@@ -163,7 +172,7 @@ ID: [a-zA-Z][a-zA-Z0-9_]*;
 NUMBER: [0-9]+;
 
 NEWLINE
- : (  '\n' '\t'* )
+ : (  '\r'? '\n' SPACES* )
    {
     skip();
 
@@ -190,10 +199,6 @@ fragment COMMENT
  : '//' ~[\r\n\f]*
  ;
 
-fragment TABS
- : [\t]+
- ;
-
 fragment SPACES
- : [ \r\f]+
+ : [ \t]+
  ;

@@ -1,6 +1,10 @@
 
-func aaa(a):
-	func bbb(list b):
-		return a + b
-	return a
+if a and a:
+	a = 4
+	b = not 2
 
+switch a:
+	case 2:
+		print(3)
+	default:
+		print(2)
