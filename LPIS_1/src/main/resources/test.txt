@@ -1,10 +1,2 @@
 
-if a and a:
-	a = 4
-	b = not 2
-
-switch a:
-	case 2:
-		print(3)
-	default:
-		print(2)
+a = 4 + 2

@@ -1,5 +1,6 @@
 package com.example.lab;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.antlr.v4.runtime.CharStreams;
@@ -18,14 +19,15 @@ import antlr4.exampleParser;
 public class Main {
 	
 	
-	public static void main(String[] args) throws IOException {
-		var stream = CharStreams.fromStream(Main.class.getClassLoader().getResourceAsStream("test.txt"));
+	public static void print(File in) throws IOException {
+		var stream = CharStreams.fromFileName(in.getCanonicalPath());
 		var lexer = new exampleLexer(stream);
 		var tokens = new CommonTokenStream(lexer);
 		var parser = new exampleParser(tokens);
 		
 		var code = parser.program();
 		
+		System.out.println(in);
 		System.out.println(code.getText());
 		System.out.println(tokens.getTokens().stream().filter(x -> x.getChannel() == 0).mapToInt(x -> x.getType())
 				.mapToObj(x -> parser.getVocabulary().getDisplayName(x)).reduce((a, b) -> a + " " + b).get());
@@ -34,6 +36,11 @@ public class Main {
 		var listener = new PrintAllTreeListener(parser);
 		var t = new ParseTreeWalker();
 		t.walk(listener, code);
+	}
+	
+	public static void main(String[] args) throws IOException {
+		for(var f : new File("src/main/resources").listFiles())
+			print(f);
 	}
 	
 	private static int solveDepth(String string) {

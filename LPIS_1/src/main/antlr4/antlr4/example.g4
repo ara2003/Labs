@@ -80,52 +80,22 @@ passStat: PASS;
 codeBlockStmt: BEGIN code END;
 
 assignStmt: lvalue '=' rvalue;
-
-
 funcDefStmt: FUNC ID '(' paramiters? ')' ':' codeBlockStmt; 
 paramiters: paramiter (',' paramiter)*;
 paramiter: type? ID;
-
-funcCallStmt: ID '(' arguments? ')';
-arguments: rvalue (',' rvalue)*;
-
+funcCallStmt: ID '(' rvalues? ')';
 whileStmt: WHILE rvalue ':' codeBlockStmt;
 switchStmt: SWITCH rvalue ':' BEGIN (caseStat | defaultStat)* END;
 caseStat: CASE NUMBER ':' codeBlockStmt;
 defaultStat: DEFAULT ':' codeBlockStmt;
-
 forStmt: FOR ID 'in' rvalue ':' codeBlockStmt;
-
 ifStmt: IF rvalue ':' codeBlockStmt;
+breakStmt: BREAK ;
+continueStmt: CONTINUE ;
+returnStmt: RETURN rvalue?;
 
-lvalue
- : ID
- ;
+numberExpr: NUMBER;
 
-rvalue: logicExpr;
-
-logicExpr
-    : compareExpr (LOGIC_OPERATION compareExpr)*
-    ;
-compareExpr
-    : sumExpr (COMPARE_OPERATION sumExpr)*
-    ;
-sumExpr
-    : multExpr (SUM_OPERATION multExpr)*
-    ;
-multExpr
-    : unaryExpr (MULT_OPERATION unaryExpr)*
-    ;
-
-unaryExpr
-    : prefix_unary_operation? atomExpr
-    ;
-
-prefix_unary_operation
- : NOT_OPERATION
- | PLUS_OPERATION
- | MINUS_OPERATION
- ;
 atomExpr
     : lvalue
     | newList
@@ -133,15 +103,38 @@ atomExpr
     | funcCallStmt
     | '(' rvalue ')'
     ;
+unaryExpr
+    : atomExpr
+    ;
+multExpr
+    : unaryExpr (MULT_OPERATION unaryExpr)*
+    ;
+sumExpr
+    : multExpr (SUM_OPERATION multExpr)*
+    ;
+compareExpr
+    : sumExpr (COMPARE_OPERATION sumExpr)*
+    ;    
+logicExpr
+    : compareExpr (LOGIC_OPERATION compareExpr)*
+    ;
+ 
+rvalue: logicExpr;
 
-numberExpr: NUMBER;
-
-newList: '[' numbers? ']';
-numbers: NUMBER (',' NUMBER)*;
+lvalue
+ : ID
+ | rvalue '[' rvalue ']'
+ ;
+ 
+newList: '[' rvalues? ']';
+rvalues: rvalue (',' rvalue)*;
 type: ELEMENT | LIST;
-breakStmt: BREAK ;
-continueStmt: CONTINUE ;
-returnStmt: RETURN rvalue?;
+
+// prefix_unary_operation
+//  : NOT_OPERATION
+//  | PLUS_OPERATION
+//  | MINUS_OPERATION
+//  ;
 
 FUNC: 'func';
 PASS: 'pass';
