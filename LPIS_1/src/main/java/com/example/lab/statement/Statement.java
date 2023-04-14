@@ -14,6 +14,10 @@ public interface Statement extends SemanticChecker {
 		return null;
 	}
 	
+	default ReturnType tryResolveReturnType() {
+		return null;
+	}
+	
 	String toCodeString();
 	
 }

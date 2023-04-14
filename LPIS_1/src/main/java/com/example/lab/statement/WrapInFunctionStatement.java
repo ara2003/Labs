@@ -33,4 +33,9 @@ public record WrapInFunctionStatement(Statement statement) implements InFunction
 		return statement.toCodeString();
 	}
 	
+	@Override
+	public ReturnType returnType() {
+		return Optional.ofNullable(statement.tryResolveReturnType()).orElse(ReturnType.VOID);
+	}
+	
 }

@@ -37,10 +37,15 @@ implements Statement {
 		return new Function(name, parametrs, code.returnType(context));
 	}
 	
+	private Function function() {
+		return new Function(name, parametrs, code.returnType());
+	}
+	
 	@Override
 	public String toCodeString() {
 		return "func " + name + "("
-				+ parametrs.stream().map(x -> x.toCodeString()).reduce((a, b) -> a + ", " + b).orElse("") + "):\n\t"
+				+ parametrs.stream().map(x -> x.toCodeString()).reduce((a, b) -> a + ", " + b).orElse("") + ") -> "
+				+ function().returnType() + ":\n\t"
 				+ code.toCodeString().replace("\n", "\n\t");
 	}
 	

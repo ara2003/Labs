@@ -26,4 +26,11 @@ public record ForStatement(String index, Expression iter_list, Statement code) i
 		return code.tryResolveReturnType(b);
 	}
 	
+	@Override
+	public ReturnType tryResolveReturnType() {
+		var b = new StatementContextImpl();
+		b.initVariable(index);
+		return code.tryResolveReturnType(b);
+	}
+	
 }

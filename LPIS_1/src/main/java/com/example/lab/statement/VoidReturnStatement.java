@@ -13,4 +13,9 @@ public class VoidReturnStatement implements InFunctionStatement {
 		return ReturnType.VOID;
 	}
 	
+	@Override
+	public ReturnType returnType() {
+		return ReturnType.VOID;
+	}
+	
 }

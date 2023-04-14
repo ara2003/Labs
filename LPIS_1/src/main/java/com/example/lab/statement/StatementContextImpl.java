@@ -2,7 +2,6 @@ package com.example.lab.statement;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 
 import com.example.lab.Function;
 import com.example.lab.FunctionSignature;
@@ -25,8 +24,6 @@ public class StatementContextImpl implements StatementContext {
 	
 	@Override
 	public void funcDef(Function function) {
-		System.out.println(function);
-		Objects.requireNonNull(function);
 		functions.add(function);
 	}
 	
