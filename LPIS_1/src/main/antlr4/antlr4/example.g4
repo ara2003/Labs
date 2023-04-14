@@ -83,58 +83,68 @@ assignStmt: lvalue '=' rvalue;
 funcDefStmt: FUNC ID '(' paramiters? ')' ':' codeBlockStmt; 
 paramiters: paramiter (',' paramiter)*;
 paramiter: type? ID;
-funcCallStmt: ID '(' rvalues? ')';
+funcCallStmt: ID '(' arguments? ')';
 whileStmt: WHILE rvalue ':' codeBlockStmt;
 switchStmt: SWITCH rvalue ':' BEGIN (caseStat | defaultStat)* END;
 caseStat: CASE NUMBER ':' codeBlockStmt;
 defaultStat: DEFAULT ':' codeBlockStmt;
 forStmt: FOR ID 'in' rvalue ':' codeBlockStmt;
-ifStmt: IF rvalue ':' codeBlockStmt;
+ifStmt: IF rvalue ':' codeBlockStmt elseStmt?;
+elseStmt: ELSE ':' codeBlockStmt;
 breakStmt: BREAK ;
 continueStmt: CONTINUE ;
 returnStmt: RETURN rvalue?;
 
 numberExpr: NUMBER;
-
+inBracketsRvalue: '(' rvalue ')';
 atomExpr
     : lvalue
     | newList
     | numberExpr
     | funcCallStmt
-    | '(' rvalue ')'
+    | inBracketsRvalue
     ;
 unaryExpr
-    : atomExpr
+    : unaryExprPrefix? atomExpr
     ;
 multExpr
     : unaryExpr (MULT_OPERATION unaryExpr)*
     ;
 sumExpr
-    : multExpr (SUM_OPERATION multExpr)*
+    : multExpr (('+'|'-') multExpr)*
     ;
 compareExpr
     : sumExpr (COMPARE_OPERATION sumExpr)*
-    ;    
+    ;
 logicExpr
     : compareExpr (LOGIC_OPERATION compareExpr)*
     ;
- 
+
 rvalue: logicExpr;
 
 lvalue
+ : varName
+ | varName list_index 
+ | '(' rvalue ')' list_index 
+ ;
+
+varName
  : ID
- | rvalue '[' rvalue ']'
  ;
  
-newList: '[' rvalues? ']';
-rvalues: rvalue (',' rvalue)*;
-type: ELEMENT | LIST;
+list_index
+ : '[' rvalue ']'
+ ; 
 
-// prefix_unary_operation
-//  : NOT_OPERATION
-//  | PLUS_OPERATION
-//  | MINUS_OPERATION
-//  ;
+unaryExprPrefix
+ : 'not'
+ | '+'
+ | '-'
+ ;
+
+newList: '[' arguments? ']';
+arguments: rvalue (',' rvalue)*;
+type: ELEMENT | LIST;
 
 FUNC: 'func';
 PASS: 'pass';
@@ -144,7 +154,6 @@ COMPARE_OPERATION: '<' | '>' | '>=' | '<=' |  '==' | '!=';
 MULT_OPERATION: '*' | '/' | '%' | '^';
 PLUS_OPERATION: '+';
 MINUS_OPERATION: '-';
-fragment SUM_OPERATION: PLUS_OPERATION | MINUS_OPERATION;
 
 LIST: 'list';
 ELEMENT: 'element';

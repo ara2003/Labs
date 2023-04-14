@@ -1,2 +1,8 @@
 
-a = 4 + 2
+aaa = [1, 2, 3]
+
+func print(x):
+	for i in aaa:
+		return i
+		
+
