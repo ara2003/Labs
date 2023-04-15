@@ -17,6 +17,11 @@ public enum Type {
 		}
 	},;
 	
+	@Override
+	public String toString() {
+		return super.toString().toLowerCase();
+	}
+	
 	public abstract ReturnType toReturnType();
 	
 	

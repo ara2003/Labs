@@ -1,48 +1,24 @@
 package com.example.lab.expression;
 
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import com.example.lab.Type;
+import com.example.lab.statement.StatementContext;
 
-public record NumberExpression(int value) implements Expression {
-	
-	public static final Expression FALSE = new NumberExpression(0);
-	public static final Expression TRUE = new NumberExpression(1);
+public record NumberExpression(int value, int line) implements Expression {
 	
 	public NumberExpression {
 	}
 	
-	public NumberExpression(String value) {
-		this(Integer.parseInt(value));
+	public NumberExpression(String value, int line) {
+		this(Integer.parseInt(value), line);
 	}
 	
 	@Override
-	public Stream<String> useVariables() {
-		return Stream.empty();
+	public Optional<Type> resolveResultType(StatementContext context) {
+		return Optional.of(Type.ELEMENT);
 	}
 	
-	@Override
-	public Stream<String> useFunctions() {
-		return Stream.empty();
-	}
 	
-	@Override
-	public Integer tryGetConstElementValue() {
-		return value;
-	}
-	
-	@Override
-	public String toMathString() {
-		return "" + value;
-	}
-	
-	@Override
-	public Type tryResolveResultType() {
-		return Type.ELEMENT;
-	}
-	
-	public static Expression getBoolean(boolean bool) {
-		return bool ? TRUE : FALSE;
-	}
 	
 }

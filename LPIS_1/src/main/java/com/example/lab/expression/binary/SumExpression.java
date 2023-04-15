@@ -17,15 +17,4 @@ public class SumExpression extends BinaryExpression {
 		return "+";
 	}
 	
-	@Override
-	public Integer tryGetConstElementValue() {
-		var aValue = a.tryGetConstElementValue();
-		var bValue = b.tryGetConstElementValue();
-		if(aValue == null)
-			return null;
-		if(bValue == null)
-			return null;
-		return aValue + bValue;
-	}
-	
 }

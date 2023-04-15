@@ -1,10 +1,15 @@
 package com.example.lab.expression.binary.compare;
 
 
+import java.util.Optional;
+
 import com.example.lab.Type;
 import com.example.lab.expression.Expression;
 import com.example.lab.expression.binary.BinaryExpression;
 import com.example.lab.statement.StatementContext;
+import com.example.lab.statement.error.SemanticError;
+import com.example.lab.statement.error.SemanticErrorBase;
+import com.example.lab.statement.error.SemanticOK;
 
 public abstract class CompareBinaryExpression extends BinaryExpression {
 	
@@ -13,27 +18,40 @@ public abstract class CompareBinaryExpression extends BinaryExpression {
 	}
 	
 	@Override
-	public void checkSemantic(StatementContext context) {
-		super.checkSemantic(context);
-		resolveResultType(context);
+	public SemanticError checkSemantic(StatementContext context) {
+		var result = super.checkSemantic(context);
+		if(!result.isOK())
+			return result;
+		
+		var aOptType = a.resolveResultType(context);
+		var bOptType = b.resolveResultType(context);
+		
+		final SemanticError e1, e2;
+		
+		if(aOptType.isEmpty())
+			e1 = new SemanticErrorBase("can not resolve type of right comporating operator", a.line());
+		else {
+			var aType = aOptType.get();
+			if(aType == Type.ELEMENT)
+				e1 = new SemanticOK();
+			else
+				e1 = new SemanticErrorBase("type of right comporating operator is list", a.line());
+		}
+		if(bOptType.isEmpty())
+			e2 = new SemanticErrorBase("can not resolve type of left comporating operator", b.line());
+		else {
+			var bType = bOptType.get();
+			if(bType == Type.ELEMENT)
+				e2 = new SemanticOK();
+			else
+				e2 = new SemanticErrorBase("type of left comporating operator is list", b.line());
+		}
+		
+		return e1.merge(e2);
 	}
 	
 	@Override
-	public Type resolveResultType(StatementContext context) {
-		var aType = a.resolveResultType(context);
-		var bType = b.resolveResultType(context);
-		if(aType == Type.LIST || bType == Type.LIST)
-			throw new UnsupportedOperationException("compare list " + toMathString());
-		return Type.ELEMENT;
+	public Optional<Type> resolveResultType(StatementContext context) {
+		return Optional.of(Type.ELEMENT);
 	}
-	
-	@Override
-	public Type tryResolveResultType() {
-		var aType = a.tryResolveResultType();
-		var bType = b.tryResolveResultType();
-		if(aType == Type.LIST || bType == Type.LIST)
-			throw new UnsupportedOperationException("compare list " + toMathString());
-		return Type.ELEMENT;
-	}
-	
 }

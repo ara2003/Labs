@@ -5,19 +5,11 @@ import com.example.lab.SemanticChecker;
 
 public interface Statement extends SemanticChecker {
 
-	
 	default void preCheckSemantic(StatementContext context) {
-		
 	}
 	
 	default ReturnType tryResolveReturnType(StatementContext context) {
 		return null;
 	}
-	
-	default ReturnType tryResolveReturnType() {
-		return null;
-	}
-	
-	String toCodeString();
 	
 }

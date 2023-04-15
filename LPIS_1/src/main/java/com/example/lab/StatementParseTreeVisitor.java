@@ -10,7 +10,6 @@ import com.example.lab.statement.MergeStatement;
 import com.example.lab.statement.ReturnStatement;
 import com.example.lab.statement.Statement;
 import com.example.lab.statement.VoidReturnStatement;
-import com.example.lab.statement.WrapInFunctionStatement;
 
 import antlr4.exampleBaseVisitor;
 import antlr4.exampleParser.AssignStmtContext;
@@ -71,12 +70,11 @@ public final class StatementParseTreeVisitor extends exampleBaseVisitor<Statemen
 	public Statement visitFuncDefStmt(FuncDefStmtContext ctx) {
 		var paramiters = ctx.paramiters();
 		if(paramiters == null) {
-			return new FuncDefStatement(ctx.ID().getText(),
-					WrapInFunctionStatement.newStatement(visit(ctx.codeBlockStmt())));
+			return new FuncDefStatement(ctx.ID().getText(), visit(ctx.codeBlockStmt()));
 		}else {
 			var params = paramiters.paramiter().stream().map(x -> createParamiter(x)).toList();
 			return new FuncDefStatement(ctx.ID().getText(), params,
-					WrapInFunctionStatement.newStatement(visit(ctx.codeBlockStmt())));
+					visit(ctx.codeBlockStmt()));
 		}
 	}
 	

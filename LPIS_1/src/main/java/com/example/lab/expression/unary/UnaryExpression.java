@@ -1,9 +1,10 @@
 package com.example.lab.expression.unary;
 
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import com.example.lab.Type;
 import com.example.lab.expression.Expression;
+import com.example.lab.statement.StatementContext;
 
 public abstract class UnaryExpression implements Expression {
 	
@@ -13,25 +14,16 @@ public abstract class UnaryExpression implements Expression {
 		this.arg = arg;
 	}
 	
+	@Override
+	public Optional<Type> resolveResultType(StatementContext context) {
+		return Optional.of(Type.ELEMENT);
+	}
+	
 	public abstract String sign();
 	
 	@Override
-	public String toMathString() {
-		return "(" + sign() + " " + arg + ")";
+	public int line() {
+		return arg.line();
 	}
 	
-	@Override
-	public Type tryResolveResultType() {
-		return arg.tryResolveResultType();
-	}
-	
-	@Override
-	public Stream<String> useFunctions() {
-		return arg.useFunctions();
-	}
-	
-	@Override
-	public Stream<String> useVariables() {
-		return arg.useVariables();
-	}
 }

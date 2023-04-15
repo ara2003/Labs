@@ -5,12 +5,13 @@ import java.util.Objects;
 
 import com.example.lab.Function;
 import com.example.lab.Variable;
+import com.example.lab.statement.error.SemanticError;
 
 
-public record FuncDefStatement(String name, List<? extends Variable> parametrs, InFunctionStatement code)
+public record FuncDefStatement(String name, List<? extends Variable> parametrs, Statement code)
 implements Statement {
 	
-	public FuncDefStatement(String name, InFunctionStatement code) {
+	public FuncDefStatement(String name, Statement code) {
 		this(name, List.of(), code);
 	}
 	
@@ -22,31 +23,19 @@ implements Statement {
 	
 	@Override
 	public void preCheckSemantic(StatementContext context) {
-		context.funcDef(function(context));
 	}
 	
 	@Override
-	public void checkSemantic(StatementContext context) {
+	public SemanticError checkSemantic(StatementContext context) {
 		var b = context.block();
 		for(var p : parametrs)
 			b.initVariable(p);
-		code.checkSemantic(b);
+		context.funcDef(function(b));
+		return code.checkSemantic(b);
 	}
 	
 	private Function function(StatementContext context) {
-		return new Function(name, parametrs, code.returnType(context));
-	}
-	
-	private Function function() {
-		return new Function(name, parametrs, code.returnType());
-	}
-	
-	@Override
-	public String toCodeString() {
-		return "func " + name + "("
-				+ parametrs.stream().map(x -> x.toCodeString()).reduce((a, b) -> a + ", " + b).orElse("") + ") -> "
-				+ function().returnType() + ":\n\t"
-				+ code.toCodeString().replace("\n", "\n\t");
+		return new Function(name, parametrs, code.tryResolveReturnType(context));
 	}
 	
 }

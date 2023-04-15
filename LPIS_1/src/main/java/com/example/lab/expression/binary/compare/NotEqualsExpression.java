@@ -11,7 +11,7 @@ public class NotEqualsExpression extends CompareBinaryExpression {
 	
 	public static Expression newExpression(Expression a, Expression b) {
 		if(a.equals(b))
-			return NumberExpression.FALSE;
+			return new NumberExpression(0, a.line());
 		return new NotEqualsExpression(a, b);
 	}
 	

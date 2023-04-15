@@ -1,6 +1,6 @@
 package com.example.lab.statement;
 
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import com.example.lab.Function;
 import com.example.lab.FunctionSignature;
@@ -10,28 +10,28 @@ import com.example.lab.Variable;
 
 public interface StatementContext {
 	
-	void initVariable(Variable variable);
-	boolean hasVariable(Variable variable);
-	Type getVariableType(String variable);
-	
-	default void checkSemantic(Stream<? extends Variable> variables) {
-		variables.forEach(x -> {
-			if(!hasVariable(x))
-				throw new UnsupportedOperationException("use not define variable " + x);
-		});
-	}
-	
 	default StatementContext block() {
 		return this;
 	}
 	
-	ReturnType getReturnType(FunctionSignature function);
 	void funcDef(Function function);
+	
+	Optional<ReturnType> getReturnType(FunctionSignature function);
+	
+	Optional<Type> getVariableType(String variable);
+	
 	boolean hasFunction(FunctionSignature signature);
+	boolean hasVariable(String name);
+	
+	default boolean hasVariable(Variable variable) {
+		return hasVariable(variable.name());
+	}
 	
 	default void initVariable(String name) {
 		initVariable(new Variable(name));
 	}
+	
+	void initVariable(Variable variable);
 	
 	
 	

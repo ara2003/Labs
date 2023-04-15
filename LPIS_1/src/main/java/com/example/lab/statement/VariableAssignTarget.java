@@ -20,7 +20,7 @@ public record VariableAssignTarget(String name) implements AssignTarget {
 	}
 	
 	@Override
-	public String toCodeString() {
+	public String toCodeString(StatementContext context) {
 		return name;
 	}
 	

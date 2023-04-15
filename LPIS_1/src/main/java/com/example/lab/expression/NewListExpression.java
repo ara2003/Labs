@@ -1,44 +1,31 @@
 package com.example.lab.expression;
 
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import com.example.lab.Type;
+import com.example.lab.statement.StatementContext;
 
 
-public record NewListExpression(List<? extends Expression> args) implements Expression {
+public record NewListExpression(List<? extends Expression> args, int line) implements Expression {
 	
 	
-	public NewListExpression() {
-		this(List.of());
+	public NewListExpression(int line) {
+		this(List.of(), line);
+	}
+	
+	
+	public NewListExpression {
 	}
 	
 	@Override
-	public Stream<String> useVariables() {
-		return args.stream().flatMap(Expression::useVariables);
+	public Optional<Type> resolveResultType(StatementContext context) {
+		return Optional.of(Type.LIST);
 	}
 	
 	@Override
-	public Stream<String> useFunctions() {
-		return args.stream().flatMap(Expression::useFunctions);
-	}
-	
-	@Override
-	public Type tryResolveResultType() {
-		return Type.LIST;
-	}
-	
-	@Override
-	public List<Integer> tryGetConstListValue() {
-		var values = args.stream().map(x -> x.tryGetConstElementValue()).toList();
-		if(values.contains(null))
-			return null;
-		return values;
-	}
-	
-	@Override
-	public String toMathString() {
-		return "[" + args.stream().map(Expression::toMathString).reduce((a, b) -> a + ", " + b).orElse("") + "]";
+	public int line() {
+		return 0;
 	}
 	
 }

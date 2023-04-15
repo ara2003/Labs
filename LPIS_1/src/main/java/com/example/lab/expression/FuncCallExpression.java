@@ -1,56 +1,55 @@
 package com.example.lab.expression;
 
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import com.example.lab.FunctionSignature;
+import com.example.lab.ReturnType;
 import com.example.lab.Type;
 import com.example.lab.statement.StatementContext;
+import com.example.lab.statement.error.SemanticError;
+import com.example.lab.statement.error.SemanticErrorBase;
+import com.example.lab.statement.error.SemanticOK;
 
 
-public record FuncCallExpression(String name, List<? extends Expression> args) implements Expression {
+public record FuncCallExpression(String name, List<? extends Expression> args, int line) implements Expression {
 	
 	
-	public FuncCallExpression(String func) {
-		this(func, List.of());
+	public FuncCallExpression(String name, List<? extends Expression> args) {
+		this(name, args, 0);
+	}
+	
+	public FuncCallExpression(String name) {
+		this(name, List.of());
 	}
 	
 	@Override
-	public Stream<String> useVariables() {
-		return args.stream().flatMap(Expression::useVariables);
-	}
-	
-	@Override
-	public Stream<String> useFunctions() {
-		return Stream.concat(Stream.of(name), args.stream().flatMap(Expression::useFunctions));
-	}
-	
-	@Override
-	public Type tryResolveResultType() {
-		return null;
-	}
-	
-	@Override
-	public String toMathString() {
-		return name + "(" + args.stream().map(Expression::toMathString).reduce((a, b) -> a + ", " + b).orElse("") + ")";
-	}
-	
-	@Override
-	public Type resolveResultType(StatementContext context) {
-		return context.getReturnType(signature(context)).toType();
+	public Optional<Type> resolveResultType(StatementContext context) {
+		var s = signature(context);
+		if(s == null)
+			return Optional.empty();
+		return context.getReturnType(s).map(ReturnType::toType);
 	}
 	
 	public FunctionSignature signature(StatementContext context) {
-		return new FunctionSignature(name, args.stream().map(x -> x.resolveResultType(context)).toList());
+		var argTypes = args.stream().map(x -> x.resolveResultType(context)).toList();
+		if(argTypes.stream().anyMatch(Optional::isEmpty))
+			return null;
+		return new FunctionSignature(name, argTypes.stream().map(Optional::get).toList());
 	}
-	
 	
 	@Override
-	public void checkSemantic(StatementContext context) {
-		Expression.super.checkSemantic(context);
-		args().forEach(x -> x.checkSemantic(context));
+	public SemanticError checkSemantic(StatementContext context) {
+		SemanticError error;
+		error = args().stream().map(x -> x.checkSemantic(context)).reduce(SemanticError::merge)
+				.orElseGet(SemanticOK::new);
+		if(!error.isOK())
+			return error;
+		
 		var s = signature(context);
 		if(!context.hasFunction(s))
-			throw new RuntimeException("call not define function signature " + s);
+			return new SemanticErrorBase("call not define function signature " + s, line);
+		return Expression.super.checkSemantic(context);
 	}
+	
 }

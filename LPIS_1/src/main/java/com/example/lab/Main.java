@@ -72,15 +72,17 @@ public class Main {
 		//		var t = new ParseTreeWalker();
 		//		t.walk(listener, code);
 		
-		var visitor = new StatementParseTreeVisitor(new ExpressionParseTreeVisitor(), new LValueParseTreeVisitor());
-		var result = visitor.visit(code);
-		
-		var context = new StatementContextImpl();
-		
-		result.preCheckSemantic(context);
-		result.checkSemantic(context);
-		
-		System.out.println(result.toCodeString());
+			var visitor = new StatementParseTreeVisitor(new ExpressionParseTreeVisitor(), new LValueParseTreeVisitor());
+			var result = visitor.visit(code);
+			
+			
+			var context = new StatementContextImpl();
+			
+			result.preCheckSemantic(context);
+			var error = result.checkSemantic(context);
+			error.show(System.out);
+			
+		//		System.out.println(result.toCodeString(context));
 		
 		//		for(var e : result.usedExpressions().toList()) {
 		//			System.out.println(e.toMathString());

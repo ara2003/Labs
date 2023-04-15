@@ -3,6 +3,8 @@ package com.example.lab.statement;
 import java.util.List;
 
 import com.example.lab.ReturnType;
+import com.example.lab.statement.error.MergeSemanticError;
+import com.example.lab.statement.error.SemanticError;
 
 public record MergeStatement(List<? extends Statement> statements) implements Statement {
 	
@@ -25,19 +27,14 @@ public record MergeStatement(List<? extends Statement> statements) implements St
 	}
 	
 	@Override
-	public void checkSemantic(StatementContext context) {
-		for(var s : statements)
-			s.checkSemantic(context);
+	public SemanticError checkSemantic(StatementContext context) {
+		return MergeSemanticError.newError(statements.stream().map(x -> x.checkSemantic(context)).toList());
 	}
 	
 	@Override
 	public void preCheckSemantic(StatementContext context) {
 		for(var s : statements)
 			s.preCheckSemantic(context);
-	}
-	@Override
-	public String toCodeString() {
-		return statements.stream().map(x -> x.toCodeString()).reduce((a, b) -> a + "\n" + b).orElse("");
 	}
 	
 }

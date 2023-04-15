@@ -11,6 +11,6 @@ public interface AssignTarget {
 	
 	void init(StatementContext context, Type type);
 	
-	String toCodeString();
+	String toCodeString(StatementContext context);
 	
 }

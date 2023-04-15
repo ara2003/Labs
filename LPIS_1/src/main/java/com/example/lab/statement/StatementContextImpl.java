@@ -2,6 +2,8 @@ package com.example.lab.statement;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 
 import com.example.lab.Function;
 import com.example.lab.FunctionSignature;
@@ -23,24 +25,24 @@ public class StatementContextImpl implements StatementContext {
 	}
 	
 	@Override
+	public String toString() {
+		return "StatementContextImpl [" + variables + ", " + functions + "]";
+	}
+	
+	@Override
 	public void funcDef(Function function) {
 		functions.add(function);
 	}
 	
 	@Override
-	public ReturnType getReturnType(FunctionSignature signature) {
-		return functions.stream().filter(x -> signature.equals(x.signature())).findAny().map(Function::returnType)
-				.orElseGet(() ->
-				{
-					throw new UnsupportedOperationException("not init function " + signature);
-				});
+	public Optional<ReturnType> getReturnType(FunctionSignature signature) {
+		Objects.requireNonNull(signature);
+		return functions.stream().filter(x -> signature.equals(x.signature())).findAny().map(Function::returnType);
 	}
 	
 	@Override
-	public Type getVariableType(String variable) {
-		return variables.stream().filter(x -> variable.equals(x.name())).findAny().map(Variable::type).orElseGet(() -> {
-			throw new UnsupportedOperationException("not init variable " + variable + " in " + variables);
-		});
+	public Optional<Type> getVariableType(String variable) {
+		return variables.stream().filter(x -> variable.equals(x.name())).findAny().map(x -> x.type());
 	}
 	
 	@Override
@@ -51,6 +53,11 @@ public class StatementContextImpl implements StatementContext {
 	@Override
 	public boolean hasVariable(Variable variable) {
 		return variables.contains(variable);
+	}
+	
+	@Override
+	public boolean hasVariable(String name) {
+		return variables.stream().anyMatch(x -> name.equals(x.name()));
 	}
 	
 	@Override

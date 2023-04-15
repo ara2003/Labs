@@ -1,9 +1,12 @@
 package com.example.lab.expression.binary;
 
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import com.example.lab.Type;
 import com.example.lab.expression.Expression;
+import com.example.lab.statement.StatementContext;
+import com.example.lab.statement.error.MergeSemanticError;
+import com.example.lab.statement.error.SemanticError;
 
 public abstract class BinaryExpression implements Expression {
 	
@@ -14,17 +17,12 @@ public abstract class BinaryExpression implements Expression {
 		this.b = b;
 	}
 	
+	@Override
+	public int line() {
+		return a.line();
+	}
+	
 	public abstract String sign();
-	
-	@Override
-	public String toMathString() {
-		return a.toMathStringWithBrackets() + " " + sign() + " " + b.toMathStringWithBrackets();
-	}
-	
-	@Override
-	public String toMathStringWithBrackets() {
-		return "(" + toMathString() + ")";
-	}
 	
 	@Override
 	public String toString() {
@@ -32,23 +30,25 @@ public abstract class BinaryExpression implements Expression {
 	}
 	
 	@Override
-	public Type tryResolveResultType() {
-		var aType = a.tryResolveResultType();
-		var bType = b.tryResolveResultType();
-		if(aType == null || bType == null)
-			return null;
-		if(aType != bType)
-			throw new UnsupportedOperationException("type of " + this);
-		return aType;
+	public SemanticError checkSemantic(StatementContext context) {
+		return MergeSemanticError.newError(a.checkSemantic(context), b.checkSemantic(context));
 	}
 	
 	@Override
-	public Stream<String> useFunctions() {
-		return Stream.concat(a.useFunctions(), b.useFunctions());
+	public Optional<Type> resolveResultType(StatementContext context) {
+		var aOptType = a.resolveResultType(context);
+		if(aOptType.isEmpty())
+			return Optional.empty();
+		var aType = aOptType.get();
+		
+		var bOptType = b.resolveResultType(context);
+		if(bOptType.isEmpty())
+			return Optional.empty();
+		var bType = bOptType.get();
+		
+		if(aType == Type.ELEMENT && bType == Type.ELEMENT)
+			return Optional.of(Type.ELEMENT);
+		return Optional.of(Type.LIST);
 	}
 	
-	@Override
-	public Stream<String> useVariables() {
-		return Stream.concat(a.useVariables(), b.useVariables());
-	}
 }

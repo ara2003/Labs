@@ -3,6 +3,7 @@ package com.example.lab.statement;
 import java.util.Objects;
 
 import com.example.lab.expression.Expression;
+import com.example.lab.statement.error.SemanticError;
 
 public record AssignStatement(AssignTarget target, Expression expr) implements Statement {
 	
@@ -13,19 +14,17 @@ public record AssignStatement(AssignTarget target, Expression expr) implements S
 	}
 	
 	@Override
-	public void preCheckSemantic(StatementContext context) {
-		context.checkSemantic(target.usedExpressions().flatMap(x -> x.useVariables(context)));
-		expr.checkSemantic(context);
-		target.init(context, expr.resolveResultType(context));
-	}
-	
-	@Override
-	public void checkSemantic(StatementContext context) {
-	}
-	
-	@Override
-	public String toCodeString() {
-		return target.toCodeString() + " = " + expr.toMathString();
+	public SemanticError checkSemantic(StatementContext context) {
+		var result = expr.checkSemantic(context);
+		
+		
+		
+		var type = expr.resolveResultType(context);
+		if(type.isPresent())
+			target.init(context, type.get());
+		
+		
+		return result;
 	}
 	
 }

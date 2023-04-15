@@ -15,8 +15,9 @@ public record Variable(Type type, String name) {
 	}
 	
 	public String toCodeString() {
-		if(type == Type.LIST)
-			return "list " + name;
-		return name;
+		return switch(type) {
+			case ELEMENT -> "element " + name;
+			case LIST -> "list " + name;
+		};
 	}
 }

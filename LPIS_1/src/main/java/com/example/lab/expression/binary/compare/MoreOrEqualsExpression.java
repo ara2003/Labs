@@ -11,7 +11,7 @@ public class MoreOrEqualsExpression extends CompareBinaryExpression {
 	
 	public static Expression newExpression(Expression a, Expression b) {
 		if(a.equals(b))
-			return NumberExpression.TRUE;
+			return new NumberExpression(1, a.line());
 		return new MoreOrEqualsExpression(a, b);
 	}
 	

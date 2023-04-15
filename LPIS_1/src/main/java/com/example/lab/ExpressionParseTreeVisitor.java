@@ -45,7 +45,7 @@ public final class ExpressionParseTreeVisitor extends exampleBaseVisitor<Express
 	
 	@Override
 	public Expression visitNumberExpr(NumberExprContext ctx) {
-		return new NumberExpression(ctx.getText());
+		return new NumberExpression(ctx.getText(), ctx.getStart().getLine());
 	}
 	
 	@Override
@@ -89,19 +89,19 @@ public final class ExpressionParseTreeVisitor extends exampleBaseVisitor<Express
 			
 				default -> throw new IllegalArgumentException("Unexpected value: " + sign);
 			};
-			result.tryResolveResultType();
 		}
 		return result;
 	}
 	
 	@Override
 	public Expression visitNewList(NewListContext ctx) {
+		var line = ctx.getStart().getLine();
 		var arguments = ctx.arguments();
 		if(arguments == null) {
-			return new NewListExpression();
+			return new NewListExpression(line);
 		}else {
 			var args = arguments.rvalue().stream().map(x -> visitRvalue(x)).toList();
-			return new NewListExpression(args);
+			return new NewListExpression(args, line);
 		}
 	}
 	
@@ -126,7 +126,7 @@ public final class ExpressionParseTreeVisitor extends exampleBaseVisitor<Express
 	
 	@Override
 	public Expression visitVarName(VarNameContext ctx) {
-		return new VarExpression(ctx.getText());
+		return new VarExpression(ctx.getText(), ctx.getStart().getLine());
 	}
 	
 	@Override
