@@ -2,6 +2,7 @@ package com.example.lab;
 
 import com.example.lab.statement.AssignStatement;
 import com.example.lab.statement.BreakStatement;
+import com.example.lab.statement.CodeBlockStatement;
 import com.example.lab.statement.ContinueStatement;
 import com.example.lab.statement.ForStatement;
 import com.example.lab.statement.FuncCallStatement;
@@ -20,6 +21,7 @@ import com.example.lab.statement.WhileStatement;
 import antlr4.exampleBaseVisitor;
 import antlr4.exampleParser.AssignStmtContext;
 import antlr4.exampleParser.BreakStmtContext;
+import antlr4.exampleParser.CodeBlockStmtContext;
 import antlr4.exampleParser.ContinueStmtContext;
 import antlr4.exampleParser.ForStmtContext;
 import antlr4.exampleParser.FuncCallStmtContext;
@@ -48,6 +50,11 @@ public final class StatementParseTreeVisitor extends exampleBaseVisitor<Statemen
 		if(nextResult == null)
 			return aggregate;
 		return MergeStatement.newStatement(aggregate, nextResult);
+	}
+	
+	@Override
+	public Statement visitCodeBlockStmt(CodeBlockStmtContext ctx) {
+		return new CodeBlockStatement(visit(ctx.code()));
 	}
 	
 	@Override
