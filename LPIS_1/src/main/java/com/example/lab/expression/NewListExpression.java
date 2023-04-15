@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import com.example.lab.Type;
 import com.example.lab.statement.StatementContext;
+import com.example.lab.statement.error.MergeSemanticError;
+import com.example.lab.statement.error.SemanticError;
 
 
 public record NewListExpression(List<? extends Expression> args, int line) implements Expression {
@@ -24,8 +26,8 @@ public record NewListExpression(List<? extends Expression> args, int line) imple
 	}
 	
 	@Override
-	public int line() {
-		return 0;
+	public SemanticError checkSemantic(StatementContext context) {
+		return MergeSemanticError.newError(args.stream().map(x -> x.checkSemantic(context)).toList());
 	}
 	
 }

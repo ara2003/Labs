@@ -27,7 +27,7 @@ implements Statement {
 	
 	@Override
 	public SemanticError checkSemantic(StatementContext context) {
-		var b = context.block();
+		var b = context.funcDefBlock();
 		for(var p : parametrs)
 			b.initVariable(p);
 		context.funcDef(function(b));
@@ -35,7 +35,12 @@ implements Statement {
 	}
 	
 	private Function function(StatementContext context) {
-		return new Function(name, parametrs, code.tryResolveReturnType(context));
+		return new Function(name, parametrs.stream().map(x -> x.type()).toList(), code.tryResolveReturnType(context));
+	}
+	
+	@Override
+	public int line() {
+		return code.line() - 1;
 	}
 	
 }

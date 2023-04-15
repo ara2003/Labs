@@ -2,11 +2,13 @@ package com.example.lab.statement.error;
 
 import java.io.PrintStream;
 import java.util.List;
-import java.util.stream.Stream;
 
 
 public record MergeSemanticError(List<? extends SemanticError> errors) implements SemanticError {
 	
+	public MergeSemanticError(List<? extends SemanticError> errors) {
+		this.errors = errors.stream().filter(x -> !x.isOK()).toList();
+	}
 	
 	public MergeSemanticError(SemanticError... errors) {
 		this(List.of(errors));
@@ -20,16 +22,26 @@ public record MergeSemanticError(List<? extends SemanticError> errors) implement
 	
 	@Override
 	public SemanticError merge(SemanticError other) {
-		return Stream.concat(Stream.of(other), errors.stream()).reduce(SemanticError::merge).get();
+		if(equals(other))
+			return other;
+		if(other.isOK())
+			return this;
+		if(isOK())
+			return other;
+		return MergeSemanticError.newError(this, other);
 	}
 	
 	public static SemanticError newError(List<? extends SemanticError> errors) {
-		return errors.stream().map(x -> (SemanticError) x).reduce(SemanticError::merge)
-				.get();
+		return new MergeSemanticError(errors);
 	}
 	
 	public static SemanticError newError(SemanticError... errors) {
 		return newError(List.of(errors));
+	}
+	
+	@Override
+	public boolean isOK() {
+		return errors.stream().map(x -> x.isOK()).reduce(true, (a, b) -> a && b);
 	}
 	
 }

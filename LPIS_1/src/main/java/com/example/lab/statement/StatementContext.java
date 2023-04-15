@@ -10,9 +10,13 @@ import com.example.lab.Variable;
 
 public interface StatementContext {
 	
-	default StatementContext block() {
-		return this;
-	}
+	StatementContext funcDefBlock();
+	StatementContext forDefBlock();
+	
+	StatementContext block();
+	
+	boolean isFuncDef();
+	boolean isForDef();
 	
 	void funcDef(Function function);
 	

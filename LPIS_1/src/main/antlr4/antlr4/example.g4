@@ -85,7 +85,7 @@ paramiters: paramiter (',' paramiter)*;
 paramiter: type? ID;
 funcCallStmt: ID '(' arguments? ')';
 whileStmt: WHILE rvalue ':' codeBlockStmt;
-switchStmt: SWITCH rvalue ':' BEGIN (caseStat | defaultStat)* END;
+switchStmt: SWITCH rvalue ':' BEGIN caseStat+ defaultStat? END;
 caseStat: CASE NUMBER ':' codeBlockStmt;
 defaultStat: DEFAULT ':' codeBlockStmt;
 forStmt: FOR ID 'in' rvalue ':' codeBlockStmt;

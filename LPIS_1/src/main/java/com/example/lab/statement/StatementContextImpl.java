@@ -16,22 +16,45 @@ public class StatementContextImpl implements StatementContext {
 	private final Collection<Variable> variables = new ArrayList<>();
 	private final Collection<Function> functions = new ArrayList<>();
 	
+	private final boolean isFuncDef, isForDef;
+	
+	
+	public StatementContextImpl() {
+		this(false, false);
+	}
+	
+	private StatementContextImpl(boolean isFuncDef, boolean isForDef) {
+		this.isFuncDef = isFuncDef;
+		this.isForDef = isForDef;
+	}
+	
 	@Override
 	public StatementContext block() {
-		var block = new StatementContextImpl();
+		var block = new StatementContextImpl(isFuncDef, isForDef);
 		block.variables.addAll(variables);
 		block.functions.addAll(functions);
 		return block;
 	}
 	
 	@Override
-	public String toString() {
-		return "StatementContextImpl [" + variables + ", " + functions + "]";
+	public void funcDef(Function function) {
+		functions.add(function);
 	}
 	
 	@Override
-	public void funcDef(Function function) {
-		functions.add(function);
+	public StatementContext funcDefBlock() {
+		var block = new StatementContextImpl(true, false);
+		block.variables.addAll(variables);
+		block.functions.addAll(functions);
+		return block;
+	}
+	
+	@Override
+	public StatementContext forDefBlock() {
+		var block = new StatementContextImpl(isFuncDef, true);
+		block.variables.addAll(variables);
+		block.functions.addAll(functions);
+		return block;
 	}
 	
 	@Override
@@ -42,7 +65,7 @@ public class StatementContextImpl implements StatementContext {
 	
 	@Override
 	public Optional<Type> getVariableType(String variable) {
-		return variables.stream().filter(x -> variable.equals(x.name())).findAny().map(x -> x.type());
+		return variables.stream().filter(x -> variable.equals(x.name())).findAny().map(Variable::type);
 	}
 	
 	@Override
@@ -51,18 +74,33 @@ public class StatementContextImpl implements StatementContext {
 	}
 	
 	@Override
-	public boolean hasVariable(Variable variable) {
-		return variables.contains(variable);
-	}
-	
-	@Override
 	public boolean hasVariable(String name) {
 		return variables.stream().anyMatch(x -> name.equals(x.name()));
 	}
 	
 	@Override
+	public boolean hasVariable(Variable variable) {
+		return variables.contains(variable);
+	}
+	
+	@Override
 	public void initVariable(Variable variable) {
 		variables.add(variable);
+	}
+	
+	@Override
+	public boolean isFuncDef() {
+		return isFuncDef;
+	}
+	
+	@Override
+	public boolean isForDef() {
+		return isForDef;
+	}
+	
+	@Override
+	public String toString() {
+		return "StatementContextImpl [" + variables + ", " + functions + "]";
 	}
 	
 }

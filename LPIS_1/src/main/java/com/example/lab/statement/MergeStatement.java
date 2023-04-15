@@ -36,5 +36,9 @@ public record MergeStatement(List<? extends Statement> statements) implements St
 		for(var s : statements)
 			s.preCheckSemantic(context);
 	}
+	@Override
+	public int line() {
+		return 0;
+	}
 	
 }

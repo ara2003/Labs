@@ -26,4 +26,9 @@ public record IfStatement(Expression expr, Statement Then) implements Statement 
 		return MergeSemanticError.newError(e1, e2);
 	}
 	
+	@Override
+	public int line() {
+		return expr.line();
+	}
+	
 }

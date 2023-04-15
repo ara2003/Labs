@@ -3,7 +3,7 @@ package com.example.lab;
 import java.util.List;
 import java.util.Objects;
 
-public record Function(String name, List<? extends Variable> parametrs, ReturnType returnType) {
+public record Function(String name, List<? extends Type> parametrs, ReturnType returnType) {
 	public Function {
 		Objects.requireNonNull(parametrs);
 		Objects.requireNonNull(name);
@@ -11,7 +11,7 @@ public record Function(String name, List<? extends Variable> parametrs, ReturnTy
 	}
 	
 	public FunctionSignature signature() {
-		return new FunctionSignature(name, parametrs.stream().map(x -> x.type()).toList());
+		return new FunctionSignature(name, parametrs);
 	}
 	
 }

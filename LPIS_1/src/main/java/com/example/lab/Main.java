@@ -3,6 +3,7 @@ package com.example.lab;
 import java.io.File;
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -75,8 +76,13 @@ public class Main {
 			var visitor = new StatementParseTreeVisitor(new ExpressionParseTreeVisitor(), new LValueParseTreeVisitor());
 			var result = visitor.visit(code);
 			
-			
 			var context = new StatementContextImpl();
+			context.funcDef(new Function("print", List.of(Type.ELEMENT), ReturnType.VOID));
+			context.funcDef(new Function("print", List.of(Type.LIST), ReturnType.VOID));
+			context.funcDef(new Function("add", List.of(Type.LIST, Type.ELEMENT), ReturnType.VOID));
+			context.funcDef(new Function("range", List.of(Type.ELEMENT), ReturnType.LIST));
+			context.funcDef(new Function("range", List.of(Type.ELEMENT, Type.ELEMENT), ReturnType.LIST));
+			context.funcDef(new Function("range", List.of(Type.ELEMENT, Type.ELEMENT, Type.ELEMENT), ReturnType.LIST));
 			
 			result.preCheckSemantic(context);
 			var error = result.checkSemantic(context);

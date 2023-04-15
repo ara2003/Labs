@@ -1,8 +1,8 @@
 package com.example.lab;
 
 
+import com.example.lab.expression.VarExpression;
 import com.example.lab.statement.AssignTarget;
-import com.example.lab.statement.VariableAssignTarget;
 
 import antlr4.exampleBaseVisitor;
 import antlr4.exampleParser.VarNameContext;
@@ -11,7 +11,7 @@ public final class LValueParseTreeVisitor extends exampleBaseVisitor<AssignTarge
 	
 	@Override
 	public AssignTarget visitVarName(VarNameContext ctx) {
-		return new VariableAssignTarget(ctx.getText());
+		return new VarExpression(ctx.getText(), ctx.getStart().getLine());
 	}
 
 	

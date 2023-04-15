@@ -1,6 +1,6 @@
-package com.example.lab.expression;
+package com.example.lab.expression.binary;
 
-import com.example.lab.expression.binary.BinaryExpression;
+import com.example.lab.expression.Expression;
 
 public class RemainderDivisionExpression extends BinaryExpression {
 	

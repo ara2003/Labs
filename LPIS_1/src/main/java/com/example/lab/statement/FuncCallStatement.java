@@ -10,4 +10,9 @@ public record FuncCallStatement(FuncCallExpression expr) implements Statement {
 		return expr.checkSemantic(context);
 	}
 	
+	@Override
+	public int line() {
+		return expr.line();
+	}
+	
 }

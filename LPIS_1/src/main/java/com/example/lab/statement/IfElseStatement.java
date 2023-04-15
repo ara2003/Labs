@@ -19,4 +19,9 @@ public record IfElseStatement(Expression expr, Statement Then, Statement Else) i
 				Else.checkSemantic(context));
 	}
 	
+	@Override
+	public int line() {
+		return expr.line();
+	}
+	
 }

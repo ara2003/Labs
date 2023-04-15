@@ -17,14 +17,17 @@ public record AssignStatement(AssignTarget target, Expression expr) implements S
 	public SemanticError checkSemantic(StatementContext context) {
 		var result = expr.checkSemantic(context);
 		
-		
-		
 		var type = expr.resolveResultType(context);
 		if(type.isPresent())
 			target.init(context, type.get());
 		
 		
 		return result;
+	}
+	
+	@Override
+	public int line() {
+		return target.line();
 	}
 	
 }
