@@ -23,7 +23,7 @@ public class Main {
 	
 	
 	public static void main(String[] args) throws IOException {
-		for(var f : new File("src/main/resources").listFiles())
+		for(var f : new File("src/main/resources/tests").listFiles())
 			print(f);
 	}
 	
