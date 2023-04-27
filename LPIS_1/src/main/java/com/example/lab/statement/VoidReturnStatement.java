@@ -1,22 +1,25 @@
 package com.example.lab.statement;
 
+import java.util.Optional;
+
 import com.example.lab.ReturnType;
-import com.example.lab.statement.error.SemanticError;
-import com.example.lab.statement.error.SemanticErrorBase;
-import com.example.lab.statement.error.SemanticOK;
+import com.example.lab.SemanticError;
 
 public record VoidReturnStatement(int line) implements Statement {
 	
 	@Override
-	public SemanticError checkSemantic(StatementContext context) {
+	public boolean checkContextSemantic(StatementContext context) {
+		if(context.isReturn())
+			return SemanticError.printReturnError(line());
+		context.setReturn();
 		if(!context.isFuncDef())
-			return new SemanticErrorBase("return outside function", line());
-		return new SemanticOK();
+			return SemanticError.print("return outside function", line());
+		return true;
 	}
 	
 	@Override
-	public ReturnType tryResolveReturnType(StatementContext context) {
-		return ReturnType.VOID;
+	public Optional<ReturnType> tryResolveReturnType(StatementContext context) {
+		return Optional.of(ReturnType.VOID);
 	}
 	
 }

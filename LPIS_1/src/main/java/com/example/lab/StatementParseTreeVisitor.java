@@ -1,20 +1,21 @@
 package com.example.lab;
 
+import java.util.Optional;
+
 import com.example.lab.statement.AssignStatement;
 import com.example.lab.statement.BreakStatement;
 import com.example.lab.statement.CodeBlockStatement;
 import com.example.lab.statement.ContinueStatement;
+import com.example.lab.statement.EmptyStatement;
 import com.example.lab.statement.ForStatement;
 import com.example.lab.statement.FuncCallStatement;
 import com.example.lab.statement.FuncDefStatement;
-import com.example.lab.statement.IfElseStatement;
 import com.example.lab.statement.IfStatement;
 import com.example.lab.statement.MergeStatement;
 import com.example.lab.statement.PassStatement;
 import com.example.lab.statement.ReturnStatement;
 import com.example.lab.statement.Statement;
 import com.example.lab.statement.SwitchStatement;
-import com.example.lab.statement.SwitchStatementWithDefault;
 import com.example.lab.statement.VoidReturnStatement;
 import com.example.lab.statement.WhileStatement;
 
@@ -53,18 +54,21 @@ public final class StatementParseTreeVisitor extends exampleBaseVisitor<Statemen
 	}
 	
 	@Override
+	protected Statement defaultResult() {
+		return new EmptyStatement();
+	}
+	
+	@Override
 	public Statement visitCodeBlockStmt(CodeBlockStmtContext ctx) {
 		return new CodeBlockStatement(visit(ctx.code()));
 	}
 	
 	@Override
 	public Statement visitSwitchStmt(SwitchStmtContext ctx) {
-		var def = ctx.defaultStat();
-		if(def != null)
-			return new SwitchStatementWithDefault(expressions.visit(ctx.rvalue()),
-					ctx.caseStat().stream().map(x -> visit(x)).toList(), visit(def));
-		return new SwitchStatement(expressions.visit(ctx.rvalue()),
-				ctx.caseStat().stream().map(x -> visit(x)).toList());
+		var defaultStat = Optional.ofNullable(ctx.defaultStat()).map(x -> visit(x))
+				.orElseGet(() -> new EmptyStatement());
+		return new SwitchStatement(expressions.visit(ctx.rvalue()), ctx.caseStat().stream().map(x -> visit(x)).toList(),
+				defaultStat);
 	}
 	
 	@Override
@@ -111,23 +115,16 @@ public final class StatementParseTreeVisitor extends exampleBaseVisitor<Statemen
 	@Override
 	public Statement visitFuncDefStmt(FuncDefStmtContext ctx) {
 		var paramiters = ctx.paramiters();
-		if(paramiters == null) {
-			return new FuncDefStatement(ctx.ID().getText(), visit(ctx.codeBlockStmt()));
-		}else {
-			var params = paramiters.paramiter().stream().map(x -> createParamiter(x)).toList();
-			return new FuncDefStatement(ctx.ID().getText(), params,
-					visit(ctx.codeBlockStmt()));
-		}
+		var params = paramiters.paramiter().stream().map(x -> createParamiter(x)).toList();
+		return new FuncDefStatement(ctx.ID().getText(), params, visit(ctx.code()));
 	}
 	
 	@Override
 	public Statement visitIfStmt(IfStmtContext ctx) {
 		var expr = expressions.visit(ctx.rvalue());
 		var then = visit(ctx.codeBlockStmt());
-		var _else = ctx.elseStmt();
-		if(_else == null)
-			return IfStatement.newStatement(expr, then);
-		return IfElseStatement.newStatement(expr, then, visit(_else));
+		var _else = Optional.ofNullable(ctx.elseStmt()).map(x -> visit(x)).orElseGet(() -> new EmptyStatement());
+		return IfStatement.newStatement(expr, then, _else);
 	}
 	
 	

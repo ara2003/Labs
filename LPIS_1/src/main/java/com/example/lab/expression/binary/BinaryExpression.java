@@ -1,12 +1,8 @@
 package com.example.lab.expression.binary;
 
-import java.util.Optional;
-
 import com.example.lab.Type;
 import com.example.lab.expression.Expression;
 import com.example.lab.statement.StatementContext;
-import com.example.lab.statement.error.MergeSemanticError;
-import com.example.lab.statement.error.SemanticError;
 
 public abstract class BinaryExpression implements Expression {
 	
@@ -30,25 +26,20 @@ public abstract class BinaryExpression implements Expression {
 	}
 	
 	@Override
-	public SemanticError checkSemantic(StatementContext context) {
-		return MergeSemanticError.newError(a.checkSemantic(context), b.checkSemantic(context));
+	public boolean checkContextSemantic(StatementContext context) {
+		return a.checkContextSemantic(context) && b.checkContextSemantic(context);
 	}
 	
 	@Override
-	public Optional<Type> resolveResultType(StatementContext context) {
-		var aOptType = a.resolveResultType(context);
-		if(aOptType.isEmpty())
-			return Optional.empty();
-		var aType = aOptType.get();
+	public Type getType(StatementContext context) {
+		var aType = a.getType(context);
+		var bType = b.getType(context);
 		
-		var bOptType = b.resolveResultType(context);
-		if(bOptType.isEmpty())
-			return Optional.empty();
-		var bType = bOptType.get();
-		
+		if(aType == Type.LIST || bType == Type.LIST)
+			return Type.LIST;
 		if(aType == Type.ELEMENT && bType == Type.ELEMENT)
-			return Optional.of(Type.ELEMENT);
-		return Optional.of(Type.LIST);
+			return Type.ELEMENT;
+		return null;
 	}
 	
 }

@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Objects;
 
 import com.example.lab.Function;
+import com.example.lab.FunctionSignature;
+import com.example.lab.ReturnType;
 import com.example.lab.Variable;
-import com.example.lab.statement.error.SemanticError;
 
 
 public record FuncDefStatement(String name, List<? extends Variable> parametrs, Statement code)
@@ -22,20 +23,29 @@ implements Statement {
 	}
 	
 	@Override
-	public void preCheckSemantic(StatementContext context) {
-	}
-	
-	@Override
-	public SemanticError checkSemantic(StatementContext context) {
+	public boolean checkContextSemantic(StatementContext context) {
 		var b = context.funcDefBlock();
 		for(var p : parametrs)
 			b.initVariable(p);
-		context.funcDef(function(b));
-		return code.checkSemantic(b);
+		if(!code.checkContextSemantic(b))
+			return false;
+		var func = function(b);
+		context.funcDef(func);
+		return true;
+	}
+	
+	private FunctionSignature signature(StatementContext context) {
+		return new FunctionSignature(name, parametrs.stream().map(x -> x.type()).toList());
 	}
 	
 	private Function function(StatementContext context) {
-		return new Function(name, parametrs.stream().map(x -> x.type()).toList(), code.tryResolveReturnType(context));
+		final ReturnType returnType;
+		try {
+			returnType = code.tryResolveReturnType(context).orElse(ReturnType.VOID);
+		}catch (Exception e) {
+			throw new RuntimeException("" + name, e);
+		}
+		return new Function(signature(context), returnType);
 	}
 	
 	@Override

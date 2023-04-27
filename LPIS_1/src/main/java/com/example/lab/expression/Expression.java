@@ -8,6 +8,10 @@ import com.example.lab.statement.StatementContext;
 
 public interface Expression extends SemanticChecker {
 	
-	Optional<Type> resolveResultType(StatementContext context);
+	Type getType(StatementContext context);
+	
+	default Optional<Type> tryGetType() {
+		return Optional.of(getType(null));
+	}
 	
 }

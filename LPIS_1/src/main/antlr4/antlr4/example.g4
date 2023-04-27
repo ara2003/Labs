@@ -80,8 +80,8 @@ passStat: PASS;
 codeBlockStmt: BEGIN code END;
 
 assignStmt: lvalue '=' rvalue;
-funcDefStmt: FUNC ID '(' paramiters? ')' ':' codeBlockStmt; 
-paramiters: paramiter (',' paramiter)*;
+funcDefStmt: 'func' ID '(' paramiters ')' ':' BEGIN code END;
+paramiters: (paramiter (',' paramiter)*)?;
 paramiter: type? ID;
 funcCallStmt: ID '(' arguments? ')';
 whileStmt: WHILE rvalue ':' codeBlockStmt;

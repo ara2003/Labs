@@ -1,23 +1,26 @@
 package com.example.lab.statement;
 
+import java.util.Optional;
+
 import com.example.lab.ReturnType;
-import com.example.lab.Type;
+import com.example.lab.SemanticError;
 import com.example.lab.expression.Expression;
-import com.example.lab.statement.error.SemanticError;
-import com.example.lab.statement.error.SemanticErrorBase;
 
 public record ReturnStatement(Expression expression) implements Statement {
 	
 	@Override
-	public SemanticError checkSemantic(StatementContext context) {
+	public boolean checkContextSemantic(StatementContext context) {
+		if(context.isReturn())
+			return SemanticError.printReturnError(expression.line());
+		context.setReturn();
 		if(!context.isFuncDef())
-			return new SemanticErrorBase("return outside function", line());
-		return expression.checkSemantic(context);
+			return SemanticError.print("return outside function", line());
+		return expression.checkContextSemantic(context);
 	}
 	
 	@Override
-	public ReturnType tryResolveReturnType(StatementContext context) {
-		return expression.resolveResultType(context).map(Type::toReturnType).orElse(null);
+	public Optional<ReturnType> tryResolveReturnType(StatementContext context) {
+		return Optional.ofNullable(expression.getType(context)).map(x -> x.toReturnType());
 	}
 	
 	@Override

@@ -1,29 +1,55 @@
 package com.example.lab.statement;
 
-import com.example.lab.ReturnType;
-import com.example.lab.expression.Expression;
-import com.example.lab.statement.error.MergeSemanticError;
-import com.example.lab.statement.error.SemanticError;
+import java.util.Optional;
 
-public record IfStatement(Expression expr, Statement Then) implements Statement {
+import com.example.lab.ReturnType;
+import com.example.lab.SemanticError;
+import com.example.lab.Type;
+import com.example.lab.expression.Expression;
+
+public record IfStatement(Expression expr, Statement Then, Statement Else) implements Statement {
 	
 	public IfStatement {
 	}
 	
-	public static Statement newStatement(Expression expr, Statement Then) {
-		return new IfStatement(expr, Then);
+	public static Statement newStatement(Expression expr, Statement Then, Statement Else) {
+		return new IfStatement(expr, Then, Else);
 	}
 	
 	@Override
-	public ReturnType tryResolveReturnType(StatementContext context) {
-		return Then.tryResolveReturnType(context);
+	public Optional<ReturnType> tryResolveReturnType(StatementContext context) {
+		var thenReturnType = Then.tryResolveReturnType(context);
+		var elseReturnType = Else.tryResolveReturnType(context);
+		
+		if(thenReturnType.isEmpty())
+			return elseReturnType;
+		if(elseReturnType.isEmpty())
+			return thenReturnType;
+		
+		//		if(thenReturnType.get() == ReturnType.VOID)
+		//			return elseReturnType;
+		//		if(elseReturnType.get() == ReturnType.VOID)
+		//			return thenReturnType;
+		
+		throw new UnsupportedOperationException(thenReturnType + " " + elseReturnType);
 	}
-	
 	@Override
-	public SemanticError checkSemantic(StatementContext context) {
-		var e1 = expr.checkSemantic(context);
-		var e2 = Then.checkSemantic(context);
-		return MergeSemanticError.newError(e1, e2);
+	public boolean checkContextSemantic(StatementContext context) {
+		var thenBlock = context.block();
+		var elseBlock = context.block();
+		boolean result = true;
+		if(expr.checkContextSemantic(context)) {
+			var type = expr.getType(context);
+			if(type != null)
+				result &= SemanticError.printIf("type of if argument is not element", line(),
+						type.equals(Type.ELEMENT));
+		}else
+			result = false;
+		result &= Then.checkContextSemantic(thenBlock);
+		result &= Else.checkContextSemantic(elseBlock);
+		if(thenBlock.isReturn() && elseBlock.isReturn())
+			context.setReturn();
+		return result;
 	}
 	
 	@Override

@@ -1,31 +1,35 @@
 package com.example.lab.expression;
 
-import java.util.Optional;
-
+import com.example.lab.SemanticError;
 import com.example.lab.Type;
 import com.example.lab.Variable;
 import com.example.lab.statement.AssignTarget;
 import com.example.lab.statement.StatementContext;
-import com.example.lab.statement.error.SemanticError;
-import com.example.lab.statement.error.SemanticErrorBase;
 
 public record VarExpression(String name, int line) implements AssignTarget {
 	
 	@Override
-	public SemanticError checkSemantic(StatementContext context) {
+	public Type getType(StatementContext context) {
+		return context.getVariableType(name).get();
+	}
+	
+	@Override
+	public boolean checkContextSemantic(StatementContext context) {
 		if(!context.hasVariable(name))
-			return new SemanticErrorBase("not init variable " + name, line);
-		return AssignTarget.super.checkSemantic(context);
+			return SemanticError.print("use not define variale '" + name + "' ", line());
+		return true;
 	}
 	
 	@Override
-	public Optional<Type> resolveResultType(StatementContext context) {
-		return context.getVariableType(name);
-	}
-	
-	@Override
-	public void init(StatementContext context, Type type) {
+	public boolean init(StatementContext context, Type type) {
+		if(context.hasVariable(name)) {
+			var ctxType = context.getVariableType(name).get();
+			if(ctxType != type)
+				return SemanticError.print("set '" + type + "' to '" + ctxType + "' variable", line);
+			return true;
+		}
 		context.initVariable(new Variable(type, name));
+		return true;
 	}
 	
 }

@@ -5,6 +5,6 @@ import com.example.lab.expression.Expression;
 
 public interface AssignTarget extends Expression {
 	
-	void init(StatementContext context, Type type);
+	boolean init(StatementContext context, Type type);
 	
 }

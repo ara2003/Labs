@@ -1,16 +1,14 @@
 package com.example.lab.statement;
 
-import com.example.lab.statement.error.SemanticError;
-import com.example.lab.statement.error.SemanticErrorBase;
-import com.example.lab.statement.error.SemanticOK;
+import com.example.lab.SemanticError;
 
 public record BreakStatement(int line) implements Statement {
 	
 	@Override
-	public SemanticError checkSemantic(StatementContext context) {
+	public boolean checkContextSemantic(StatementContext context) {
 		if(!context.isForDef())
-			return new SemanticErrorBase("break outside for/while", line());
-		return new SemanticOK();
+			return SemanticError.print("break outside for/while", line());
+		return true;
 	}
 	
 }

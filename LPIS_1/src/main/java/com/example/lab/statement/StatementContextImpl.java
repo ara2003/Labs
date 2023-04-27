@@ -17,6 +17,7 @@ public class StatementContextImpl implements StatementContext {
 	private final Collection<Function> functions = new ArrayList<>();
 	
 	private final boolean isFuncDef, isForDef;
+	private boolean isReturn = false;
 	
 	
 	public StatementContextImpl() {
@@ -37,6 +38,14 @@ public class StatementContextImpl implements StatementContext {
 	}
 	
 	@Override
+	public StatementContext forDefBlock() {
+		var block = new StatementContextImpl(isFuncDef, true);
+		block.variables.addAll(variables);
+		block.functions.addAll(functions);
+		return block;
+	}
+	
+	@Override
 	public void funcDef(Function function) {
 		functions.add(function);
 	}
@@ -44,14 +53,6 @@ public class StatementContextImpl implements StatementContext {
 	@Override
 	public StatementContext funcDefBlock() {
 		var block = new StatementContextImpl(true, false);
-		block.variables.addAll(variables);
-		block.functions.addAll(functions);
-		return block;
-	}
-	
-	@Override
-	public StatementContext forDefBlock() {
-		var block = new StatementContextImpl(isFuncDef, true);
 		block.variables.addAll(variables);
 		block.functions.addAll(functions);
 		return block;
@@ -70,7 +71,7 @@ public class StatementContextImpl implements StatementContext {
 	
 	@Override
 	public boolean hasFunction(FunctionSignature signature) {
-		return functions.stream().anyMatch(x -> signature.equals(x.signature()));
+		return functions.stream().map(x -> x.signature()).anyMatch(x -> x.equals(signature));
 	}
 	
 	@Override
@@ -85,12 +86,9 @@ public class StatementContextImpl implements StatementContext {
 	
 	@Override
 	public void initVariable(Variable variable) {
+		if(hasVariable(variable.name()))
+			throw new IllegalArgumentException("var alredy init");
 		variables.add(variable);
-	}
-	
-	@Override
-	public boolean isFuncDef() {
-		return isFuncDef;
 	}
 	
 	@Override
@@ -99,8 +97,23 @@ public class StatementContextImpl implements StatementContext {
 	}
 	
 	@Override
+	public boolean isFuncDef() {
+		return isFuncDef;
+	}
+	
+	@Override
 	public String toString() {
 		return "StatementContextImpl [" + variables + ", " + functions + "]";
+	}
+	
+	@Override
+	public boolean isReturn() {
+		return isReturn;
+	}
+	
+	@Override
+	public void setReturn() {
+		isReturn = true;
 	}
 	
 }

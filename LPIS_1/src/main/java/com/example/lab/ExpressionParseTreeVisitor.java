@@ -133,10 +133,10 @@ public final class ExpressionParseTreeVisitor extends exampleBaseVisitor<Express
 	public FuncCallExpression visitFuncCallStmt(FuncCallStmtContext ctx) {
 		var arguments = ctx.arguments();
 		if(arguments == null) {
-			return new FuncCallExpression(ctx.ID().getText());
+			return new FuncCallExpression(ctx.ID().getText(), ctx.getStart().getLine());
 		}else {
 			var args = arguments.rvalue().stream().map(x -> visitRvalue(x)).toList();
-			return new FuncCallExpression(ctx.ID().getText(), args);
+			return new FuncCallExpression(ctx.ID().getText(), args, ctx.getStart().getLine());
 		}
 	}
 	

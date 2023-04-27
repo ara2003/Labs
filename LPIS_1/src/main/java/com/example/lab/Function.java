@@ -7,7 +7,11 @@ public record Function(String name, List<? extends Type> parametrs, ReturnType r
 	public Function {
 		Objects.requireNonNull(parametrs);
 		Objects.requireNonNull(name);
-		Objects.requireNonNull(returnType);
+	}
+	
+	
+	public Function(FunctionSignature signature, ReturnType returnType) {
+		this(signature.name(), signature.argumentTypes(), returnType);
 	}
 	
 	public FunctionSignature signature() {

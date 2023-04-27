@@ -1,7 +1,5 @@
 package com.example.lab.expression;
 
-import java.util.Optional;
-
 import com.example.lab.Type;
 import com.example.lab.statement.StatementContext;
 
@@ -15,8 +13,8 @@ public record NumberExpression(int value, int line) implements Expression {
 	}
 	
 	@Override
-	public Optional<Type> resolveResultType(StatementContext context) {
-		return Optional.of(Type.ELEMENT);
+	public Type getType(StatementContext context) {
+		return Type.ELEMENT;
 	}
 	
 	

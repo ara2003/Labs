@@ -14,7 +14,8 @@ public interface StatementContext {
 	StatementContext forDefBlock();
 	
 	StatementContext block();
-	
+	boolean isReturn();
+	void setReturn();
 	boolean isFuncDef();
 	boolean isForDef();
 	

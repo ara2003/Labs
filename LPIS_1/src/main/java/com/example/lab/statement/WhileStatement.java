@@ -1,30 +1,33 @@
 package com.example.lab.statement;
 
-import com.example.lab.ReturnType;
-import com.example.lab.expression.Expression;
-import com.example.lab.statement.error.MergeSemanticError;
-import com.example.lab.statement.error.SemanticError;
+import java.util.Optional;
 
+import com.example.lab.ReturnType;
+import com.example.lab.SemanticError;
+import com.example.lab.Type;
+import com.example.lab.expression.Expression;
 
 public record WhileStatement(Expression expr, Statement code) implements Statement {
 	
 	@Override
-	public SemanticError checkSemantic(StatementContext context) {
-		final SemanticError e1, e2;
-		e1 = expr.checkSemantic(context);
-		var b = context.forDefBlock();
-		e2 = code.checkSemantic(b);
-		return MergeSemanticError.newError(e1, e2);
+	public boolean checkContextSemantic(StatementContext context) {
+		boolean result = true;
+		result &= expr.checkContextSemantic(context);
+		result &= SemanticError.printIf("type of while argument is not element", expr.line(),
+				expr.getType(context).equals(Type.ELEMENT));
+		var ctx = context.forDefBlock();
+		result &= code.checkContextSemantic(ctx);
+		return result;
 	}
 	
 	@Override
-	public ReturnType tryResolveReturnType(StatementContext context) {
+	public Optional<ReturnType> tryResolveReturnType(StatementContext context) {
 		return code.tryResolveReturnType(context);
 	}
 	
 	@Override
 	public int line() {
-		return expr.line();
+		return code.line();
 	}
 	
 }

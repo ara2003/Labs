@@ -1,7 +1,5 @@
 package com.example.lab.expression.unary;
 
-import java.util.Optional;
-
 import com.example.lab.Type;
 import com.example.lab.expression.Expression;
 import com.example.lab.statement.StatementContext;
@@ -15,8 +13,8 @@ public abstract class UnaryExpression implements Expression {
 	}
 	
 	@Override
-	public Optional<Type> resolveResultType(StatementContext context) {
-		return Optional.of(Type.ELEMENT);
+	public Type getType(StatementContext context) {
+		return arg.getType(context);
 	}
 	
 	public abstract String sign();

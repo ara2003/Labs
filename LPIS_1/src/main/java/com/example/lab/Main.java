@@ -39,19 +39,19 @@ public class Main {
 			@Override
 			public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact,
 					BitSet ambigAlts, ATNConfigSet configs) {
-				System.out.printf("Ambiguity at indexes: %d %d\n", startIndex, stopIndex);
+				//				System.out.printf("Ambiguity at indexes: %d %d\n", startIndex, stopIndex);
 			}
 			
 			@Override
 			public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
 					BitSet conflictingAlts, ATNConfigSet configs) {
-				System.out.printf("Attempting Full Context at indexes: %d %d\n", startIndex, stopIndex);
+				//				System.out.printf("Attempting Full Context at indexes: %d %d\n", startIndex, stopIndex);
 			}
 			
 			@Override
 			public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
 					int prediction, ATNConfigSet configs) {
-				System.out.printf("Context Sensitivity at indexes: %d %d\n", startIndex, stopIndex);
+				//				System.out.printf("Context Sensitivity at indexes: %d %d\n", startIndex, stopIndex);
 			}
 			
 			@Override
@@ -77,6 +77,7 @@ public class Main {
 			var result = visitor.visit(code);
 			
 			var context = new StatementContextImpl();
+			context.funcDef(new Function("input", List.of(), ReturnType.ELEMENT));
 			context.funcDef(new Function("print", List.of(Type.ELEMENT), ReturnType.VOID));
 			context.funcDef(new Function("print", List.of(Type.LIST), ReturnType.VOID));
 			context.funcDef(new Function("add", List.of(Type.LIST, Type.ELEMENT), ReturnType.VOID));
@@ -84,9 +85,9 @@ public class Main {
 			context.funcDef(new Function("range", List.of(Type.ELEMENT, Type.ELEMENT), ReturnType.LIST));
 			context.funcDef(new Function("range", List.of(Type.ELEMENT, Type.ELEMENT, Type.ELEMENT), ReturnType.LIST));
 			
-			result.preCheckSemantic(context);
-			var error = result.checkSemantic(context);
-			error.show(System.out);
+			result.checkContextSemantic(context);
+			
+			//			System.out.println(context.getReturnType(new FunctionSignature("fact", List.of(Type.ELEMENT))));
 			
 		//		System.out.println(result.toCodeString(context));
 		

@@ -1,24 +1,33 @@
 package com.example.lab.statement;
 
 import java.util.List;
-import java.util.stream.Stream;
 
+import com.example.lab.SemanticError;
+import com.example.lab.Type;
 import com.example.lab.expression.Expression;
-import com.example.lab.statement.error.MergeSemanticError;
-import com.example.lab.statement.error.SemanticError;
 
-public record SwitchStatement(Expression expr, List<? extends Statement> caseStat) implements Statement {
+public record SwitchStatement(Expression expr, List<? extends Statement> caseStatements, Statement defaultStatement)
+		implements Statement {
 	
 	@Override
 	public int line() {
 		return expr.line();
 	}
-	
 	@Override
-	public SemanticError checkSemantic(StatementContext context) {
-		var e = expr.checkSemantic(context);
-		return MergeSemanticError
-				.newError(Stream.concat(Stream.of(e), caseStat.stream().map(x -> x.checkSemantic(context))).toList());
+	public boolean checkContextSemantic(StatementContext context) {
+		boolean result = true;
+		if(expr.checkContextSemantic(context)) {
+			var type = expr.getType(context);
+			if(type != null)
+				result &= SemanticError.printIf("type of swich argument is not element", line(),
+						type.equals(Type.ELEMENT));
+		}else
+			result = false;
+		for(var x : caseStatements)
+			result &= x.checkContextSemantic(context);
+		result &= defaultStatement.checkContextSemantic(context);
+		return result;
 	}
+	
 	
 }

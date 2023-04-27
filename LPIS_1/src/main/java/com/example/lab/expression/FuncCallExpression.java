@@ -1,55 +1,39 @@
 package com.example.lab.expression;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.example.lab.FunctionSignature;
-import com.example.lab.ReturnType;
+import com.example.lab.SemanticError;
 import com.example.lab.Type;
 import com.example.lab.statement.StatementContext;
-import com.example.lab.statement.error.SemanticError;
-import com.example.lab.statement.error.SemanticErrorBase;
-import com.example.lab.statement.error.SemanticOK;
 
 
 public record FuncCallExpression(String name, List<? extends Expression> args, int line) implements Expression {
 	
-	
-	public FuncCallExpression(String name, List<? extends Expression> args) {
-		this(name, args, 0);
-	}
-	
-	public FuncCallExpression(String name) {
-		this(name, List.of());
+	public FuncCallExpression(String name, int line) {
+		this(name, List.of(), line);
 	}
 	
 	@Override
-	public Optional<Type> resolveResultType(StatementContext context) {
+	public Type getType(StatementContext context) {
 		var s = signature(context);
-		if(s == null)
-			return Optional.empty();
-		return context.getReturnType(s).map(ReturnType::toType);
+		return context.getReturnType(s).map(x -> x.toType()).orElse(null);
 	}
 	
 	public FunctionSignature signature(StatementContext context) {
-		var argTypes = args.stream().map(x -> x.resolveResultType(context)).toList();
-		if(argTypes.stream().anyMatch(Optional::isEmpty))
-			return null;
-		return new FunctionSignature(name, argTypes.stream().map(Optional::get).toList());
+		var argTypes = args.stream().map(x -> x.getType(context)).toList();
+		return new FunctionSignature(name, argTypes);
 	}
 	
 	@Override
-	public SemanticError checkSemantic(StatementContext context) {
-		SemanticError error;
-		error = args().stream().map(x -> x.checkSemantic(context)).reduce(SemanticError::merge)
-				.orElseGet(SemanticOK::new);
-		if(!error.isOK())
-			return error;
+	public boolean checkContextSemantic(StatementContext context) {
+		if(!args().stream().map(x -> x.checkContextSemantic(context)).allMatch(x -> x))
+			return false;
 		
 		var s = signature(context);
 		if(!context.hasFunction(s))
-			return new SemanticErrorBase("call not define function signature " + s, line);
-		return Expression.super.checkSemantic(context);
+			return SemanticError.print("call not define function signature " + s, line);
+		return Expression.super.checkContextSemantic(context);
 	}
 	
 }
