@@ -61,7 +61,7 @@ public record MergeStatement(List<? extends Statement> statements) implements St
 		if(list.size() != 1) {
 			list.remove(null);
 			if(list.size() != 1)
-				result &= SemanticError.print("can not resolve return type", statements.get(0).line());
+				result &= SemanticError.print("can not resolve return type", line());
 		}
 		return result;
 	}

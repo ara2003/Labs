@@ -11,6 +11,8 @@ public record WhileStatement(Expression expr, Statement code) implements Stateme
 	
 	@Override
 	public boolean checkContextSemantic(StatementContext context) {
+		if(context.isReturn())
+			return SemanticError.printReturnError(line());
 		boolean result = true;
 		result &= expr.checkContextSemantic(context);
 		result &= SemanticError.printIf("type of while argument is not element", expr.line(),

@@ -11,9 +11,9 @@ public record VoidReturnStatement(int line) implements Statement {
 	public boolean checkContextSemantic(StatementContext context) {
 		if(context.isReturn())
 			return SemanticError.printReturnError(line());
-		context.setReturn();
 		if(!context.isFuncDef())
 			return SemanticError.print("return outside function", line());
+		context.setReturn();
 		return true;
 	}
 	

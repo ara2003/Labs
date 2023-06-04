@@ -95,7 +95,7 @@ public final class StatementParseTreeVisitor extends exampleBaseVisitor<Statemen
 	
 	@Override
 	public Statement visitFuncCallStmt(FuncCallStmtContext ctx) {
-		var expr = expressions.visitFuncCallStmt(ctx);
+		var expr = expressions.visitFuncCallExpr(ctx.funcCallExpr());
 		return new FuncCallStatement(expr);
 	}
 	

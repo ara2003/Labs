@@ -15,6 +15,8 @@ public record SwitchStatement(Expression expr, List<? extends Statement> caseSta
 	}
 	@Override
 	public boolean checkContextSemantic(StatementContext context) {
+		if(context.isReturn())
+			return SemanticError.printReturnError(line());
 		boolean result = true;
 		if(expr.checkContextSemantic(context)) {
 			var type = expr.getType(context);

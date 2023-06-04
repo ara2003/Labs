@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import com.example.lab.expression.Expression;
 import com.example.lab.expression.FuncCallExpression;
+import com.example.lab.expression.ListIndexExpression;
 import com.example.lab.expression.NewListExpression;
 import com.example.lab.expression.NumberExpression;
 import com.example.lab.expression.VarExpression;
@@ -26,8 +27,9 @@ import com.example.lab.expression.unary.UnaryPlusExpression;
 
 import antlr4.exampleBaseVisitor;
 import antlr4.exampleParser.CompareExprContext;
-import antlr4.exampleParser.FuncCallStmtContext;
+import antlr4.exampleParser.FuncCallExprContext;
 import antlr4.exampleParser.InBracketsRvalueContext;
+import antlr4.exampleParser.ListIndexContext;
 import antlr4.exampleParser.LogicExprContext;
 import antlr4.exampleParser.MultExprContext;
 import antlr4.exampleParser.NewListContext;
@@ -130,7 +132,7 @@ public final class ExpressionParseTreeVisitor extends exampleBaseVisitor<Express
 	}
 	
 	@Override
-	public FuncCallExpression visitFuncCallStmt(FuncCallStmtContext ctx) {
+	public FuncCallExpression visitFuncCallExpr(FuncCallExprContext ctx) {
 		var arguments = ctx.arguments();
 		if(arguments == null) {
 			return new FuncCallExpression(ctx.ID().getText(), ctx.getStart().getLine());
@@ -138,6 +140,19 @@ public final class ExpressionParseTreeVisitor extends exampleBaseVisitor<Express
 			var args = arguments.rvalue().stream().map(x -> visitRvalue(x)).toList();
 			return new FuncCallExpression(ctx.ID().getText(), args, ctx.getStart().getLine());
 		}
+	}
+	
+	@Override
+	public Expression visitListIndex(ListIndexContext ctx) {
+		var name = ctx.varName();
+		if(name != null) {
+			var n = visit(name);
+			var value = visit(ctx.rvalue(0));
+			return new ListIndexExpression(n, value);
+		}
+		var n = visit(ctx.rvalue(0));
+		var index = visit(ctx.rvalue(1));
+		return new ListIndexExpression(n, index);
 	}
 	
 	@Override

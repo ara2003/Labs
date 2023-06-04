@@ -35,6 +35,8 @@ public record IfStatement(Expression expr, Statement Then, Statement Else) imple
 	}
 	@Override
 	public boolean checkContextSemantic(StatementContext context) {
+		if(context.isReturn())
+			return SemanticError.printReturnError(line());
 		var thenBlock = context.block();
 		var elseBlock = context.block();
 		boolean result = true;

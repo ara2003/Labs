@@ -6,6 +6,7 @@ import java.util.Objects;
 import com.example.lab.Function;
 import com.example.lab.FunctionSignature;
 import com.example.lab.ReturnType;
+import com.example.lab.SemanticError;
 import com.example.lab.Variable;
 
 
@@ -24,6 +25,8 @@ implements Statement {
 	
 	@Override
 	public boolean checkContextSemantic(StatementContext context) {
+		if(context.isReturn())
+			return SemanticError.printReturnError(line());
 		var b = context.funcDefBlock();
 		for(var p : parametrs)
 			b.initVariable(p);

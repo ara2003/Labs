@@ -1,4 +1,4 @@
-// Generated from d:\programing\Java\repos\Labs\LPIS_1\src\main\antlr4\antlr4\test.g4 by ANTLR 4.9.2
+// Generated from d:\programing\Java\repos\Labs\LPIS_1\src\main\antlr4\antlr4\example.g4 by ANTLR 4.9.2
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -143,7 +143,7 @@ public class exampleLexer extends Lexer {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "test.g4"; }
+	public String getGrammarFileName() { return "example.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

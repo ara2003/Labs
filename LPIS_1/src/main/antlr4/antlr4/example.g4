@@ -83,7 +83,7 @@ assignStmt: lvalue '=' rvalue;
 funcDefStmt: 'func' ID '(' paramiters ')' ':' BEGIN code END;
 paramiters: (paramiter (',' paramiter)*)?;
 paramiter: type? ID;
-funcCallStmt: ID '(' arguments? ')';
+funcCallStmt: funcCallExpr ;
 whileStmt: WHILE rvalue ':' codeBlockStmt;
 switchStmt: SWITCH rvalue ':' BEGIN caseStat+ defaultStat? END;
 caseStat: CASE NUMBER ':' codeBlockStmt;
@@ -95,13 +95,15 @@ breakStmt: BREAK ;
 continueStmt: CONTINUE ;
 returnStmt: RETURN rvalue?;
 
+
+funcCallExpr: ID '(' arguments? ')' ;
 numberExpr: NUMBER;
 inBracketsRvalue: '(' rvalue ')';
 atomExpr
     : lvalue
     | newList
     | numberExpr
-    | funcCallStmt
+    | funcCallExpr
     | inBracketsRvalue
     ;
 unaryExpr
@@ -124,17 +126,17 @@ rvalue: logicExpr;
 
 lvalue
  : varName
- | varName list_index 
- | '(' rvalue ')' list_index 
+ | listIndex
  ;
 
 varName
  : ID
  ;
  
-list_index
- : '[' rvalue ']'
- ; 
+listIndex
+ : varName '[' rvalue ']'
+ | '(' rvalue ')' '[' rvalue ']'
+ ;
 
 unaryExprPrefix
  : 'not'
