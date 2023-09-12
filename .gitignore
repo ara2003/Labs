@@ -1,2 +1,4 @@
-
+**/.idea/
+**/target/
+**.iml
 LPIS_1/src/main/resources/tests/
