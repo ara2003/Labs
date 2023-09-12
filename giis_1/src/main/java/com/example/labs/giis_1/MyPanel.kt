@@ -11,20 +11,36 @@ class MyPanel : JPanel(), LineDrawerMode {
 	private val lines = mutableListOf<Line>()
 
 	init {
-		addMouseListener(MyMouseListener())
+		val listener = MyMouseListener()
+		addMouseListener(listener)
+		addMouseMotionListener(listener)
 	}
 
 	private inner class MyMouseListener : MouseAdapter() {
 
 		private var mouse: Point? = null
+		private var line: Line? = null
 
 		override fun mouseClicked(e: MouseEvent) {
-			mouse = if(mouse == null) {
-				Point(e.x, e.y)
+			if(mouse == null) {
+				val mouse = Point(e.x, e.y)
+				this.mouse = mouse
+				val line = Line(Point(e.x, e.y), mouse, drawer)
+				this.line = line
+				lines.add(line)
 			} else {
-				lines.add(Line(mouse!!, Point(e.x, e.y), drawer))
 				repaint()
-				null
+				mouse = null
+				line = null
+			}
+		}
+
+		override fun mouseMoved(e: MouseEvent) {
+			val mouse = mouse
+			if(mouse != null) {
+				mouse.x = e.x
+				mouse.y = e.y
+				repaint()
 			}
 		}
 	}
@@ -38,7 +54,7 @@ class MyPanel : JPanel(), LineDrawerMode {
 
 	override var drawer: LineDrawer = CDALineDrawer
 
-	data class Point(val x: Int, val y: Int)
+	data class Point(var x: Int, var y: Int)
 	data class Line(val p1: Point, val p2: Point, val drawer: LineDrawer) {
 		constructor(
 			x1: Int,
