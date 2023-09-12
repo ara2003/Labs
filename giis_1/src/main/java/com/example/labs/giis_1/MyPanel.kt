@@ -2,22 +2,16 @@ package com.example.labs.giis_1
 
 import java.awt.Color
 import java.awt.Graphics
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JPanel
-import javax.swing.Timer
 
-class MyPanel : JPanel(), ActionListener, LineDrawerMode {
+class MyPanel : JPanel(), LineDrawerMode {
 
-	private val timer = Timer(20, this)
 	private val lines = mutableListOf<Line>()
 
 	init {
-		val listener = MyMouseListener()
-		addMouseListener(listener)
-		timer.start()
+		addMouseListener(MyMouseListener())
 	}
 
 	private inner class MyMouseListener : MouseAdapter() {
@@ -29,6 +23,7 @@ class MyPanel : JPanel(), ActionListener, LineDrawerMode {
 				Point(e.x, e.y)
 			} else {
 				lines.add(Line(mouse!!, Point(e.x, e.y), drawer))
+				repaint()
 				null
 			}
 		}
@@ -39,10 +34,6 @@ class MyPanel : JPanel(), ActionListener, LineDrawerMode {
 		g.color = Color.black
 		for(line in lines)
 			line.print(g)
-	}
-
-	override fun actionPerformed(e: ActionEvent) {
-		repaint()
 	}
 
 	override var drawer: LineDrawer = CDALineDrawer
