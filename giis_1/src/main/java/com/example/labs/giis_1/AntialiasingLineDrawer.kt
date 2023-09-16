@@ -1,13 +1,12 @@
 package com.example.labs.giis_1
 
-import java.awt.Graphics
 import java.util.stream.IntStream.*
 import kotlin.math.abs
 import kotlin.math.floor
 
 object AntialiasingLineDrawer : LineDrawer {
 
-	override fun drawLine(g: Graphics, x0: Int, y0: Int, x1: Int, y1: Int) = g.run {
+	override fun drawLine(g: PixelDrawer, x0: Int, y0: Int, x1: Int, y1: Int) = g.run {
 		var x0 = x0
 		var y0 = y0
 		var x1 = x1
