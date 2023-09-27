@@ -1,65 +1,36 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
- 
-  <groupId>com.example.lab</groupId>
-  <artifactId>LPIS_1</artifactId>
-  <version>0.1</version>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-	<name>LPIS_1</name>
+	<parent>
+		<groupId>com.example.labs</groupId>
+		<artifactId>labs</artifactId>
+		<version>0.1</version>
+	</parent>
+
+	<artifactId>LPIS_1</artifactId>
 
 	<properties>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<junit.version>5.5.2</junit.version>
-		<java.version.source>18</java.version.source>
-		<java.version.target>18</java.version.target>
-	
 		<antlr.version>4.7</antlr.version>
-		<antlr4test-maven-plugin.version>1.22</antlr4test-maven-plugin.version>
 	</properties>
-	
+
 	<dependencies>
-  		<dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-            <version>${antlr.version}</version>
- 		</dependency>
- 		
-		<!--test-->
-        <dependency>
-			<groupId>org.junit.jupiter</groupId>
-		    <artifactId>junit-jupiter</artifactId>
-		    <version>${junit.version}</version>
-		    <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4-runtime</artifactId>
+			<version>${antlr.version}</version>
+		</dependency>
 	</dependencies>
-	
-	
+
+
 	<build>
 		<plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M4</version>
-		        <configuration>
-		            <parallel>classes</parallel>
-		            <threadCount>8</threadCount>
-		        </configuration>
-            </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version> 3.8.1 </version>
-				<configuration>
-					<source>${java.version.source}</source>
-					<target>${java.version.target}</target>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.antlr</groupId>
 				<artifactId>antlr4-maven-plugin</artifactId>
 				<version>${antlr.version}</version>
 				<configuration>
-			        <sourceDirectory>${basedir}/src/main/antlr4</sourceDirectory>
+					<sourceDirectory>${basedir}/src/main/antlr4</sourceDirectory>
 					<visitor>true</visitor>
 					<listener>true</listener>
 				</configuration>
@@ -71,8 +42,8 @@
 					</execution>
 				</executions>
 			</plugin>
-	  	</plugins>
+		</plugins>
 	</build>
-  
-	
+
+
 </project>
