@@ -19,6 +19,8 @@ object BresenhamLineDrawer : LineDrawer {
 	}
 }
 
+// y1 < y2
+// dx < dy
 private fun PixelDrawer.drawLineHigh(x1: Int, y1: Int, x2: Int, y2: Int) {
 	var dx = x2 - x1 + 0f
 	val dy = y2 - y1 + 0f
@@ -33,9 +35,9 @@ private fun PixelDrawer.drawLineHigh(x1: Int, y1: Int, x2: Int, y2: Int) {
 		drawPixel(x, y)
 		if(D > 0) {
 			x += xi
-			D += (2 * (dx - dy))
-		} else
-			D += 2 * dx
+			D -= 2 * dy
+		}
+		D += 2 * dx
 	}
 }
 
@@ -53,8 +55,8 @@ private fun PixelDrawer.drawLineLow(x1: Int, y1: Int, x2: Int, y2: Int) {
 		drawPixel(x, y)
 		if(D > 0) {
 			y += yi
-			D += 2 * (dy - dx)
-		} else
-			D += 2 * dy
+			D -= 2 * dx
+		}
+		D += 2 * dy
 	}
 }
