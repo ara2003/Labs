@@ -6,8 +6,6 @@ import kotlin.math.sqrt
 object CircleDrawer : TwoPointDrawer {
 
 	override fun drawLine(g: PixelDrawer, x1: Int, y1: Int, x2: Int, y2: Int) = g.run {
-		val X1 = x1
-		val Y1 = y1
 		val R = run {
 			val dx = x2 - x1
 			val dy = y2 - y1
@@ -15,27 +13,22 @@ object CircleDrawer : TwoPointDrawer {
 		}
 		var x = 0
 		var y = R
-		var delta = 1 - 2 * R
-		var error = 0
-		while(y >= x) {
-			drawPixel(X1 + x, Y1 + y)
-			drawPixel(X1 + x, Y1 - y)
-			drawPixel(X1 - x, Y1 + y)
-			drawPixel(X1 - x, Y1 - y)
-			drawPixel(X1 + y, Y1 + x)
-			drawPixel(X1 + y, Y1 - x)
-			drawPixel(X1 - y, Y1 + x)
-			drawPixel(X1 - y, Y1 - x)
-			error = 2 * (delta + y) - 1
-			if((delta < 0) && (error <= 0)) {
-				delta += 2 * ++x + 1
-				continue
-			}
-			if((delta > 0) && (error > 0)) {
-				delta -= 2 * --y + 1
-				continue
-			}
-			delta += 2 * (++x - --y)
+		var delta = 3 - 2 * R
+		while(x <= y) {
+			drawPixel(x1 + x, y1 + y)
+			drawPixel(x1 + x, y1 - y)
+			drawPixel(x1 - x, y1 + y)
+			drawPixel(x1 - x, y1 - y)
+			drawPixel(x1 + y, y1 + x)
+			drawPixel(x1 + y, y1 - x)
+			drawPixel(x1 - y, y1 + x)
+			drawPixel(x1 - y, y1 - x)
+			delta +=
+				if(delta < 0)
+					4 * x + 6
+				else
+					4 * (x - y--) + 10
+			++x
 		}
 	}
 }
