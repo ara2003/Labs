@@ -1,6 +1,4 @@
-package com.example.labs.giis_2.pixel
-
-import com.example.labs.giis_2.pixel.DrawCounter
+package com.example.labs.giis_3.pixel
 
 class BaseDrawCounter(private var kadr: Int) : DrawCounter {
 

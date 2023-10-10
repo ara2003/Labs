@@ -1,8 +1,8 @@
-package com.example.labs.giis_2.generator
+package com.example.labs.giis_3.generator
 
-import com.example.labs.giis_2.obj.DebugDrawObject
-import com.example.labs.giis_2.obj.DrawObject
-import com.example.labs.giis_2.obj.Point
+import com.example.labs.giis_3.obj.DebugDrawObject
+import com.example.labs.giis_3.obj.DrawObject
+import com.example.labs.giis_3.obj.Point
 
 abstract class TwoPointGenerator : ObjectGenerator {
 

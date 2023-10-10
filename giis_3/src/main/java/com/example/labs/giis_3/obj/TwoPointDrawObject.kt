@@ -1,7 +1,7 @@
-package com.example.labs.giis_2.obj
+package com.example.labs.giis_3.obj
 
-import com.example.labs.giis_2.obj.drawer.TwoPointDrawer
-import com.example.labs.giis_2.pixel.PixelDrawer
+import com.example.labs.giis_3.obj.drawer.TwoPointDrawer
+import com.example.labs.giis_3.pixel.PixelDrawer
 
 data class TwoPointDrawObject(val p1: Point, val p2: Point, var lines: TwoPointDrawer) : DrawObject {
 	constructor(

@@ -1,6 +1,6 @@
-package com.example.labs.giis_2.obj.drawer
+package com.example.labs.giis_3.obj.drawer
 
-import com.example.labs.giis_2.pixel.PixelDrawer
+import com.example.labs.giis_3.pixel.PixelDrawer
 import java.util.stream.IntStream.*
 import kotlin.math.abs
 import kotlin.math.floor

@@ -1,7 +1,7 @@
-package com.example.labs.giis_2.obj
+package com.example.labs.giis_3.obj
 
-import com.example.labs.giis_2.pixel.GraphicsPixelDrawer
-import com.example.labs.giis_2.pixel.PixelDrawer
+import com.example.labs.giis_3.pixel.GraphicsPixelDrawer
+import com.example.labs.giis_3.pixel.PixelDrawer
 import java.awt.Graphics
 
 interface DrawObject {

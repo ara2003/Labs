@@ -1,5 +1,6 @@
-package com.example.labs.giis_2.pixel
+package com.example.labs.giis_3.pixel
 
+import com.example.labs.giis_3.obj.Point
 import java.awt.Color
 import java.awt.Graphics
 
@@ -9,6 +10,10 @@ interface PixelDrawer {
 
 	fun drawPixel(x: Int, y: Int) = drawPixel(x, y, 1f)
 	fun drawPixel(x: Int, y: Int, c: Float)
+}
+
+fun PixelDrawer.drawPixel(p: Point) {
+	drawPixel(p.x, p.y)
 }
 
 fun <R> Graphics.setColor(c: Color, block: () -> R): R {

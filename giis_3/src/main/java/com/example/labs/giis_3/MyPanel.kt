@@ -1,13 +1,13 @@
-package com.example.labs.giis_2
+package com.example.labs.giis_3
 
-import com.example.labs.giis_2.generator.LineGenerator
-import com.example.labs.giis_2.generator.ObjectGenerator
-import com.example.labs.giis_2.obj.DebugDrawObject
-import com.example.labs.giis_2.obj.DrawObject
-import com.example.labs.giis_2.obj.draw
-import com.example.labs.giis_2.obj.drawer.CDALineDrawer
-import com.example.labs.giis_2.pixel.PIXEL_SIZE
-import com.example.labs.giis_2.pixel.setColor
+import com.example.labs.giis_3.generator.ObjectGenerator
+import com.example.labs.giis_3.generator.TwoPointGeneratorImpl
+import com.example.labs.giis_3.obj.DebugDrawObject
+import com.example.labs.giis_3.obj.DrawObject
+import com.example.labs.giis_3.obj.draw
+import com.example.labs.giis_3.obj.drawer.CDALineDrawer
+import com.example.labs.giis_3.pixel.PIXEL_SIZE
+import com.example.labs.giis_3.pixel.setColor
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.event.KeyEvent
@@ -74,7 +74,7 @@ class MyPanel : JPanel(), LineDrawerMode, KeyListener, ObjectGenerator.Context {
 		repaint()
 	}
 
-	override var generator: ObjectGenerator = LineGenerator(CDALineDrawer)
+	override var generator: ObjectGenerator = TwoPointGeneratorImpl(CDALineDrawer)
 
 	override fun keyTyped(e: KeyEvent?) {
 	}

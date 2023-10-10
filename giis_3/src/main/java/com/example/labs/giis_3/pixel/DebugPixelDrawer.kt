@@ -1,4 +1,4 @@
-package com.example.labs.giis_2.pixel
+package com.example.labs.giis_3.pixel
 
 class DebugPixelDrawer(private val g: PixelDrawer, private val counter: DrawCounter) : PixelDrawer {
 

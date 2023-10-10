@@ -1,7 +1,6 @@
-package com.example.labs.giis_2.pixel
+package com.example.labs.giis_3.pixel
 
 interface DrawCounter {
 
 	fun draw(): Boolean
-
 }
