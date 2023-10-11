@@ -1,6 +1,8 @@
 package com.example.labs.giis_3
 
 import com.example.labs.giis_3.obj.drawer.AntialiasingLineDrawer
+import com.example.labs.giis_3.obj.drawer.BSplinesDrawer
+import com.example.labs.giis_3.obj.drawer.BezieDrawer
 import com.example.labs.giis_3.obj.drawer.BresenhamLineDrawer
 import com.example.labs.giis_3.obj.drawer.CDALineDrawer
 import com.example.labs.giis_3.obj.drawer.CircleDrawer
@@ -8,6 +10,7 @@ import com.example.labs.giis_3.obj.drawer.EllipseDrawer
 import com.example.labs.giis_3.obj.drawer.ErmitovDrawer
 import com.example.labs.giis_3.obj.drawer.HyperbolaDrawer
 import com.example.labs.giis_3.obj.drawer.ParabolaDrawer
+import com.example.labs.giis_3.obj.drawer.SplitFour
 import java.awt.Button
 import java.awt.Menu
 import java.awt.MenuBar
@@ -33,6 +36,8 @@ fun main() {
 	m.add(MenuItem("Парабола").also { it.addActionListener { panel.setDrawer(ParabolaDrawer) } })
 	m.addSeparator()
 	m.add(MenuItem("Эрмитов").also { it.addActionListener { panel.setDrawer(ErmitovDrawer) } })
+	m.add(MenuItem("Безье").also { it.addActionListener { panel.setDrawer(BezieDrawer) } })
+	m.add(MenuItem("B-сплайн").also { it.addActionListener { panel.setDrawer(SplitFour(BSplinesDrawer)) } })
 	menuBar.add(m)
 	f.menuBar = menuBar
 	val debugButton = Button("debug")

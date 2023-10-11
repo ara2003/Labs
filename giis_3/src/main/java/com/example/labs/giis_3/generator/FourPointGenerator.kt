@@ -5,7 +5,7 @@ import com.example.labs.giis_3.obj.FourPointDrawObject
 import com.example.labs.giis_3.obj.Point
 import com.example.labs.giis_3.obj.drawer.FourPointDrawer
 
-class FourPointGenerator(val drawer: FourPointDrawer) : MultiPointGenerator(4) {
+class FourPointGenerator(val drawer: FourPointDrawer) : MultiCountPointGenerator(4) {
 
 	override fun newObject(points: Collection<Point>): DrawObject {
 		val iter = points.iterator()

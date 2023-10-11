@@ -33,7 +33,10 @@ class MyPanel : JPanel(), LineDrawerMode, KeyListener, ObjectGenerator.Context {
 	private inner class MyMouseListener : MouseAdapter() {
 
 		override fun mouseClicked(e: MouseEvent) {
-			generator.click(this@MyPanel, e.x / PIXEL_SIZE, e.y / PIXEL_SIZE)
+			if(e.button == 1)
+				generator.click(this@MyPanel, e.x / PIXEL_SIZE, e.y / PIXEL_SIZE)
+			if(e.button == 3)
+				generator.end(this@MyPanel)
 		}
 
 		override fun mouseMoved(e: MouseEvent) {

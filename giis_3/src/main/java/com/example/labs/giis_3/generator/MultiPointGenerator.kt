@@ -1,19 +1,19 @@
 package com.example.labs.giis_3.generator
 
-import com.example.labs.giis_3.obj.DebugDrawObject
 import com.example.labs.giis_3.obj.DrawObject
 import com.example.labs.giis_3.obj.Point
 
-abstract class MultiPointGenerator(private val count: Int) : ObjectGenerator {
-	init {
-		require(count > 1)
-	}
+abstract class MultiPointGenerator : ObjectGenerator {
 
 	private var points = mutableListOf<Point>()
 	private var mouse: Point? = null
-	private var obj: DrawObject? = null
 
 	abstract fun newObject(points: Collection<Point>): DrawObject
+
+	override fun end(ctx: ObjectGenerator.Context) {
+		points = mutableListOf()
+		mouse = null
+	}
 
 	override fun move(ctx: ObjectGenerator.Context, x: Int, y: Int) {
 		val mouse = mouse ?: return
@@ -23,30 +23,16 @@ abstract class MultiPointGenerator(private val count: Int) : ObjectGenerator {
 	}
 
 	override fun click(ctx: ObjectGenerator.Context, x: Int, y: Int) {
-		if(points.size == count) {
-			if(ctx.isDebug) {
-				var line = obj!!
-				ctx.remove(line)
-				line = DebugDrawObject(line)
-				ctx.add(line)
-			}
-			ctx.repaint()
-			points = mutableListOf()
-			obj = null
-			mouse = null
-			return
-		}
-		val p = Point(x, y)
-		points.add(p)
-		if(points.size == count - 1) {
-			val mouse = Point(x, y)
-			this.mouse = mouse
-			points.add(mouse)
-			println(points)
+		if(points.isEmpty()) {
+			val p = Point(x, y)
+			points.add(p)
 			val obj = newObject(points)
-			this.obj = obj
 			ctx.add(obj)
 			ctx.repaint()
 		}
+		val p = Point(x, y)
+		points.add(p)
+		this.mouse = p
+		ctx.repaint()
 	}
 }

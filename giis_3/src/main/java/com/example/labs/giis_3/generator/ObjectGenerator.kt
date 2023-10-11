@@ -8,6 +8,9 @@ interface ObjectGenerator {
 	fun move(ctx: Context, x: Int, y: Int) {
 	}
 
+	fun end(ctx: Context) {
+	}
+
 	interface Context {
 
 		val isDebug: Boolean
