@@ -2,8 +2,16 @@ package com.example.labs.giis_3.pixel
 
 class DebugPixelDrawer(private val g: PixelDrawer, private val counter: DrawCounter) : PixelDrawer {
 
+	private var lastX = -1
+	private var lastY = -1
+
 	override fun drawPixel(x: Int, y: Int, c: Float) {
-		if(counter.draw())
+		if(lastX == x && lastY == y)
+			return
+		if(counter.draw()) {
+			lastX = x
+			lastY = y
 			g.drawPixel(x, y, c)
+		}
 	}
 }
