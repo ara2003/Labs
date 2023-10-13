@@ -4,7 +4,7 @@ import com.example.labs.giis_3.pixel.BaseDrawCounter
 import com.example.labs.giis_3.pixel.DebugPixelDrawer
 import com.example.labs.giis_3.pixel.PixelDrawer
 
-class DebugDrawObject(val origin: DrawObject) : DrawObject {
+class DebugDrawObject(val origin: DrawObject) : DrawObject by origin {
 
 	private var points: Int = 0
 
@@ -25,4 +25,5 @@ class DebugDrawObject(val origin: DrawObject) : DrawObject {
 		val g = DebugPixelDrawer(g, BaseDrawCounter(points))
 		origin.draw(g)
 	}
+
 }

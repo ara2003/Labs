@@ -32,11 +32,23 @@ class MyPanel : JPanel(), LineDrawerMode, KeyListener, ObjectGenerator.Context {
 
 	private inner class MyMouseListener : MouseAdapter() {
 
+		override fun mousePressed(e: MouseEvent) {
+			generator.press(this@MyPanel, e.x / PIXEL_SIZE, e.y / PIXEL_SIZE)
+		}
+
+		override fun mouseReleased(e: MouseEvent) {
+			generator.release(this@MyPanel, e.x / PIXEL_SIZE, e.y / PIXEL_SIZE)
+		}
+
 		override fun mouseClicked(e: MouseEvent) {
 			if(e.button == 1)
 				generator.click(this@MyPanel, e.x / PIXEL_SIZE, e.y / PIXEL_SIZE)
 			if(e.button == 3)
 				generator.end(this@MyPanel)
+		}
+
+		override fun mouseDragged(e: MouseEvent) {
+			generator.move(this@MyPanel, e.x / PIXEL_SIZE, e.y / PIXEL_SIZE)
 		}
 
 		override fun mouseMoved(e: MouseEvent) {
@@ -59,6 +71,9 @@ class MyPanel : JPanel(), LineDrawerMode, KeyListener, ObjectGenerator.Context {
 		g.color = Color.black
 		for(line in objects)
 			line.draw(g)
+//		for(obj in objects)
+//			for(point in obj)
+//				g.drawOval(point.x * PIXEL_SIZE - 8, point.y * PIXEL_SIZE - 8, 15, 15)
 	}
 
 	override fun debug() {
@@ -117,4 +132,6 @@ class MyPanel : JPanel(), LineDrawerMode, KeyListener, ObjectGenerator.Context {
 	override fun remove(obj: DrawObject) {
 		objects.remove(obj)
 	}
+
+	override fun iterator() = objects.iterator()
 }

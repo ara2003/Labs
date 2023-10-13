@@ -1,5 +1,6 @@
 package com.example.labs.giis_3
 
+import com.example.labs.giis_3.generator.MouseMove
 import com.example.labs.giis_3.obj.drawer.AntialiasingLineDrawer
 import com.example.labs.giis_3.obj.drawer.BSplinesDrawer
 import com.example.labs.giis_3.obj.drawer.BezieDrawer
@@ -26,6 +27,8 @@ fun main() {
 	val panel = MyPanel()
 	val menuBar = MenuBar()
 	val m = Menu("объект")
+	m.add(MenuItem("Перемещение точек").also { it.addActionListener { panel.generator = MouseMove() } })
+	m.addSeparator()
 	m.add(MenuItem("ЦДА").also { it.addActionListener { panel.setDrawer(CDALineDrawer) } })
 	m.add(MenuItem("Брезенхем").also { it.addActionListener { panel.setDrawer(BresenhamLineDrawer) } })
 	m.add(MenuItem("Ву").also { it.addActionListener { panel.setDrawer(AntialiasingLineDrawer) } })
@@ -49,9 +52,9 @@ fun main() {
 	f.add(panel)
 	f.addKeyListener(panel)
 	centreWindow(f)
-//	f.extendedState = JFrame.MAXIMIZED_BOTH
-//	f.isUndecorated = true
-	f.setSize(800, 600)
+	f.extendedState = JFrame.MAXIMIZED_BOTH
+	f.isUndecorated = true
+//	f.setSize(800, 600)
 	f.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
 	f.isResizable = false
 	f.isVisible = true

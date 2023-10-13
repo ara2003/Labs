@@ -9,4 +9,6 @@ data class FourPointDrawObject(val p1: Point, val p2: Point, val p3: Point, val 
 	override fun draw(drawer: PixelDrawer) {
 		lines.draw(drawer, p1, p2, p3, p4)
 	}
+
+	override fun iterator() = listOf(p1, p2, p3, p4).iterator()
 }

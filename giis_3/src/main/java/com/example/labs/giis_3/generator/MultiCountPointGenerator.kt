@@ -38,7 +38,6 @@ abstract class MultiCountPointGenerator(private val count: Int) : ObjectGenerato
 		}
 		val p = Point(x, y)
 		points.add(p)
-		println(points)
 		if(points.size == count - 1) {
 			val mouse = Point(x, y)
 			this.mouse = mouse

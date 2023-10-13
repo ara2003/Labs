@@ -4,7 +4,7 @@ import com.example.labs.giis_3.pixel.GraphicsPixelDrawer
 import com.example.labs.giis_3.pixel.PixelDrawer
 import java.awt.Graphics
 
-interface DrawObject {
+interface DrawObject : Iterable<Point> {
 
 	fun draw(drawer: PixelDrawer)
 

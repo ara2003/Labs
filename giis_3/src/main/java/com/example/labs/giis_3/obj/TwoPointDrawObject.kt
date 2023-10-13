@@ -15,4 +15,6 @@ data class TwoPointDrawObject(val p1: Point, val p2: Point, var lines: TwoPointD
 	override fun draw(drawer: PixelDrawer) {
 		lines.drawTwoPointObject(drawer, p1.x, p1.y, p2.x, p2.y)
 	}
+
+	override fun iterator() = listOf(p1, p2).iterator()
 }
