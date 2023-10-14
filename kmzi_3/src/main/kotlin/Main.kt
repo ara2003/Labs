@@ -63,6 +63,9 @@ fun main() {
 		println("$n = ${factor(n).map { it.toString() }.reduce { a, b -> "$a * $b" }}")
 
 		println("НОД($m, $n) = ${gcd(m, n)}")
+		val fm = factor(m)
+		val fn = factor(n)
+		println("НОД($m, $n) = ${cross(fm, fn).fold(1L) { a, b -> a * b }}")
 
 		val (g, x, y) = gcdex(m, n)
 		println("НОД($m, $n) = $m * $x + $n * $y")
@@ -93,4 +96,16 @@ fun main() {
 			println("$x * $i === 1 (mod $m)")
 		}
 	}
+}
+
+fun <T> cross(a: Iterable<T>, b: Iterable<T>) = run {
+	val result = mutableListOf<T>()
+	val c = mutableListOf<T>()
+	c.addAll(b)
+	for(e in a)
+		if(e in c) {
+			c.remove(e)
+			result.add(e)
+		}
+	result
 }
