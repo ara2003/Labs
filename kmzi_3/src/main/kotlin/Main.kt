@@ -13,6 +13,10 @@ fun gcd(a: Long, b: Long): Long {
 	return a + b
 }
 
+fun gcd_factor(a: Long, b: Long): Long {
+	return cross(factor(a), factor(b)).fold(1L) { a, b -> a * b }
+}
+
 fun gcdex(a: Long, b: Long): Triple<Long, Long, Long> {
 	if(b == 0L)
 		return Triple(a, 1, 0)
@@ -65,7 +69,7 @@ fun main() {
 		println("НОД($m, $n) = ${gcd(m, n)}")
 		val fm = factor(m)
 		val fn = factor(n)
-		println("НОД($m, $n) = ${cross(fm, fn).fold(1L) { a, b -> a * b }}")
+		println("НОД($m, $n) = ${gcd_factor(m, n)}")
 
 		val (g, x, y) = gcdex(m, n)
 		println("НОД($m, $n) = $m * $x + $n * $y")
