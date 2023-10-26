@@ -6,6 +6,7 @@ import com.example.labs.giis_3.obj.DebugDrawObject
 import com.example.labs.giis_3.obj.DrawObject
 import com.example.labs.giis_3.obj.draw
 import com.example.labs.giis_3.obj.drawer.CDALineDrawer
+import com.example.labs.giis_3.pixel.GraphicsPixelDrawer
 import com.example.labs.giis_3.pixel.PIXEL_SIZE
 import com.example.labs.giis_3.pixel.setColor
 import java.awt.Color
@@ -71,9 +72,12 @@ class MyPanel : JPanel(), LineDrawerMode, KeyListener, ObjectGenerator.Context {
 		g.color = Color.black
 		for(line in objects)
 			line.draw(g)
-//		for(obj in objects)
-//			for(point in obj)
-//				g.drawOval(point.x * PIXEL_SIZE - 8, point.y * PIXEL_SIZE - 8, 15, 15)
+		g.setColor(Color.red) {
+			val g = GraphicsPixelDrawer(g)
+			for(obj in objects)
+				for(point in obj)
+					g.drawPixel(point.x, point.y)
+		}
 	}
 
 	override fun debug() {
