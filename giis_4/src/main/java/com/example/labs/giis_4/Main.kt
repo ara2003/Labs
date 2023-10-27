@@ -3,8 +3,8 @@ package com.example.labs.giis_4
 import com.example.labs.giis_4.assimp.AssimpMesh
 import com.greentree.commons.data.resource.Resource
 import com.greentree.commons.data.resource.location.ClassLoaderResourceLocation
-import com.greentree.commons.math.Mathf
 import org.joml.Matrix4f
+import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL40.*
@@ -13,10 +13,14 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.lang.Thread.*
 import kotlin.math.max
+import kotlin.system.exitProcess
 
 fun main() {
 	Main().main()
 }
+
+const val SCALE = .9f
+const val INV_SCALE = 1f / SCALE
 
 class Main {
 
@@ -27,14 +31,14 @@ class Main {
 
 		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE)
 		glfwWindowHint(GLFW_SAMPLES, 4)
-		val w = glfwCreateWindow(800, 600, "", 0, 0)
-		glfwMakeContextCurrent(w)
+		val window = glfwCreateWindow(800, 600, "giis 4", 0, 0)
+		glfwMakeContextCurrent(window)
 		GL.createCapabilities(false)
 		glfwSwapInterval(1)
 
 		glEnable(GL_DEPTH_TEST)
 
-		glfwSetWindowSizeCallback(w) { _, x, y -> glViewport(0, 0, x, y) }
+		glfwSetWindowSizeCallback(window) { _, x, y -> glViewport(0, 0, x, y) }
 		val vao = vao(mesh)
 		val program = program(
 			VERTEX_SHADER,
@@ -43,25 +47,60 @@ class Main {
 
 		glUseProgram(program)
 		glBindVertexArray(vao)
-		val model = Matrix4f()
-		var last = System.nanoTime()
 
 		glUniform3f(glGetUniformLocation(program, "material.color"), 1f, 1f, 0f)
+		val position = Vector3f(0f, 0f, -10f)
+		val scale = Vector3f(1f, 1f, 1f)
+		val rotation = Vector3f(0f, 0f, 0f)
 
-		while(!glfwWindowShouldClose(w)) {
+		glfwSetKeyCallback(window) { w, key, _, action, _ ->
+			if(action != GLFW_RELEASE) {
+				when(key) {
+					GLFW_KEY_ESCAPE -> exitProcess(1)
+					GLFW_KEY_D -> position.x += .1f
+					GLFW_KEY_A -> position.x -= .1f
+					GLFW_KEY_C -> position.y += .1f
+					GLFW_KEY_LEFT_SHIFT -> position.y -= .1f
+					GLFW_KEY_S -> position.z += .1f
+					GLFW_KEY_W -> position.z -= .1f
+					GLFW_KEY_UP -> rotation.x += .1f
+					GLFW_KEY_DOWN -> rotation.x -= .1f
+					GLFW_KEY_RIGHT -> rotation.y += .1f
+					GLFW_KEY_LEFT -> rotation.y -= .1f
+					GLFW_KEY_N -> rotation.z += .1f
+					GLFW_KEY_M -> rotation.z -= .1f
+					GLFW_KEY_1 -> scale.x += .1f
+					GLFW_KEY_2 -> scale.x -= .1f
+					GLFW_KEY_3 -> scale.y += .1f
+					GLFW_KEY_4 -> scale.y -= .1f
+					GLFW_KEY_5 -> scale.z += .1f
+					GLFW_KEY_6 -> scale.z -= .1f
+				}
+			}
+		}
+		var last = System.nanoTime()
+		while(!glfwWindowShouldClose(window)) {
 			val now = System.nanoTime()
 			var delta = (now - last) / 1_000_000_000f
 			last = now
-
 			sleep(max(0f, (1000f / 60) - delta).toLong())
-
-			model.rotate(Mathf.PI * .1f * delta, 1f, 0f, 0f)
-			model.rotate(Mathf.PI * .2f * delta, 0f, 1f, 0f)
+			val model = Matrix4f()
+			model.translate(position)
+			model.rotateXYZ(rotation)
+			model.scale(scale)
 			setUniform(program, "model", model)
-
+			val width = IntArray(1)
+			val height = IntArray(1)
+			glfwGetWindowSize(window, width, height)
+			val m = 0.001f
+			val w = 1.0f * m
+			val h = height[0] * w / width[0]
+			val projection = Matrix4f().frustum(-w, w, -h, h, m, 10000.0f)
+//			val projection = Matrix4f()
+			setUniform(program, "projection", projection)
 			glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
 			glDrawArrays(GL_TRIANGLES, 0, mesh.mNumFaces() * 3)
-			glfwSwapBuffers(w)
+			glfwSwapBuffers(window)
 			glfwPollEvents()
 		}
 
