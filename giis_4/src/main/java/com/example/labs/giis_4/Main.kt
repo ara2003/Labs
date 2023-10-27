@@ -29,15 +29,14 @@ class Main {
 
 		glfwInit()
 
+		glfwDefaultWindowHints()
+
 		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE)
 		glfwWindowHint(GLFW_SAMPLES, 4)
-		val window = glfwCreateWindow(800, 600, "giis 4", 0, 0)
+		val window = glfwCreateWindow(1920, 1200, "giis 4", glfwGetPrimaryMonitor(), 0)
 		glfwMakeContextCurrent(window)
 		GL.createCapabilities(false)
 		glfwSwapInterval(1)
-
-		glEnable(GL_DEPTH_TEST)
-
 		glfwSetWindowSizeCallback(window) { _, x, y -> glViewport(0, 0, x, y) }
 		val vao = vao(mesh)
 		val program = program(
@@ -69,17 +68,24 @@ class Main {
 					GLFW_KEY_LEFT -> rotation.y -= .1f
 					GLFW_KEY_N -> rotation.z += .1f
 					GLFW_KEY_M -> rotation.z -= .1f
-					GLFW_KEY_1 -> scale.x += .1f
-					GLFW_KEY_2 -> scale.x -= .1f
-					GLFW_KEY_3 -> scale.y += .1f
-					GLFW_KEY_4 -> scale.y -= .1f
-					GLFW_KEY_5 -> scale.z += .1f
-					GLFW_KEY_6 -> scale.z -= .1f
+					GLFW_KEY_1 -> scale.x *= SCALE
+					GLFW_KEY_2 -> scale.x /= SCALE
+					GLFW_KEY_3 -> scale.y *= SCALE
+					GLFW_KEY_4 -> scale.y /= SCALE
+					GLFW_KEY_5 -> scale.z *= SCALE
+					GLFW_KEY_6 -> scale.z /= SCALE
 				}
 			}
 		}
+		val stars = mutableListOf<Pair<Float, Float>>()
+		repeat(120) {
+			stars.add(Pair(2 * Math.random().toFloat() - 1, 2 * Math.random().toFloat() - 1))
+		}
 		var last = System.nanoTime()
 		while(!glfwWindowShouldClose(window)) {
+			val width = IntArray(1)
+			val height = IntArray(1)
+			glfwGetWindowSize(window, width, height)
 			val now = System.nanoTime()
 			var delta = (now - last) / 1_000_000_000f
 			last = now
@@ -89,16 +95,24 @@ class Main {
 			model.rotateXYZ(rotation)
 			model.scale(scale)
 			setUniform(program, "model", model)
-			val width = IntArray(1)
-			val height = IntArray(1)
-			glfwGetWindowSize(window, width, height)
 			val m = 0.001f
 			val w = 1.0f * m
 			val h = height[0] * w / width[0]
 			val projection = Matrix4f().frustum(-w, w, -h, h, m, 10000.0f)
-//			val projection = Matrix4f()
 			setUniform(program, "projection", projection)
 			glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
+			glUseProgram(0)
+			glBindVertexArray(0)
+			glDisable(GL_DEPTH_TEST)
+			glBegin(GL_POINTS)
+			for(star in stars) {
+				glVertex2f(star.first, star.second)
+			}
+			glEnd()
+			glEnable(GL_DEPTH_TEST)
+			glUseProgram(program)
+			glBindVertexArray(vao)
+
 			glDrawArrays(GL_TRIANGLES, 0, mesh.mNumFaces() * 3)
 			glfwSwapBuffers(window)
 			glfwPollEvents()
