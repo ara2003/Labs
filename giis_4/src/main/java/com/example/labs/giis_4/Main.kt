@@ -12,6 +12,7 @@ import org.lwjgl.system.MemoryStack
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.lang.Thread.*
+import java.util.*
 import kotlin.math.max
 import kotlin.system.exitProcess
 
@@ -25,7 +26,9 @@ const val INV_SCALE = 1f / SCALE
 class Main {
 
 	fun main() {
-		val mesh = loadScene(resources.getResource("chair.obj"))
+		val sc = Scanner(System.`in`)
+		val file = sc.nextLine()
+		val mesh = loadScene(resources.getResource("$file.obj"))
 
 		glfwInit()
 
@@ -33,11 +36,11 @@ class Main {
 
 		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE)
 		glfwWindowHint(GLFW_SAMPLES, 4)
+//		val window = glfwCreateWindow(800, 600, "giis 4", 0, 0)
 		val window = glfwCreateWindow(1920, 1200, "giis 4", glfwGetPrimaryMonitor(), 0)
 		glfwMakeContextCurrent(window)
 		GL.createCapabilities(false)
 		glfwSwapInterval(1)
-		glfwSetWindowSizeCallback(window) { _, x, y -> glViewport(0, 0, x, y) }
 		val (vao, count) = vao(mesh)
 		val program = program(
 			VERTEX_SHADER,
@@ -90,6 +93,7 @@ class Main {
 			var delta = (now - last) / 1_000_000_000f
 			last = now
 			sleep(max(0f, (1000f / 60) - delta).toLong())
+			glViewport(0, 0, width[0], height[0])
 			val model = Matrix4f()
 			model.translate(position)
 			model.rotateXYZ(rotation)
@@ -101,20 +105,23 @@ class Main {
 			val projection = Matrix4f().frustum(-w, w, -h, h, m, 10000.0f)
 			setUniform(program, "projection", projection)
 			glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
-			glUseProgram(0)
-			glBindVertexArray(0)
+
 			glDisable(GL_DEPTH_TEST)
 			glBegin(GL_POINTS)
 			for(star in stars) {
 				glVertex2f(star.first, star.second)
 			}
 			glEnd()
+
 			glEnable(GL_DEPTH_TEST)
 			glUseProgram(program)
 			glBindVertexArray(vao)
-
 			glDrawArrays(GL_TRIANGLES, 0, count)
+			glUseProgram(0)
+			glBindVertexArray(0)
+
 			glfwSwapBuffers(window)
+
 			glfwPollEvents()
 		}
 
