@@ -26,6 +26,7 @@ const val INV_SCALE = 1f / SCALE
 class Main {
 
 	fun main() {
+		print("Choose mesh(box, book, chair, teddy, capsule):")
 		val sc = Scanner(System.`in`)
 		val file = sc.nextLine()
 		val mesh = loadScene(resources.getResource("$file.obj"))
@@ -98,15 +99,12 @@ class Main {
 			model.translate(position)
 			model.rotateXYZ(rotation)
 			model.scale(scale)
-			setUniform(program, "model", model)
 			val m = 0.001f
 			val w = 1.0f * m
 			val h = height[0] * w / width[0]
 			val projection = Matrix4f().frustum(-w, w, -h, h, m, 10000.0f)
-			setUniform(program, "projection", projection)
 			glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
 
-			glDisable(GL_DEPTH_TEST)
 			glBegin(GL_POINTS)
 			for(star in stars) {
 				glVertex2f(star.first, star.second)
@@ -115,10 +113,13 @@ class Main {
 
 			glEnable(GL_DEPTH_TEST)
 			glUseProgram(program)
+			setUniform(program, "projection", projection)
+			setUniform(program, "model", model)
 			glBindVertexArray(vao)
 			glDrawArrays(GL_TRIANGLES, 0, count)
 			glUseProgram(0)
 			glBindVertexArray(0)
+			glDisable(GL_DEPTH_TEST)
 
 			glfwSwapBuffers(window)
 
