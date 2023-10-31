@@ -1,6 +1,5 @@
 
 import java.lang.StrictMath.*
-import java.lang.UnsupportedOperationException
 import java.util.stream.IntStream.*
 
 fun gcd(a: Long, b: Long): Long {
@@ -81,7 +80,9 @@ fun isPrime(mod: Long): Boolean {
 	return true
 }
 
-fun allBase(mod: Long): Any {
+fun allBase(mod: Long): List<Long> {
+	if(mod == 2L)
+		return listOf(1L)
 	if(isPrime(mod)) {
 		val q = factor(mod - 1)
 		val result = mutableListOf<Long>()
@@ -91,20 +92,24 @@ fun allBase(mod: Long): Any {
 		}
 		return result
 	}
-	val factor = factor(mod).toSet()
+	val factor = factor(mod).toMutableSet()
+	factor.remove(2L)
 	if(factor.size > 1)
 		throw UnsupportedOperationException("Z$mod is not cycle group")
 	val p = factor.first()
-	val g = base(p)
 	val result = mutableListOf<Long>()
-	for(x in listOf(g, g + p)) {
-		if(pow(x, p - 1, p * p) != 1L)
-			result.add(x)
+	allBase(p).forEach { g ->
+		for(x in listOf(g, g + p)) {
+			if(pow(x, p - 1, p * p) != 1L)
+				result.add(x)
+		}
 	}
 	return result
 }
 
 fun base(mod: Long): Long {
+	if(mod == 2L)
+		return 1L
 	if(isPrime(mod)) {
 		val q = factor(mod - 1)
 		for(g in 2 ..< mod) {
@@ -113,7 +118,8 @@ fun base(mod: Long): Long {
 		}
 		throw UnsupportedOperationException("never")
 	}
-	val factor = factor(mod).toSet()
+	val factor = factor(mod).toMutableSet()
+	factor.remove(2)
 	if(factor.size > 1)
 		throw UnsupportedOperationException("Z$mod is not cycle group")
 	val p = factor.first()
@@ -129,7 +135,6 @@ fun group(mod: Long, base: Long = base(mod)) = run {
 	val result = mutableSetOf<Long>()
 	var x = base
 	while(x !in result) {
-		println(x)
 		result.add(x)
 		x = (x * base) % mod
 	}
@@ -157,12 +162,5 @@ fun cycles(list: List<Int>): List<List<Int>> {
 }
 
 fun main() {
-	val list = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
-	val shuffled = list.shuffled()
-	println(list)
-	println(shuffled)
-	println(cycles(shuffled))
-//	println(group(493039))
+	println(allBase(2531))
 }
-// (1, 5, 6)(2, 7, 3)(4)
-// (1, 5)(1, 6)(2, 7)(2, 3)
