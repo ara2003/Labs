@@ -1,16 +1,11 @@
 package com.example.labs.giis_4
 
-import com.example.labs.giis_4.assimp.AssimpMesh
 import com.example.labs.giis_4.assimp.AssimpScene
 import com.greentree.commons.data.resource.Resource
 import org.lwjgl.assimp.Assimp
 import org.lwjgl.system.MemoryUtil
 import java.io.IOException
 import java.nio.ByteBuffer
-
-fun loadMesh(res: Resource): AssimpMesh {
-	return loadScene(res).mMeshes(0)
-}
 
 fun loadScene(res: Resource): AssimpScene {
 	var data: ByteBuffer
@@ -27,8 +22,10 @@ fun loadScene(res: Resource): AssimpScene {
 	}
 	try {
 		Assimp.aiImportFileFromMemory(
-			data, Assimp.aiProcess_Triangulate
-					or Assimp.aiProcess_ValidateDataStructure or Assimp.aiProcess_OptimizeMeshes, ""
+			data,
+			Assimp.aiProcess_Triangulate
+					or Assimp.aiProcess_ValidateDataStructure or Assimp.aiProcess_OptimizeMeshes or Assimp.aiProcess_GenNormals,
+			""
 		).use { scene ->
 			if(scene == null) {
 				val error = Assimp.aiGetErrorString()

@@ -1,6 +1,6 @@
 package com.example.labs.giis_4
 
-import com.example.labs.giis_4.assimp.AssimpMesh
+import com.example.labs.giis_4.assimp.AssimpScene
 import com.greentree.commons.data.resource.Resource
 import com.greentree.commons.data.resource.location.ClassLoaderResourceLocation
 import org.joml.Matrix4f
@@ -25,7 +25,7 @@ const val INV_SCALE = 1f / SCALE
 class Main {
 
 	fun main() {
-		val mesh = loadMesh(resources.getResource("box.obj"))
+		val mesh = loadScene(resources.getResource("chair.obj"))
 
 		glfwInit()
 
@@ -38,7 +38,7 @@ class Main {
 		GL.createCapabilities(false)
 		glfwSwapInterval(1)
 		glfwSetWindowSizeCallback(window) { _, x, y -> glViewport(0, 0, x, y) }
-		val vao = vao(mesh)
+		val (vao, count) = vao(mesh)
 		val program = program(
 			VERTEX_SHADER,
 			FRAGMENT_SHADER
@@ -113,7 +113,7 @@ class Main {
 			glUseProgram(program)
 			glBindVertexArray(vao)
 
-			glDrawArrays(GL_TRIANGLES, 0, mesh.mNumFaces() * 3)
+			glDrawArrays(GL_TRIANGLES, 0, count)
 			glfwSwapBuffers(window)
 			glfwPollEvents()
 		}
@@ -147,19 +147,20 @@ class Main {
 		}
 	}
 
-	fun vao(mesh: AssimpMesh): Int {
+	fun vao(scene: AssimpScene): Pair<Int, Int> {
 		val verticesList = mutableListOf<Float>()
 		val normaslList = mutableListOf<Float>()
-		for(face in mesh.mFaces()) {
-			for(index in face.mIndices()) {
-				for(x in mesh.mVertices(index)) {
-					verticesList.add(x)
-				}
-				for(x in mesh.mNormals(index)) {
-					normaslList.add(x)
+		for(mesh in scene.mMeshes())
+			for(face in mesh.mFaces()) {
+				for(index in face.mIndices()) {
+					for(x in mesh.mVertices(index)) {
+						verticesList.add(x)
+					}
+					for(x in mesh.mNormals(index)) {
+						normaslList.add(x)
+					}
 				}
 			}
-		}
 		val vertices = verticesList.toTypedArray().toFloatArray()
 		val normals = normaslList.toTypedArray().toFloatArray()
 		val vbo = glGenBuffers()
@@ -195,7 +196,7 @@ class Main {
 		glBindBuffer(GL_ARRAY_BUFFER, 0)
 
 		glBindVertexArray(0)
-		return vao
+		return vao to verticesList.size
 	}
 
 	private fun checkShaderCompileStatus(id: Int) {
