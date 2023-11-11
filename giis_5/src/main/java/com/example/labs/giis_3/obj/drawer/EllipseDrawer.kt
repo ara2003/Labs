@@ -5,7 +5,7 @@ import java.lang.StrictMath.*
 
 object EllipseDrawer : TwoPointDrawer {
 
-	override fun drawTwoPointObject(g: PixelDrawer, x1: Int, y1: Int, x2: Int, y2: Int) = g.run {
+	override fun draw(g: PixelDrawer, x1: Int, y1: Int, x2: Int, y2: Int) = g.run {
 		val a = abs(x2 - x1)
 		val b = abs(y2 - y1)
 		drawEllipse(x1, y2, a, b)

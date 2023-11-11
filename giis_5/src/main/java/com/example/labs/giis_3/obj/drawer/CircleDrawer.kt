@@ -5,7 +5,7 @@ import kotlin.math.sqrt
 
 object CircleDrawer : TwoPointDrawer {
 
-	override fun drawTwoPointObject(g: PixelDrawer, x1: Int, y1: Int, x2: Int, y2: Int) = g.run {
+	override fun draw(g: PixelDrawer, x1: Int, y1: Int, x2: Int, y2: Int) = g.run {
 		val R = run {
 			val dx = x2 - x1
 			val dy = y2 - y1

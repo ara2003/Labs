@@ -7,7 +7,7 @@ import kotlin.math.floor
 
 object AntialiasingLineDrawer : TwoPointDrawer {
 
-	override fun drawTwoPointObject(g: PixelDrawer, x1: Int, y1: Int, x2: Int, y2: Int) = g.run {
+	override fun draw(g: PixelDrawer, x1: Int, y1: Int, x2: Int, y2: Int) = g.run {
 		if(abs(y2 - y1) < abs(x2 - x1))
 			if(x2 < x1)
 				drawLineLow(x2, y2, x1, y1)

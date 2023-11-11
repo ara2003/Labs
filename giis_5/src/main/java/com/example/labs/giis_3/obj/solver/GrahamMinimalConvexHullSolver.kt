@@ -25,7 +25,7 @@ object GrahamMinimalConvexHullSolver : MinimalConvexHullSolver {
 				val t = p[j - 1]
 				p[j-1] = p[j]
 				p[j] = t
-				j -= 1
+				j--
 			}
 		}
 		val result = mutableListOf<Int>()

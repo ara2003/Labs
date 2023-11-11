@@ -5,7 +5,7 @@ import java.lang.StrictMath.*
 
 object ParabolaDrawer : TwoPointDrawer {
 
-	override fun drawTwoPointObject(g: PixelDrawer, x1: Int, y1: Int, x2: Int, y2: Int) = g.run {
+	override fun draw(g: PixelDrawer, x1: Int, y1: Int, x2: Int, y2: Int) = g.run {
 		drawParabola(x1, y2, abs(x2 - x1))
 	}
 }

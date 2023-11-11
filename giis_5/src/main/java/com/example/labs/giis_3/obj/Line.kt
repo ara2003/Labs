@@ -12,7 +12,7 @@ val Line.b
 	get() = p1.x - p2.x + 0f
 
 val Line.c
-	get() = -p1.x * a - p1.y * b;
+	get() = -p1.x * a - p1.y * b
 
 fun cross(l1: Line, l2: Line): Point? {
 	val det = l1.a * l2.b - l2.a * l1.b
