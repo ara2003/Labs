@@ -7,7 +7,7 @@ import javax.swing.text.html.HTML.Tag.*
 object GrahamMinimalConvexHullSolver : MinimalConvexHullSolver {
 
 	override fun solve(points: Iterable<Point>): Iterable<Point> {
-		val a = points.toList()
+		val a = points.toSet().toList()
 		val n = a.size
 		if(n < 3)
 			return listOf()
