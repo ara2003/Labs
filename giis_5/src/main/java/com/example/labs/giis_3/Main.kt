@@ -2,6 +2,7 @@ package com.example.labs.giis_3
 
 import com.example.labs.giis_3.generator.LineGenerator
 import com.example.labs.giis_3.generator.MouseMove
+import com.example.labs.giis_3.generator.PointInsidePolygon
 import com.example.labs.giis_3.obj.drawer.AntialiasingLineDrawer
 import com.example.labs.giis_3.obj.drawer.BSplinesDrawer
 import com.example.labs.giis_3.obj.drawer.BezieDrawer
@@ -30,7 +31,7 @@ fun main() {
 	val panel = MyPanel()
 	val menuBar = MenuBar()
 	val m = Menu("объект")
-	m.add(MenuItem("Перемещение точек").also { it.addActionListener { panel.generator = MouseMove() } })
+	m.add(MenuItem("Перемещение точек").also { it.addActionListener { panel.generator = MouseMove } })
 	m.addSeparator()
 	m.add(MenuItem("ЦДА").also { it.addActionListener { panel.generator = LineGenerator(CDALineDrawer) } })
 	m.add(MenuItem("Брезенхем").also { it.addActionListener { panel.generator = LineGenerator(BresenhamLineDrawer) } })
@@ -47,6 +48,7 @@ fun main() {
 	m.addSeparator()
 	m.add(MenuItem("Грехем").also { it.addActionListener { panel.setDrawer(GrahamMinimalConvexHullSolver) } })
 	m.add(MenuItem("Джарвис").also { it.addActionListener { panel.setDrawer(JarvisMinimalConvexHullSolver) } })
+	m.add(MenuItem("принадлежность точки").also { it.addActionListener { panel.generator = PointInsidePolygon } })
 	menuBar.add(m)
 	f.menuBar = menuBar
 	val debugButton = Button("debug")

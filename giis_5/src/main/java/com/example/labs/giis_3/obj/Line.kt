@@ -5,6 +5,12 @@ data class Line(val p1: Point, val p2: Point): Iterable<Point> {
 	override fun iterator() = listOf(p1, p2).iterator()
 }
 
+val Line.normal: Pair<Float, Float>
+	get() = Pair(a, b).normalized()
+
+val Line.center
+	get() = (p1 + p2) / 2f
+
 val Line.a
 	get() = p2.y - p1.y + 0f
 

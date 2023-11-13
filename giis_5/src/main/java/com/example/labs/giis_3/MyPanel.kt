@@ -1,12 +1,11 @@
 package com.example.labs.giis_3
 
+import com.example.labs.giis_3.generator.MouseMove
 import com.example.labs.giis_3.generator.ObjectGenerator
-import com.example.labs.giis_3.generator.TwoPointGeneratorImpl
 import com.example.labs.giis_3.obj.DebugDrawObject
 import com.example.labs.giis_3.obj.DrawObject
 import com.example.labs.giis_3.obj.cross
 import com.example.labs.giis_3.obj.draw
-import com.example.labs.giis_3.obj.drawer.CDALineDrawer
 import com.example.labs.giis_3.pixel.GraphicsPixelDrawer
 import com.example.labs.giis_3.pixel.PIXEL_SIZE
 import com.example.labs.giis_3.pixel.setColor
@@ -109,7 +108,12 @@ class MyPanel : JPanel(), LineDrawerMode, KeyListener, ObjectGenerator.Context {
 		repaint()
 	}
 
-	override var generator: ObjectGenerator = TwoPointGeneratorImpl(CDALineDrawer)
+	override var generator: ObjectGenerator = MouseMove
+		set(value) {
+			val mouse = getMousePosition(false)
+			value.begin(this, mouse.x, mouse.y)
+			field = value
+		}
 
 	override fun keyTyped(e: KeyEvent?) {
 	}

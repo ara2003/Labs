@@ -9,7 +9,13 @@ const val PIXEL_SIZE = 5
 interface PixelDrawer {
 
 	fun drawPixel(x: Int, y: Int) = drawPixel(x, y, 1f)
-	fun drawPixel(x: Int, y: Int, c: Float)
+	fun drawPixel(x: Int, y: Int, c: Float) =drawPixel(x, y, Color(0, 0, 0, (255 * c).toInt()))
+
+	fun drawPixel(x: Int, y: Int, c: Color)
+}
+
+fun PixelDrawer.drawPixel(p: Point, c: Color) {
+	drawPixel(p.x, p.y, c)
 }
 
 fun PixelDrawer.drawPixel(p: Point) {

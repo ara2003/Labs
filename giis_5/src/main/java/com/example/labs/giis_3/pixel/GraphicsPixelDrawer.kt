@@ -7,8 +7,8 @@ class GraphicsPixelDrawer(private val g: Graphics) : PixelDrawer {
 
 	override fun drawPixel(x: Int, y: Int) = g.fillRect(x * PIXEL_SIZE, y * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE)
 
-	override fun drawPixel(x: Int, y: Int, c: Float) = g.run {
-		setColor(Color(0, 0, 0, (255 * c).toInt())) {
+	override fun drawPixel(x: Int, y: Int, c: Color) {
+		g.setColor(c) {
 			drawPixel(x, y)
 		}
 	}

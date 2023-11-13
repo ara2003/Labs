@@ -7,6 +7,7 @@ interface ObjectGenerator {
 	fun click(ctx: Context, x: Int, y: Int) {}
 	fun move(ctx: Context, x: Int, y: Int) {}
 
+	fun begin(ctx: Context, x: Int, y: Int) {}
 	fun end(ctx: Context) {}
 
 	fun press(ctx: Context, x: Int, y: Int) {}

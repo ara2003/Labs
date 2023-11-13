@@ -3,7 +3,7 @@ package com.example.labs.giis_3.generator
 import com.example.labs.giis_3.obj.Point
 import kotlin.math.sqrt
 
-class MouseMove : ObjectGenerator {
+object MouseMove : ObjectGenerator {
 
 	private var mouse: Point? = null
 	private var lastX = 0
