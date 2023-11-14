@@ -1,7 +1,6 @@
 package com.example.labs.giis_5.obj
 
 import com.example.labs.giis_5.obj.drawer.TwoPointDrawer
-import com.example.labs.giis_5.pixel.PixelDrawer
 
 class LineDrawObject(p1: Point, p2: Point, drawer: TwoPointDrawer) : TwoPointDrawObject(p1, p2, drawer) {
 

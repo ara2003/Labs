@@ -2,7 +2,6 @@ package com.example.labs.giis_5.obj.solver
 
 import com.example.labs.giis_5.obj.Point
 import java.util.stream.IntStream.*
-import javax.swing.text.html.HTML.Tag.*
 
 object GrahamMinimalConvexHullSolver : MinimalConvexHullSolver {
 

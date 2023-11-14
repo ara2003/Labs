@@ -1,6 +1,5 @@
 package com.example.labs.giis_5.generator
 
-import com.example.labs.giis_5.obj.DrawObject
 import com.example.labs.giis_5.obj.Point
 import com.example.labs.giis_5.obj.PolygonDrawObject
 import com.example.labs.giis_5.obj.solver.MinimalConvexHullSolver
