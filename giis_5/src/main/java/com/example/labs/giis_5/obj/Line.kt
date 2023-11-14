@@ -5,6 +5,8 @@ data class Line(val p1: Point, val p2: Point): Iterable<Point> {
 	override fun iterator() = listOf(p1, p2).iterator()
 }
 
+fun Line(x1: Int, y1: Int, x2: Int, y2: Int) = Line(Point(x1, y1), Point(x2, y2))
+
 val Line.normal: Pair<Float, Float>
 	get() = Pair(a, b).normalized()
 
@@ -19,6 +21,11 @@ val Line.b
 
 val Line.c
 	get() = -p1.x * a - p1.y * b
+
+val Line.vector
+	get() = p2 - p1
+
+operator fun Line.times(other: Line) = vector * other.vector
 
 fun cross(l1: Line, l2: Line): Point? {
 	val det = l1.a * l2.b - l2.a * l1.b

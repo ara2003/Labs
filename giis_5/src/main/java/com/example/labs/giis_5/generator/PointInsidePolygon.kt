@@ -2,6 +2,7 @@ package com.example.labs.giis_5.generator
 
 import com.example.labs.giis_5.obj.DrawObject
 import com.example.labs.giis_5.obj.Point
+import com.example.labs.giis_5.obj.BasePolygonDrawObject
 import com.example.labs.giis_5.obj.PolygonDrawObject
 import com.example.labs.giis_5.obj.inside
 import com.example.labs.giis_5.pixel.PixelDrawer
@@ -29,11 +30,18 @@ object PointInsidePolygon : ObjectGenerator {
 	override fun move(ctx: ObjectGenerator.Context, x: Int, y: Int) {
 		mouse.x = x
 		mouse.y = y
-		obj.color =
-			if(ctx.any { it is PolygonDrawObject && mouse inside it })
-				GREEN
-			else
-				RED
+		fun getColor(): Color {
+			val polygons = ctx.filterIsInstance<PolygonDrawObject>()
+			for(p in polygons) {
+				if(mouse inside p)
+					if(p.isHull())
+						return YELLOW
+					else
+						return GREEN
+			}
+			return RED
+		}
+		obj.color = getColor()
 		ctx.repaint()
 	}
 

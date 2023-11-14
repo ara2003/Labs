@@ -1,31 +1,48 @@
 package com.example.labs.giis_5.obj
 
-import com.example.labs.giis_5.obj.drawer.BresenhamLineDrawer
 import com.example.labs.giis_5.obj.drawer.TwoPointDrawer
 import com.example.labs.giis_5.obj.drawer.draw
-import com.example.labs.giis_5.obj.solver.MinimalConvexHullSolver
-import com.example.labs.giis_5.obj.solver.rotate
 import com.example.labs.giis_5.pixel.PixelDrawer
+import java.awt.Color
+import java.awt.Color.*
 
-class PolygonDrawObject(val points: Collection<Point>, val solver: MinimalConvexHullSolver, val drawer: TwoPointDrawer = BresenhamLineDrawer) : DrawObject {
+interface PolygonDrawObject : DrawObject {
 
-	override val lines: Iterable<Line>
-		get() = solver.solve(points).toLines()
+	val drawer: TwoPointDrawer
 
 	override fun draw(drawer: PixelDrawer) {
 		for(line in lines) {
 			this.drawer.draw(drawer, line)
 			val normal = line.normal
 			val center = line.center
-			this.drawer.draw(drawer, center, center + (normal * 15f))
+			val color = if(isHull()) YELLOW else GREEN
+			this.drawer.draw(drawer, center, center + (normal * -10f), color)
 		}
 	}
 
-	override fun iterator() = points.iterator()
-
-	fun isInside(point: Point) = lines.all {
-		rotate(it.p1, it.p2, point) > 0
+	fun isHull(): Boolean {
+		val iter = lines.iterator()
+		if(!iter.hasNext())
+			return false
+		var a = iter.next()
+		val first = a
+		if(!iter.hasNext())
+			return false
+		while(iter.hasNext()) {
+			val b = iter.next()
+			if(a * b < 0)
+				return false
+			a = b
+		}
+		if(a * first < 0)
+			return false
+		return true
 	}
+
+	fun isInside(point: Point): Boolean
+
 }
+
+fun dot(a: Pair<Float, Float>, b: Pair<Float, Float>) = a.x * b.x + a.y * b.y
 
 infix fun Point.inside(polygon: PolygonDrawObject) = polygon.isInside(this)

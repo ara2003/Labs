@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.lang.reflect.Array.*
 import java.util.stream.IntStream.*
 import javax.swing.JPanel
 import kotlin.system.exitProcess
@@ -108,11 +109,15 @@ class MyPanel : JPanel(), LineDrawerMode, KeyListener, ObjectGenerator.Context {
 		repaint()
 	}
 
-	override var generator: ObjectGenerator = MouseMove
+	private var _generator: ObjectGenerator = MouseMove
+
+	override var generator: ObjectGenerator
+		get() = _generator
 		set(value) {
 			val mouse = getMousePosition(false)
-			value.begin(this, mouse.x, mouse.y)
-			field = value
+			_generator.end(this)
+			_generator = value
+			_generator.begin(this, mouse.x, mouse.y)
 		}
 
 	override fun keyTyped(e: KeyEvent?) {

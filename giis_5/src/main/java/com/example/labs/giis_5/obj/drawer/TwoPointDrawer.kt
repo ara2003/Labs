@@ -3,6 +3,7 @@ package com.example.labs.giis_5.obj.drawer
 import com.example.labs.giis_5.obj.Line
 import com.example.labs.giis_5.obj.Point
 import com.example.labs.giis_5.pixel.PixelDrawer
+import java.awt.Color
 
 interface TwoPointDrawer {
 
@@ -11,3 +12,16 @@ interface TwoPointDrawer {
 
 fun TwoPointDrawer.draw(g: PixelDrawer, p1: Point, p2: Point) = draw(g, p1.x, p1.y, p2.x, p2.y)
 fun TwoPointDrawer.draw(g: PixelDrawer, line: Line) = draw(g,line.p1, line. p2)
+
+fun TwoPointDrawer.draw(g: PixelDrawer, p1: Point, p2: Point, color: Color) {
+	draw(object : PixelDrawer {
+
+		override fun drawPixel(x: Int, y: Int) {
+			g.drawPixel(x, y, color)
+		}
+
+		override fun drawPixel(x: Int, y: Int, c: Color) {
+			TODO("Not yet implemented")
+		}
+	}, p1, p2)
+}

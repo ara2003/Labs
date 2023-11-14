@@ -1,8 +1,10 @@
 package com.example.labs.giis_5
 
+import com.example.labs.giis_5.generator.BasePolygonGenerator
 import com.example.labs.giis_5.generator.LineGenerator
 import com.example.labs.giis_5.generator.MouseMove
 import com.example.labs.giis_5.generator.PointInsidePolygon
+import com.example.labs.giis_5.generator.PolygonGenerator
 import com.example.labs.giis_5.obj.drawer.AntialiasingLineDrawer
 import com.example.labs.giis_5.obj.drawer.BSplinesDrawer
 import com.example.labs.giis_5.obj.drawer.BezieDrawer
@@ -27,7 +29,7 @@ import javax.swing.JFrame
 private infix fun Any.new(obj: Any) = obj
 
 fun main() {
-	val f = JFrame("giis 3")
+	val f = JFrame("giis 5")
 	val panel = MyPanel()
 	val menuBar = MenuBar()
 	val m = Menu("объект")
@@ -46,6 +48,7 @@ fun main() {
 	m.add(MenuItem("Безье").also { it.addActionListener { panel.setDrawer(BezieDrawer) } })
 	m.add(MenuItem("B-сплайн").also { it.addActionListener { panel.setDrawer(SplitFour(BSplinesDrawer)) } })
 	m.addSeparator()
+	m.add(MenuItem("Полигон").also { it.addActionListener { panel.generator = BasePolygonGenerator } })
 	m.add(MenuItem("Грехем").also { it.addActionListener { panel.setDrawer(GrahamMinimalConvexHullSolver) } })
 	m.add(MenuItem("Джарвис").also { it.addActionListener { panel.setDrawer(JarvisMinimalConvexHullSolver) } })
 	m.add(MenuItem("принадлежность точки").also { it.addActionListener { panel.generator = PointInsidePolygon } })
