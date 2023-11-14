@@ -19,7 +19,6 @@ object PointInsidePolygon : ObjectGenerator {
 		obj = ColorPoint(Point(x, y), RED)
 		ctx.add(obj)
 		ctx.repaint()
-		println("begin")
 	}
 
 	override fun end(ctx: ObjectGenerator.Context) {

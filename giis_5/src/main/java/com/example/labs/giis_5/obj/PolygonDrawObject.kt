@@ -24,8 +24,7 @@ class PolygonDrawObject(val points: Collection<Point>, val solver: MinimalConvex
 	override fun iterator() = points.iterator()
 
 	fun isInside(point: Point) = lines.all {
-		val rot = rotate(it.p1, it.p2, point)
-		rot > 0
+		rotate(it.p1, it.p2, point) > 0
 	}
 }
 
