@@ -160,36 +160,50 @@ fun cycles(list: List<Int>): List<List<Int>> {
 	}
 	return result
 }
-/*
+
+///*
 // x = 92440205
 // m = 28643910
 fun main() {
-	val p = 206_181_067L
-	val g = base(p)
-	val x = 92_440_205L
-	val y = 57_348_448L //pow(g, x, p)
+	val time = System.nanoTime()
+	val p = BigInteger.valueOf(13225000230000991L) // 206_181_067L
+	val x = BigInteger.valueOf(9593104757617982L) // 92_440_205L
+//	val x = (Math.random() * p).toLong()
+	val g = BigInteger.valueOf(base(p.toLong()))
+//	val y = 57_348_448L //pow(g, x, p)
+//	val y = pow(g, x, p)
+	val y = g.modPow(x, p)
+	println("$g, $y, $p")
 //	val k = (random() * (p - 1) + 0.1).toLong()
 //	val m = (random() * (p - 1) + 0.1).toLong()
 //	val a = pow(g, k, p) // О
 //	val b = (pow(y, k, p) * m) % p // Ш
-	val a = 262_582_374L
-	val b = 17_960_572L
-	println("$g, $y, $p")
+//	val a = 262_582_374L
+//	val b = 17_960_572L
+	println(solve_x(g, p, y))
+	println(System.nanoTime() - time)
+//	println(x)
 //	println("$a, $b, $k")
-	val m = (b * inverse(pow(a, x, p), p)) % p
-	println("$m")
+//	val m = (b * inverse(pow(a, x, p), p)) % p
+//	println("$m")
 }
-*/
 
-fun solve_x(g: Long, p: Long, y: Long): Long {
-	for(x in 2L ..< p - 1) {
-		val yp = pow(g, x, p)
+fun solve_x(g: BigInteger, p: BigInteger, y: BigInteger): BigInteger {
+	for(x in BigInteger.TWO ..< p) {
+		val yp = g.modPow(x, p)
 		if(yp == y)
 			return x
 	}
 	TODO()
 }
 
+operator fun BigInteger.rangeUntil(that: BigInteger) = sequence {
+	var i = this@rangeUntil
+	while(i < that) {
+		yield(i++)
+	}
+}
+/*
 // x = 7
 fun main() {
 //	val p = 23L
@@ -206,3 +220,43 @@ fun main() {
 	val e = BigInteger.valueOf(1299709L)
 	println(w.modPow(e, p.multiply(q)))
 }
+*/
+/*
+fun main() {
+	System.setOut(PrintStream(System.out, true, StandardCharsets.UTF_8))
+	System.setErr(PrintStream(System.err, true, StandardCharsets.UTF_8))
+	val primes = mutableListOf<Long>()
+	primes.add(2)
+	primes.add(3)
+	var i = 4L
+	var sqrt = 2L
+	A@ while(true) {
+		i++
+		if(sqrt * sqrt > i)
+			sqrt++
+		for(p in primes) {
+			if(p > sqrt)
+				break
+			if(i % p == 0L)
+				continue@A
+		}
+		primes.add(i)
+		println(i)
+		if(i > 115_000_000)
+			break
+	}
+	fun isPrime(x: Long): Boolean {
+		for(p in primes) {
+			if(x % p == 0L)
+				return false
+		}
+		return true
+	}
+
+	val C = primes.last() * primes.last()
+	for(i in C - 1000L ..< C) {
+		if(isPrime(i))
+			println(i)
+	}
+}
+*/
