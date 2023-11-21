@@ -31,50 +31,34 @@ fun cross(l1: Line, l2: Line): Point? {
 	val det = l1.a * l2.b - l2.a * l1.b
 	if(det == 0f) return null
 
-	val x = -(l2.b * l1.c - l1.b * l2.c) / det
-	val y = (l2.a * l1.c - l1.a * l2.c) / det
+	val x = (-(l2.b * l1.c - l1.b * l2.c) / det).toInt()
+	val y = ((l2.a * l1.c - l1.a * l2.c) / det).toInt()
 
 	for(l in listOf(l1, l2)) {
-		val maxX = l.maxOf { it.x }
-		val maxY = l.maxOf { it.y }
-		val minX = l.minOf { it.x }
-		val minY = l.minOf { it.y }
-
-		if(x > maxX)
+		if(x !in (l.minOf { it.x } .. l.maxOf { it.x }))
 			return null
-		if(y > maxY)
-			return null
-		if(x < minX)
-			return null
-		if(y < minY)
+		if(y !in (l.minOf { it.y } .. l.maxOf { it.y }))
 			return null
 	}
 	return Point(x.toInt(), y.toInt())
 }
 
 fun Iterable<Point>.toLines(): Iterable<Line> {
-	val iter = iterator()
-	if(!iter.hasNext())
-		return listOf()
 	val result = mutableListOf<Line>()
-	var a = iter.next()
-	val first = a
-	while(iter.hasNext()) {
-		val b = iter.next()
-		result.add(Line(a, b))
-		a = b
-	}
-	result.add(Line(a, first))
+	toLinesOpen(result)
+	result.add(Line(last(), first()))
 	return result
 }
 
 fun Iterable<Point>.toLinesOpen(): Iterable<Line> {
+	return toLinesOpen(mutableListOf())
+}
+
+fun <T: MutableCollection<Line>> Iterable<Point>.toLinesOpen(result: T): T {
 	val iter = iterator()
 	if(!iter.hasNext())
-		return listOf()
-	val result = mutableListOf<Line>()
+		return result
 	var a = iter.next()
-	val first = a
 	while(iter.hasNext()) {
 		val b = iter.next()
 		result.add(Line(a, b))
