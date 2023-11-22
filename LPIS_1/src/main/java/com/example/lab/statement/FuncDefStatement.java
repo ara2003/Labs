@@ -8,7 +8,7 @@ import com.example.lab.FunctionSignature;
 import com.example.lab.ReturnType;
 import com.example.lab.SemanticError;
 import com.example.lab.Variable;
-
+import com.example.lab.interpreter.InterpreterContext;
 
 public record FuncDefStatement(String name, List<? extends Variable> parametrs, Statement code)
 implements Statement {
@@ -22,7 +22,7 @@ implements Statement {
 		Objects.requireNonNull(parametrs);
 		Objects.requireNonNull(code);
 	}
-	
+
 	@Override
 	public boolean checkContextSemantic(StatementContext context) {
 		if(context.isReturn())

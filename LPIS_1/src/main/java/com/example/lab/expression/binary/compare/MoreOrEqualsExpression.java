@@ -2,6 +2,7 @@ package com.example.lab.expression.binary.compare;
 
 import com.example.lab.expression.Expression;
 import com.example.lab.expression.NumberExpression;
+import com.example.lab.interpreter.InterpreterContext;
 
 public class MoreOrEqualsExpression extends CompareBinaryExpression {
 	
@@ -19,5 +20,9 @@ public class MoreOrEqualsExpression extends CompareBinaryExpression {
 	public String sign() {
 		return ">=";
 	}
-	
+
+	@Override
+	public int runElementInterpreter(InterpreterContext context) {
+		return a.runElementInterpreter(context) >= b.runElementInterpreter(context) ? 1 : 0;
+	}
 }
