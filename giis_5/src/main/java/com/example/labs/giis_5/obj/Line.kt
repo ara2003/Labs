@@ -46,7 +46,8 @@ fun cross(l1: Line, l2: Line): Point? {
 fun Iterable<Point>.toLines(): Iterable<Line> {
 	val result = mutableListOf<Line>()
 	toLinesOpen(result)
-	result.add(Line(last(), first()))
+	if(result.size > 1)
+		result.add(Line(last(), first()))
 	return result
 }
 

@@ -35,7 +35,7 @@ object PointInsidePolygon : ObjectGenerator {
 			for(p in polygons) {
 				if(mouse inside p)
 					if(p.isHull())
-						return YELLOW
+						return BLUE
 					else
 						return GREEN
 			}

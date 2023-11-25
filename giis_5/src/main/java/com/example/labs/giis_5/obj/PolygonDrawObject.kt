@@ -4,7 +4,6 @@ import com.example.labs.giis_5.obj.drawer.TwoPointDrawer
 import com.example.labs.giis_5.obj.drawer.draw
 import com.example.labs.giis_5.pixel.PixelDrawer
 import java.awt.Color
-import java.awt.Color.*
 
 interface PolygonDrawObject : DrawObject {
 
@@ -13,10 +12,11 @@ interface PolygonDrawObject : DrawObject {
 	override fun draw(drawer: PixelDrawer) {
 		for(line in lines) {
 			this.drawer.draw(drawer, line)
-			val normal = line.normal
-			val center = line.center
-			val color = if(isHull()) YELLOW else GREEN
-			this.drawer.draw(drawer, center, center + (normal * -10f), color)
+			if(isHull()) {
+				val normal = line.normal
+				val center = line.center
+				this.drawer.draw(drawer, center, center + (normal * -5f), Color.BLUE)
+			}
 		}
 	}
 
@@ -40,7 +40,6 @@ interface PolygonDrawObject : DrawObject {
 	}
 
 	fun isInside(point: Point): Boolean
-
 }
 
 fun dot(a: Pair<Float, Float>, b: Pair<Float, Float>) = a.x * b.x + a.y * b.y
