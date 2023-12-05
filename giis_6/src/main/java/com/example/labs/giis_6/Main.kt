@@ -15,6 +15,8 @@ import com.example.labs.giis_6.obj.drawer.ErmitovDrawer
 import com.example.labs.giis_6.obj.drawer.HyperbolaDrawer
 import com.example.labs.giis_6.obj.drawer.ParabolaDrawer
 import com.example.labs.giis_6.obj.drawer.SplitFour
+import com.example.labs.giis_6.obj.filler.LineInoculumFiller
+import com.example.labs.giis_6.obj.filler.RasterReamerActiveEdgeFiller
 import com.example.labs.giis_6.obj.filler.RasterReamerFiller
 import com.example.labs.giis_6.obj.filler.SimpleInoculumFiller
 import com.example.labs.giis_6.obj.solver.GrahamMinimalConvexHullSolver
@@ -54,14 +56,14 @@ fun main() {
 	m.add(MenuItem("Джарвис").also { it.addActionListener { panel.setDrawer(JarvisMinimalConvexHullSolver) } })
 	m.add(MenuItem("принадлежность точки").also { it.addActionListener { panel.generator = PointInsidePolygon } })
 	m.addSeparator()
-	m.add(MenuItem("Алгоритмы растровой развертки").also { it.addActionListener { panel.setDrawer(RasterReamerFiller) } })
-	m.add(MenuItem("Простой алгоритм заполнения с затравкой").also {
-		it.addActionListener {
-			panel.setDrawer(
-				SimpleInoculumFiller
-			)
-		}
-	})
+	m.add(MenuItem("Алгоритмы растровой развертки")
+		.also { it.addActionListener { panel.setDrawer(RasterReamerFiller) } })
+	m.add(MenuItem("Алгоритмы растровой развертки, использующий список активных ребер")
+		.also { it.addActionListener { panel.setDrawer(RasterReamerActiveEdgeFiller) } })
+	m.add(MenuItem("Простой алгоритм заполнения с затравкой")
+		.also { it.addActionListener { panel.setDrawer(SimpleInoculumFiller) } })
+	m.add(MenuItem("Построчный алгоритм заполнения с затравкой")
+		.also { it.addActionListener { panel.setDrawer(LineInoculumFiller) } })
 	menuBar.add(m)
 	f.menuBar = menuBar
 	val debugButton = Button("debug")

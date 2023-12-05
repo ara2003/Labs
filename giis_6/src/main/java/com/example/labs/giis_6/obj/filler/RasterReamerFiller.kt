@@ -14,7 +14,6 @@ object RasterReamerFiller : FillDrawer {
 		val maxY = polygon.maxOf { it.y }
 		val minY = polygon.minOf { it.y }
 		val lines = polygon.lines
-		val points = mutableListOf<Point>()
 		for(y in minY .. maxY) {
 			val line = Line(minX, y, maxX, y)
 			val points = lines.mapNotNull { cross(it, line) }.map { it.x }.distinct().sorted()

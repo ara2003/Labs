@@ -25,4 +25,10 @@ operator fun Point.times(k: Float) = Point(x * k, y * k)
 operator fun Point.times(other: Point) = x * other.y - y * other.x
 operator fun Point.plus(other: Point) = Point(x + other.x, y + other.y)
 operator fun Point.div(k: Float) = this * (1 / k)
+operator fun Point.div(k: Int) = Point(x / k, y/ k)
 operator fun Pair<Float, Float>.div(k: Float) = this * (1 / k)
+
+
+
+fun Iterable<Point>.sum() = fold(Point(0, 0)) { a, b -> a + b }
+val Iterable<*>.size get() = fold(0) { size, _ -> size + 1 }

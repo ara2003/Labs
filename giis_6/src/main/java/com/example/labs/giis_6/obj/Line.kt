@@ -34,7 +34,7 @@ fun cross(l1: Line, l2: Line): Point? {
 		if(y !in (l.minOf { it.y } .. l.maxOf { it.y }))
 			return null
 	}
-	return Point(x.toInt(), y.toInt())
+	return Point(x, y)
 }
 
 fun Iterable<Point>.toLines(): Iterable<Line> {

@@ -19,9 +19,8 @@ fun main() {
 		val name = cls.simpleName.removeSuffix("Expression").lowercase(Locale.getDefault())
 		functions[name] = cls
 	}
-	val e = parse("or(a, .1)")
-	for(i in range(.0, 1.0, .1))
-		println(e.value("a" to i))
+	val sc = Scanner(System.`in`)
+	println(parse(sc.nextLine()).value())
 }
 
 fun range(begin: Double, end: Double, step: Double) = sequence {
