@@ -36,18 +36,18 @@ object LineInoculumFiller : FillDrawer {
 				painted.add(Point(x, y))
 				drawer.drawPixel(x, y)
 			}
-			for(x in minX .. maxX) {
+			A@ for(x in minX .. maxX) {
 				val p = Point(x, y + 1)
 				if(p inside polygon) {
 					stack.add(p)
-					break
+					break@A
 				}
 			}
-			for(x in minX .. maxX) {
+			A@ for(x in minX .. maxX) {
 				val p = Point(x, y - 1)
 				if(p inside polygon) {
 					stack.add(p)
-					break
+					break@A
 				}
 			}
 		}
