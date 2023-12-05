@@ -45,14 +45,7 @@
             <version>${kotlin.version}</version>
             <scope>runtime</scope>
         </dependency>
-
     </dependencies>
-
-
-    <dependencyManagement>
-        <dependencies>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <plugins>
