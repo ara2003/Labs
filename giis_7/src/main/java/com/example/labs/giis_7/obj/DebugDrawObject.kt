@@ -14,14 +14,14 @@ class DebugDrawObject(val origin: DrawObject) : DrawObject by origin {
 
 	fun removePoint() {
 		points--
+		if(0 > points)
+			points = 0
 	}
 
 	override fun draw(g: PixelDrawer) {
-		val count = origin.countPixel()
+		val count = origin.countPixel(g)
 		if(count < points)
 			points = count
-		if(0 > points)
-			points = 0
 		val g = DebugPixelDrawer(g, BaseDrawCounter(points))
 		origin.draw(g)
 	}

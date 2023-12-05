@@ -2,7 +2,7 @@ package com.example.labs.giis_7.pixel
 
 import java.awt.Color
 
-class DebugPixelDrawer(private val g: PixelDrawer, private val counter: DrawCounter) : PixelDrawer {
+class DebugPixelDrawer(private val g: PixelDrawer, private val counter: DrawCounter) : PixelDrawer by g {
 
 	private var lastX = -1
 	private var lastY = -1

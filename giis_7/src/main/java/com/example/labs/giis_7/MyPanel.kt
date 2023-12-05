@@ -11,6 +11,7 @@ import com.example.labs.giis_7.pixel.PIXEL_SIZE
 import com.example.labs.giis_7.pixel.setColor
 import java.awt.Color
 import java.awt.Graphics
+import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.event.MouseAdapter
@@ -58,6 +59,7 @@ class MyPanel : JPanel(), LineDrawerMode, KeyListener, ObjectGenerator.Context {
 	}
 
 	override fun paint(g: Graphics) {
+		val g = g as Graphics2D
 		super.paint(g)
 		if(isDebug) {
 			g.setColor(Color(0, 0, 0, (255 * .1f).toInt())) {

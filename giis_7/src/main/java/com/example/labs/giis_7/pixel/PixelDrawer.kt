@@ -4,9 +4,12 @@ import com.example.labs.giis_7.obj.Point
 import java.awt.Color
 import java.awt.Graphics
 
-const val PIXEL_SIZE = 5
+const val PIXEL_SIZE = 4
 
 interface PixelDrawer {
+
+	val width: Int
+	val height: Int
 
 	fun drawPixel(x: Int, y: Int) = drawPixel(x, y, 1f)
 	fun drawPixel(x: Int, y: Int, c: Float) = drawPixel(x, y, Color(0, 0, 0, (255 * c).toInt()))

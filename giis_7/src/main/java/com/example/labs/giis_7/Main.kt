@@ -5,6 +5,7 @@ import com.example.labs.giis_7.generator.LineGenerator
 import com.example.labs.giis_7.generator.MouseMove
 import com.example.labs.giis_7.generator.PointInsidePolygon
 import com.example.labs.giis_7.generator.TriangulationGenerator
+import com.example.labs.giis_7.generator.VoronogoGenerator
 import com.example.labs.giis_7.obj.drawer.AntialiasingLineDrawer
 import com.example.labs.giis_7.obj.drawer.BSplinesDrawer
 import com.example.labs.giis_7.obj.drawer.BezieDrawer
@@ -23,6 +24,7 @@ import com.example.labs.giis_7.obj.filler.SimpleInoculumFiller
 import com.example.labs.giis_7.obj.solver.GrahamMinimalConvexHullSolver
 import com.example.labs.giis_7.obj.solver.JarvisMinimalConvexHullSolver
 import com.example.labs.giis_7.obj.triangulation.DelaunayTriangulator
+import com.example.labs.giis_7.obj.voronogo.FillVoronogoDiagram
 import java.awt.Button
 import java.awt.Menu
 import java.awt.MenuBar
@@ -69,6 +71,9 @@ fun main() {
 	m.addSeparator()
 	m.add(MenuItem("Триангуляция Делоне")
 		.also { it.addActionListener { panel.generator = TriangulationGenerator(DelaunayTriangulator) } })
+	m.add(MenuItem("Диаграмма Вороного")
+		.also { it.addActionListener { panel.generator = VoronogoGenerator(FillVoronogoDiagram)
+		} })
 	menuBar.add(m)
 	f.menuBar = menuBar
 	val debugButton = Button("debug")

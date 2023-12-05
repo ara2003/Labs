@@ -14,7 +14,7 @@ fun TwoPointDrawer.draw(g: PixelDrawer, p1: Point, p2: Point) = draw(g, p1.x, p1
 fun TwoPointDrawer.draw(g: PixelDrawer, line: Line) = draw(g, line.p1, line.p2)
 
 fun TwoPointDrawer.draw(g: PixelDrawer, p1: Point, p2: Point, color: Color) {
-	draw(object : PixelDrawer {
+	draw(object : PixelDrawer by g {
 		override fun drawPixel(x: Int, y: Int) {
 			g.drawPixel(x, y, color)
 		}

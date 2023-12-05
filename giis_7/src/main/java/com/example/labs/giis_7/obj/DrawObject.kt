@@ -3,7 +3,7 @@ package com.example.labs.giis_7.obj
 import com.example.labs.giis_7.pixel.GraphicsPixelDrawer
 import com.example.labs.giis_7.pixel.PixelDrawer
 import java.awt.Color
-import java.awt.Graphics
+import java.awt.Graphics2D
 
 interface DrawObject : Iterable<Point> {
 
@@ -11,6 +11,11 @@ interface DrawObject : Iterable<Point> {
 		get() {
 			val points = mutableListOf<Point>()
 			draw(object : PixelDrawer {
+				override val width: Int
+					get() = TODO("Not yet implemented")
+				override val height: Int
+					get() = TODO("Not yet implemented")
+
 				override fun drawPixel(x: Int, y: Int, c: Color) {
 					points.add(Point(x, y))
 				}
@@ -20,9 +25,9 @@ interface DrawObject : Iterable<Point> {
 
 	fun draw(drawer: PixelDrawer)
 
-	fun countPixel(): Int {
+	fun countPixel(drawer: PixelDrawer): Int {
 		var count = 0
-		val counter = object : PixelDrawer {
+		val counter = object : PixelDrawer by drawer {
 			override fun drawPixel(x: Int, y: Int, c: Color) {
 				count++
 			}
@@ -32,7 +37,7 @@ interface DrawObject : Iterable<Point> {
 	}
 }
 
-fun DrawObject.draw(g: Graphics) {
+fun DrawObject.draw(g: Graphics2D) {
 	draw(GraphicsPixelDrawer(g))
 }
 

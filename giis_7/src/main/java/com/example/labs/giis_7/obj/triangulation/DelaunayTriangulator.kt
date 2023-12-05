@@ -2,31 +2,53 @@ package com.example.labs.giis_7.obj.triangulation
 
 import com.example.labs.giis_7.obj.Line
 import com.example.labs.giis_7.obj.Point
-import com.example.labs.giis_7.obj.cross
+import com.example.labs.giis_7.obj.Triangle
+import com.example.labs.giis_7.obj.center
 import com.example.labs.giis_7.obj.solver.JarvisMinimalConvexHullSolver
+import com.example.labs.giis_7.obj.solver.rotate
+import java.util.*
 
 object DelaunayTriangulator : Triangulator {
 
-	override fun draw(points: Iterable<Point>): Iterable<Line> {
-		val points = JarvisMinimalConvexHullSolver.solve(points).sortedBy { it.x }.toList()
+	override fun solve(points: Iterable<Point>): Iterable<Triangle> {
+		val points = points.toList()
 		if(points.size < 3)
 			return listOf()
 		val result = mutableListOf<Line>()
-		result.add(Line(points[0], points[1]))
-		result.add(Line(points[1], points[2]))
-		result.add(Line(points[2], points[0]))
-		fun canSee(point: Point) = result.flatten().filter { p ->
-			result.all {
-				val c = cross(it, Line(p, point))
-				c == null || c == p
-			}
+		val resultTriangle = mutableSetOf<Triangle>()
+		val active = Stack<Line>()
+		run {
+			val ps = JarvisMinimalConvexHullSolver.solve(points).toList()
+			active.add(Line(ps[0], ps[1]))
 		}
-		for(i in 3 ..< points.size) {
-			val p = points[i]
-			for(c in canSee(p)) {
-				result.add(Line(p, c))
-			}
+		fun distance(a: Point, b: Point): Int {
+			val dx = a.x - b.x
+			val dy = a.y - b.y
+			return dx * dx + dy * dy
 		}
-		return result
+
+		fun sopr(ab: Line): Point? {
+			val a = ab.p1
+			val b = ab.p2
+			return points.filter { rotate(a, b, it) > 0 }.minByOrNull { distance(Triangle(a, b, it).center, a) }
+		}
+		while(active.isNotEmpty()) {
+			val e = active.pop()
+			result.add(e)
+			val p = sopr(e) ?: continue
+			resultTriangle.add(Triangle(e.p1, e.p2, p))
+			val a = Line(e.p1, p)
+			val b = Line(p, e.p2)
+			fun up(a: Line) {
+				require(a !in result) { "$a in $result" }
+				if(a in active) {
+					active.remove(a)
+					result.add(a)
+				} else active.add(a)
+			}
+			up(a)
+			up(b)
+		}
+		return resultTriangle
 	}
 }
