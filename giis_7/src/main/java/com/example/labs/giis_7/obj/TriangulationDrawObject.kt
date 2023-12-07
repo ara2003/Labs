@@ -1,7 +1,6 @@
 package com.example.labs.giis_7.obj
 
 import com.example.labs.giis_7.obj.drawer.BresenhamLineDrawer
-import com.example.labs.giis_7.obj.drawer.CircleDrawer
 import com.example.labs.giis_7.obj.drawer.TwoPointDrawer
 import com.example.labs.giis_7.obj.drawer.draw
 import com.example.labs.giis_7.obj.solver.JarvisMinimalConvexHullSolver
@@ -21,7 +20,7 @@ data class TriangulationDrawObject(
 		lineDrawer.draw(drawer, it.a, it.b)
 		lineDrawer.draw(drawer, it.b, it.c)
 		lineDrawer.draw(drawer, it.c, it.a)
-		CircleDrawer.draw(drawer, it.center, Point(it.center.x, it.center.y + it.radius))
+//		CircleDrawer.draw(drawer, it.center, Point(it.center.x, it.center.y + it.radius))
 	}
 
 	override fun iterator() = points.iterator()
