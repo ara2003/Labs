@@ -27,5 +27,3 @@ data class ImplicationMatrix<E1, E2>(
 		}.reduce { acc, s -> "$acc\n$s" }.toString()
 	}
 }
-
-operator fun <E1, E2> ImplicationMatrix<E1, E2>.times(other: FuzzySet<E1>): FuzzySet<E2> = TimesFuzzySet(this, other)
