@@ -1,9 +1,10 @@
 package org.example.fuzzy
 
-fun impl(a: Float, b: Float) = if(a <= b)
-	1f
-else
-	b / a
+fun impl(a: Float, b: Float) =
+	if(a <= b)
+		1f
+	else
+		b / a
 
 fun tNorm(a: Float, b: Float) = a * b
 

@@ -15,6 +15,8 @@ data object Equals : Token
 
 data object Comma : Token
 
+data object Implication : Token
+
 val String.tokens
 	get() = tokens()
 val Char.isDigit
@@ -32,18 +34,33 @@ fun String.tokens() = sequence {
 			')' -> yield(CloseBracket)
 			'{' -> yield(OpenSetBracket)
 			'}' -> yield(CloseSetBracket)
-			'=' -> yield(Equals)
 			else -> {
-				val begin = i
-				var end = i
-				if(c.isDigit) {
-					while(++end < text.length && (text[end].isDigit || text[end].isLetter()));
-					yield(Number(substring(begin, end).toFloat()))
-				} else {
-					while(++end < text.length && text[end].isDigit);
-					yield(Name(substring(begin, end)))
+				when {
+					c.isDigit -> {
+						val begin = i
+						var end = i
+						while(++end < text.length && (text[end].isDigit || text[end].isLetter()));
+						yield(Number(substring(begin, end).toFloat()))
+						i = end - 1
+					}
+
+					c.isLetter() -> {
+						val begin = i
+						var end = i
+						while(++end < text.length && text[end].isDigit);
+						yield(Name(substring(begin, end)))
+						i = end - 1
+					}
+
+					c == '=' -> if(i + 1 == text.length || text[i + 1] != '>') {
+						yield(Equals)
+					} else {
+						yield(Implication)
+						i++
+					}
+
+					else -> throw UnsupportedOperationException("character = $c")
 				}
-				i = end - 1
 			}
 		}
 	}

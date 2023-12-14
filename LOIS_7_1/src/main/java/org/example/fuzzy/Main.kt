@@ -1,6 +1,8 @@
 package org.example.fuzzy
 
 import org.example.parse.FuzzySetNode
+import org.example.parse.RuleNode
+import org.example.parse.TaskNode
 import org.example.parse.tokens
 import java.io.InputStreamReader
 
@@ -15,10 +17,10 @@ class FactReadMode(
 
 	override fun read(line: String) {
 		val node = FuzzySetNode(line.tokens)
-		val set = MapFuzzySet<String>()
-		facts[node.name] = set
+		val fact = MapFuzzySet<String>()
+		facts[node.name] = fact
 		for(element in node.elements)
-			set[element.name] = element.degree
+			fact[element.name] = element.degree
 	}
 }
 
@@ -28,14 +30,11 @@ class RuleReadMode(
 ) : ReadMode {
 
 	override fun read(line: String) {
-		val indexFirstEquals = line.indexOf('=')
-		val indexSecondEquals = line.indexOf("=>")
-		val indexOpen = line.indexOf('(')
-		val indexClose = line.indexOf(')')
-		val rule = line.substring(0, indexFirstEquals).trim()
-		val fact1 = facts[line.substring(indexOpen + 1, indexSecondEquals).trim()]!!
-		val fact2 = facts[line.substring(indexSecondEquals + 2, indexClose).trim()]!!
-		rules[rule] = ImplicationMatrix(fact1, fact2)
+		val node = RuleNode(line.tokens)
+		val name = node.name
+		val firstFact = facts[node.firstFact]!!
+		val secondFact = facts[node.secondFact]!!
+		rules[name] = ImplicationMatrix(firstFact, secondFact)
 	}
 }
 
@@ -45,12 +44,10 @@ class TaskReadMode(
 ) : ReadMode {
 
 	override fun read(line: String) {
-		val indexOpen = line.indexOf('(')
-		val indexClose = line.indexOf(')')
-		val indexComma = line.indexOf(',')
-		val fact = facts[line.substring(indexOpen + 1, indexComma).trim()]!!
-		val rule = rules[line.substring(indexComma + 1, indexClose).trim()]!!
-		println("$line = ${TimesFuzzySet(rule, fact)}")
+		val node = TaskNode(line.tokens)
+		val fact = facts[node.fact]!!
+		val rule = rules[node.rule]!!
+		println("$line => {${TimesFuzzySet(rule, fact)}}")
 	}
 }
 
@@ -63,7 +60,7 @@ fun main() {
 		TaskReadMode(facts, rules)
 	).iterator()
 
-	Unit::class.java.classLoader.getResourceAsStream("input.txt")?.let {
+	Unit::class.java.classLoader.getResourceAsStream("input.txt")!!.let {
 		InputStreamReader(it).use { reader ->
 			var mode = modes.next()
 			for(line in reader.readLines()) {
