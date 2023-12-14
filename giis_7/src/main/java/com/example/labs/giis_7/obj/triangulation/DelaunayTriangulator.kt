@@ -4,6 +4,7 @@ import com.example.labs.giis_7.obj.Line
 import com.example.labs.giis_7.obj.Point
 import com.example.labs.giis_7.obj.Triangle
 import com.example.labs.giis_7.obj.center
+import com.example.labs.giis_7.obj.distanceSqr
 import com.example.labs.giis_7.obj.solver.JarvisMinimalConvexHullSolver
 import com.example.labs.giis_7.obj.solver.rotate
 import java.util.*
@@ -21,16 +22,11 @@ object DelaunayTriangulator : Triangulator {
 			val ps = JarvisMinimalConvexHullSolver.solve(points).toList()
 			active.add(Line(ps[0], ps[1]))
 		}
-		fun distance(a: Point, b: Point): Int {
-			val dx = a.x - b.x
-			val dy = a.y - b.y
-			return dx * dx + dy * dy
-		}
 
 		fun sopr(ab: Line): Point? {
 			val a = ab.p1
 			val b = ab.p2
-			return points.filter { rotate(a, b, it) > 0 }.minByOrNull { distance(Triangle(a, b, it).center, a) }
+			return points.filter { rotate(a, b, it) > 0 }.minByOrNull { distanceSqr(Triangle(a, b, it).center, a) }
 		}
 		while(active.isNotEmpty()) {
 			val e = active.pop()
@@ -39,7 +35,12 @@ object DelaunayTriangulator : Triangulator {
 			resultTriangle.add(Triangle(e.p1, e.p2, p))
 			val a = Line(e.p1, p)
 			val b = Line(p, e.p2)
+
+			//			val a = Line(e.p1, p)
+//			val b = Line(p, e.p2)
 			fun up(a: Line) {
+//				if(a in result)
+//					return
 				require(a !in result) { "$a in $result" }
 				if(a in active) {
 					active.remove(a)

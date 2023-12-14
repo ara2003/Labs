@@ -4,7 +4,7 @@ import com.example.labs.giis_7.obj.Point
 import java.awt.Color
 import java.awt.Graphics
 
-const val PIXEL_SIZE = 4
+const val PIXEL_SIZE = 8
 
 interface PixelDrawer {
 

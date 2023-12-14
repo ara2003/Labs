@@ -1,4 +1,3 @@
-import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.sqrt
 
 fun pow(a: Long, b: Long, p: Long): Long {
@@ -45,21 +44,22 @@ fun discreteLogarithm(a: Long, b: Long, m: Long): Long {
 }
 
 fun main() {
-	val p = 134041249L
-	val alpha = 7L
-	val a = ThreadLocalRandom.current().nextInt((p - 1L).toInt()).toLong()
-	val b = ThreadLocalRandom.current().nextInt((p - 1L).toInt()).toLong()
-	println("Alice's private key: $a\nBob's private key: $b")
-	val (A, B, keyA, keyB) = diffieHellman(a, b, alpha, p)
-	println("Alice's open key: $a\nBob's open key: $b")
-	println("Alice's secret key: $keyA\nBob's secret key: $keyB")
-	println(
-		"Discrete Logarithm keys:\n Alice's key: ${discreteLogarithm(alpha, A, p)}\n Bob's key: ${
-			discreteLogarithm(
-				alpha,
-				B,
-				p
-			)
-		}"
-	)
+//	val p = 134041249L
+//	val alpha = 7L
+//	val a = ThreadLocalRandom.current().nextInt((p - 1L).toInt()).toLong()
+//	val b = ThreadLocalRandom.current().nextInt((p - 1L).toInt()).toLong()
+//	println("Alice's private key: $a\nBob's private key: $b")
+//	val (A, B, keyA, keyB) = diffieHellman(a, b, alpha, p)
+//	println("Alice's open key: $a\nBob's open key: $b")
+//	println("Alice's secret key: $keyA\nBob's secret key: $keyB")
+//	println(
+//		"Discrete Logarithm keys:\n Alice's key: ${discreteLogarithm(alpha, A, p)}\n Bob's key: ${
+//			discreteLogarithm(
+//				alpha,
+//				B,
+//				p
+//			)
+//		}"
+//	)
+	println(4 % 1.1)
 }

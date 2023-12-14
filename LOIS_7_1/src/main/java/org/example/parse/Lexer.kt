@@ -1,12 +1,17 @@
-package org.example
+package org.example.parse
 
 sealed interface Token
 
-data class Number(val value: Double) : Token
+data class Number(val value: Float) : Token
 data class Name(val value: String) : Token
 
 data object OpenBracket : Token
 data object CloseBracket : Token
+
+data object OpenSetBracket : Token
+data object CloseSetBracket : Token
+
+data object Equals : Token
 
 data object Comma : Token
 
@@ -25,14 +30,17 @@ fun String.tokens() = sequence {
 			',' -> yield(Comma)
 			'(' -> yield(OpenBracket)
 			')' -> yield(CloseBracket)
+			'{' -> yield(OpenSetBracket)
+			'}' -> yield(CloseSetBracket)
+			'=' -> yield(Equals)
 			else -> {
 				val begin = i
 				var end = i
 				if(c.isDigit) {
-					while(++end < text.length && text[end].isDigit);
-					yield(Number(substring(begin, end).toDouble()))
+					while(++end < text.length && (text[end].isDigit || text[end].isLetter()));
+					yield(Number(substring(begin, end).toFloat()))
 				} else {
-					while(++end < text.length && text[end].isLetter());
+					while(++end < text.length && text[end].isDigit);
 					yield(Name(substring(begin, end)))
 				}
 				i = end - 1

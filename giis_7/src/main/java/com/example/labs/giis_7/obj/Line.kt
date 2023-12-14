@@ -6,9 +6,7 @@ data class Line(val p1: Point, val p2: Point) : Iterable<Point> {
 
 	override fun equals(other: Any?): Boolean {
 		if(this === other) return true
-		if(javaClass != other?.javaClass) return false
-
-		other as Line
+		if(other !is Line) return false
 
 		if(p1 == other.p1 && p2 == other.p2) return true
 		if(p2 == other.p1 && p1 == other.p2) return true
