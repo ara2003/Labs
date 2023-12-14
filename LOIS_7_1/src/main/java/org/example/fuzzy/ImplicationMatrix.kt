@@ -1,6 +1,6 @@
 package org.example.fuzzy
 
-data class ImplicationRelation<E1, E2>(
+data class ImplicationMatrix<E1, E2>(
 	val a: FuzzySet<E1>,
 	val b: FuzzySet<E2>,
 ) {
@@ -28,8 +28,6 @@ data class ImplicationRelation<E1, E2>(
 	}
 }
 
-operator fun <E1, E2> ImplicationRelation<E1, E2>.get(e1: E1, e2: E2) = this[e1][e2]
+operator fun <E1, E2> ImplicationMatrix<E1, E2>.get(e1: E1, e2: E2) = this[e1][e2]
 
-infix fun <E> FuzzySet<E>.impl(other: FuzzySet<E>) = ImplicationRelation(this, other)
-
-operator fun <E1, E2> ImplicationRelation<E1, E2>.times(other: FuzzySet<E1>): FuzzySet<E2> = TimesFuzzySet(this, other)
+operator fun <E1, E2> ImplicationMatrix<E1, E2>.times(other: FuzzySet<E1>): FuzzySet<E2> = TimesFuzzySet(this, other)

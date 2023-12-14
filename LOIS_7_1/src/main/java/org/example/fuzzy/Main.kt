@@ -24,7 +24,7 @@ class FactReadMode(
 
 class RuleReadMode(
 	val facts: Map<String, FuzzySet<String>>,
-	val result: MutableMap<String, ImplicationRelation<String, String>>,
+	val result: MutableMap<String, ImplicationMatrix<String, String>>,
 ) : ReadMode {
 
 	override fun read(line: String) {
@@ -35,13 +35,13 @@ class RuleReadMode(
 		val rule = line.substring(0, indexFirstEquals).trim()
 		val fact1 = facts[line.substring(indexOpen + 1, indexSecondEquals).trim()]!!
 		val fact2 = facts[line.substring(indexSecondEquals + 2, indexClose).trim()]!!
-		result[rule] = fact1 impl fact2
+		result[rule] = ImplicationMatrix(fact1, fact2)
 	}
 }
 
 class TaskReadMode(
 	val facts: Map<String, FuzzySet<String>>,
-	val rules: Map<String, ImplicationRelation<String, String>>,
+	val rules: Map<String, ImplicationMatrix<String, String>>,
 ) : ReadMode {
 
 	override fun read(line: String) {
@@ -56,7 +56,7 @@ class TaskReadMode(
 
 fun main() {
 	val facts = mutableMapOf<String, FuzzySet<String>>()
-	val rules = mutableMapOf<String, ImplicationRelation<String, String>>()
+	val rules = mutableMapOf<String, ImplicationMatrix<String, String>>()
 	val modes = listOf(
 		FactReadMode(facts),
 		RuleReadMode(facts, rules),

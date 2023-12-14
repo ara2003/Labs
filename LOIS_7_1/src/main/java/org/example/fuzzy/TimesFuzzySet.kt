@@ -1,7 +1,7 @@
 package org.example.fuzzy
 
 data class TimesFuzzySet<E1, E2>(
-	val relation: ImplicationRelation<E1, E2>,
+	val relation: ImplicationMatrix<E1, E2>,
 	val other: FuzzySet<E1>,
 ) : FuzzySet<E2> {
 
