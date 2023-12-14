@@ -1,15 +1,15 @@
 package org.example.fuzzy
 
 data class ImplicationMatrix<E1, E2>(
-	val a: FuzzySet<E1>,
-	val b: FuzzySet<E2>,
+	val first: FuzzySet<E1>,
+	val second: FuzzySet<E2>,
 ) {
 
-	operator fun get(e1: E1) = ImplicationFuzzySet(a, b, e1)
+	operator fun get(firstElement: E1, secondElement: E2) = impl(first[firstElement], second[secondElement])
 
 	override fun toString(): String {
-		val columns = a.elements.map { name ->
-			val values = b.elements.map { get(name, it) }
+		val columns = first.elements.map { name ->
+			val values = second.elements.map { get(name, it) }
 			sequence {
 				yield(name.toString())
 				yieldAll(values.map { it.toString() })
@@ -18,7 +18,7 @@ data class ImplicationMatrix<E1, E2>(
 		val firstColumn = mutableListOf<String>()
 		columns.add(0, firstColumn)
 		firstColumn.add("")
-		firstColumn.addAll(b.elements.map { it.toString() })
+		firstColumn.addAll(second.elements.map { it.toString() })
 		return columns.map {
 			val maxLength = it.maxOf { s -> s.length }
 			it.map { s -> " ".repeat(maxLength - s.length) + s }
@@ -27,7 +27,5 @@ data class ImplicationMatrix<E1, E2>(
 		}.reduce { acc, s -> "$acc\n$s" }.toString()
 	}
 }
-
-operator fun <E1, E2> ImplicationMatrix<E1, E2>.get(e1: E1, e2: E2) = this[e1][e2]
 
 operator fun <E1, E2> ImplicationMatrix<E1, E2>.times(other: FuzzySet<E1>): FuzzySet<E2> = TimesFuzzySet(this, other)

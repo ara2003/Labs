@@ -48,9 +48,9 @@ class TaskReadMode(
 		val indexOpen = line.indexOf('(')
 		val indexClose = line.indexOf(')')
 		val indexComma = line.indexOf(',')
-		val fact = line.substring(indexOpen + 1, indexComma).trim()
-		val rule = line.substring(indexComma + 1, indexClose).trim()
-		println("$line = ${rules[rule]!! * facts[fact]!!}")
+		val fact = facts[line.substring(indexOpen + 1, indexComma).trim()]!!
+		val rule = rules[line.substring(indexComma + 1, indexClose).trim()]!!
+		println("$line = ${rule * fact}")
 	}
 }
 
