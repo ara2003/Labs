@@ -10,21 +10,21 @@ interface ReadMode {
 }
 
 class FactReadMode(
-	val result: MutableMap<String, FuzzySet<String>>,
+	private val facts: MutableMap<String, FuzzySet<String>>,
 ) : ReadMode {
 
 	override fun read(line: String) {
 		val node = FuzzySetNode(line.tokens)
 		val set = MapFuzzySet<String>()
-		result[node.name] = set
+		facts[node.name] = set
 		for(element in node.elements)
 			set[element.name] = element.degree
 	}
 }
 
 class RuleReadMode(
-	val facts: Map<String, FuzzySet<String>>,
-	val result: MutableMap<String, ImplicationMatrix<String, String>>,
+	private val facts: Map<String, FuzzySet<String>>,
+	private val rules: MutableMap<String, ImplicationMatrix<String, String>>,
 ) : ReadMode {
 
 	override fun read(line: String) {
@@ -35,13 +35,13 @@ class RuleReadMode(
 		val rule = line.substring(0, indexFirstEquals).trim()
 		val fact1 = facts[line.substring(indexOpen + 1, indexSecondEquals).trim()]!!
 		val fact2 = facts[line.substring(indexSecondEquals + 2, indexClose).trim()]!!
-		result[rule] = ImplicationMatrix(fact1, fact2)
+		rules[rule] = ImplicationMatrix(fact1, fact2)
 	}
 }
 
 class TaskReadMode(
-	val facts: Map<String, FuzzySet<String>>,
-	val rules: Map<String, ImplicationMatrix<String, String>>,
+	private val facts: Map<String, FuzzySet<String>>,
+	private val rules: Map<String, ImplicationMatrix<String, String>>,
 ) : ReadMode {
 
 	override fun read(line: String) {
