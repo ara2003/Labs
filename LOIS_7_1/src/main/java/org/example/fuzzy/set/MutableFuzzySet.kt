@@ -1,4 +1,4 @@
-package org.example.fuzzy
+package org.example.fuzzy.set
 
 interface MutableFuzzySet<E> : FuzzySet<E> {
 

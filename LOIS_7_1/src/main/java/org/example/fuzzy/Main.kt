@@ -1,9 +1,8 @@
 package org.example.fuzzy
 
-import org.example.parse.FuzzySetNode
-import org.example.parse.RuleNode
-import org.example.parse.TaskNode
-import org.example.parse.tokens
+import org.example.fuzzy.matrix.ImplicationMatrix
+import org.example.fuzzy.set.FuzzySet
+import org.example.fuzzy.set.MapFuzzySet
 import java.io.InputStreamReader
 
 interface ReadMode {

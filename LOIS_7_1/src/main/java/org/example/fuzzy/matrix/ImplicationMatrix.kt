@@ -1,4 +1,8 @@
-package org.example.fuzzy
+package org.example.fuzzy.matrix
+
+import org.example.fuzzy.impl
+import org.example.fuzzy.set.FuzzySet
+import org.example.fuzzy.transpose
 
 data class ImplicationMatrix<E1, E2>(
 	val first: FuzzySet<E1>,

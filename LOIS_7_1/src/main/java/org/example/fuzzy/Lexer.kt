@@ -1,4 +1,4 @@
-package org.example.parse
+package org.example.fuzzy
 
 sealed interface Token
 
