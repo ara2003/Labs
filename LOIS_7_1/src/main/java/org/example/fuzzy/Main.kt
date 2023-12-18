@@ -4,6 +4,7 @@ import org.example.fuzzy.matrix.ImplicationMatrix
 import org.example.fuzzy.matrix.MapImplicationMatrix
 import org.example.fuzzy.set.FuzzySet
 import org.example.fuzzy.set.MapFuzzySet
+import java.io.FileInputStream
 import java.io.InputStreamReader
 
 val facts = mutableMapOf<String, FuzzySet>()
@@ -62,8 +63,8 @@ fun main() {
 		TaskReadMode
 	).iterator()
 
-	Unit::class.java.classLoader.getResourceAsStream("input.txt")!!.let {
-		InputStreamReader(it).use { reader ->
+	FileInputStream("input.txt").use { fin ->
+		InputStreamReader(fin).use { reader ->
 			var mode = modes.next()
 			for(line in reader.readLines()) {
 				if(line.isBlank())
