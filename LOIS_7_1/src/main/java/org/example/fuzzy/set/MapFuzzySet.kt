@@ -1,20 +1,20 @@
 package org.example.fuzzy.set
 
-class MapFuzzySet<E> : MutableFuzzySet<E> {
+class MapFuzzySet : MutableFuzzySet {
 
-	private val map = mutableMapOf<E, Float>()
+	private val map = mutableMapOf<String, Float>()
 
 	override fun iterator() = map.map { SimpleFuzzyElement(it.key, it.value) }.iterator()
 
-	override fun set(element: E, degree: Float) {
+	override fun set(element: String, degree: Float) {
 		map[element] = degree
 	}
 
-	override fun contains(element: E) = map.containsKey(element)
+	override fun contains(element: String) = map.containsKey(element)
 
-	override operator fun get(element: E) = map[element] ?: throw NullPointerException("element $element not contains")
+	override operator fun get(element: String) = map[element] ?: throw NullPointerException("element $element not contains")
 
-	override fun remove(element: E) {
+	override fun remove(element: String) {
 		map.remove(element)
 	}
 
@@ -26,7 +26,7 @@ class MapFuzzySet<E> : MutableFuzzySet<E> {
 		if(this === other) return true
 		if(javaClass != other?.javaClass) return false
 
-		other as MapFuzzySet<*>
+		other as MapFuzzySet
 
 		return map == other.map
 	}
@@ -37,6 +37,6 @@ class MapFuzzySet<E> : MutableFuzzySet<E> {
 
 	override fun toString() = toSetString()
 
-	override val elements: Collection<E>
+	override val elements: Collection<String>
 		get() = map.keys
 }

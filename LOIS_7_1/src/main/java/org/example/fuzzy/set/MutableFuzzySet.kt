@@ -1,8 +1,8 @@
 package org.example.fuzzy.set
 
-interface MutableFuzzySet<E> : FuzzySet<E> {
+interface MutableFuzzySet : FuzzySet {
 
-	operator fun set(element: E, degree: Float)
-	fun remove(element: E)
+	operator fun set(element: String, degree: Float)
+	fun remove(element: String)
 	fun clear()
 }

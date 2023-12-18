@@ -4,31 +4,29 @@ package org.example.fuzzy.set
  * Интерфейс описывающий нечеткое множесво
  * @param E - над каким типом задоно множество
  */
-interface FuzzySet<E> : Iterable<FuzzySet.FuzzyElement<E>> {
+interface FuzzySet : Iterable<FuzzySet.FuzzyElement> {
 
-	override fun iterator(): Iterator<FuzzyElement<E>> = elements.map { SimpleFuzzyElement(it, get(it)) }.iterator()
+	override fun iterator(): Iterator<FuzzyElement> = elements.map { SimpleFuzzyElement(it, get(it)) }.iterator()
 
 	/**
 	 * @return степень принадлежности элемента
 	 */
-	operator fun get(element: E): Float
+	operator fun get(element: String): Float
 
 	/**
 	 * Принадлежит ли элемент множеству.
 	 */
-	operator fun contains(element: E): Boolean
+	operator fun contains(element: String): Boolean
 
-	val elements: Collection<E>
+	val elements: Collection<String>
 
 	fun toSetString(): String {
-		return "{${map { "(${it.element}, ${it.degree})" }.reduce { acc, s -> "$acc, $s" }}}"
+		return "{${map { "(${it.element}, ${it.degree})" }.reduceOrNull { acc, s -> "$acc, $s" } ?: ""}}"
 	}
 
-	interface FuzzyElement<E> {
+	interface FuzzyElement {
 
-		val element: E
+		val element: String
 		val degree: Float
 	}
 }
-
-fun <E> FuzzySet<E>.toMap() = elements.associateWith { get(it) }
