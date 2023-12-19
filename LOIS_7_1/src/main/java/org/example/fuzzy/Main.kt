@@ -1,3 +1,9 @@
+/**
+Лабораторная работа № 4 по дисциплине "Логические основы интеллектуальных систем"
+Выполнена студентами группы 021702 БГУИР Кавковым М.А., Латышевым А.Т., Семченковым Н.А.
+Файл, реализующий чтение из файла input.txt
+Дата: 10.12.23
+ */
 package org.example.fuzzy
 
 import org.example.fuzzy.matrix.ImplicationMatrix
@@ -49,9 +55,10 @@ object TaskReadMode : ReadMode {
 		val rule = rules[node.rule]!!
 		val result = MapFuzzySet()
 
-		for(e in fact)
-			result[e.element] = rule[e.element].maxOf { impl(it.degree, e.degree) }
-
+		for(e in rule.second)
+			result[e] = rule.first.maxOf {
+				tNorm(fact[it], rule[it, e])
+			}
 		println("$line => {$result}")
 	}
 }

@@ -1,3 +1,9 @@
+/**
+Лабораторная работа № 4 по дисциплине "Логические основы интеллектуальных систем"
+Выполнена студентами группы 021702 БГУИР Кавковым М.А., Латышевым А.Т., Семченковым Н.А.
+Файл, реализующий чтение из файла input.txt
+Дата: 10.12.23
+ */
 package org.example.fuzzy
 
 import org.example.fuzzy.matrix.ImplicationMatrix
@@ -47,14 +53,31 @@ object TaskReadMode : ReadMode {
 		val node = TaskNode(line.tokens)
 		val fact = facts[node.fact]!!
 		val rule = rules[node.rule]!!
-		val result = MapFuzzySet()
+		val resultMax = MapFuzzySet()
+		val resultMin = MapFuzzySet()
 
 		for(e in rule.first)
-			result[e] = rule.second.minOf {
-				impl(rule[e, it], fact[it])
+			resultMax[e] = rule.second.minOf {
+				val a = fact[it]
+				val b = rule[e, it]
+				return@minOf when(b) {
+					1f -> a
+					0f -> 1f
+					else -> a / b
+				}
 			}
-
-		println("$line => {$result}")
+		for(e in rule.first)
+			resultMin[e] = rule.second.minOf {
+				val a = fact[it]
+				val b = rule[e, it]
+				return@minOf when(b) {
+					1f -> 0f
+					0f -> 0f
+					else -> a / b
+				}
+			}
+		println("$line min => {$resultMin}")
+		println("$line max => {$resultMax}")
 	}
 }
 
@@ -64,7 +87,7 @@ fun main() {
 		RuleReadMode,
 		TaskReadMode
 	).iterator()
-	
+
 	FileInputStream("input.txt").use { fin ->
 		InputStreamReader(fin).use { reader ->
 			var mode = modes.next()

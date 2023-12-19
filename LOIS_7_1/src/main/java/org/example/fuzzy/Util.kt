@@ -1,3 +1,9 @@
+/**
+Лабораторная работа № 4 по дисциплине "Логические основы интеллектуальных систем"
+Выполнена студентами группы 021702 БГУИР Кавковым М.А., Латышевым А.Т., Семченковым Н.А.
+Файл, реализующий тнорму и импикацию Гогена
+Дата: 10.12.23
+ */
 package org.example.fuzzy
 
 fun impl(a: Float, b: Float) =
@@ -7,31 +13,3 @@ fun impl(a: Float, b: Float) =
 		b / a
 
 fun tNorm(a: Float, b: Float) = a * b
-
-fun <E> List<List<E>>.transpose(): List<List<E>> {
-	val result = mutableListOf<MutableList<E>>()
-	for(list in this.withIndex()) {
-		for(a in list.value.withIndex()) {
-			result.safeGet(a.index).safeSet(list.index, a.value)
-		}
-	}
-	return result
-}
-
-private fun <E> MutableList<E>.safeSet(index: Int, value: E) {
-	if(index < size) {
-		set(index, value)
-		return
-	}
-	if(index == size) {
-		add(value)
-		return
-	}
-	TODO()
-}
-
-private fun <E> MutableList<MutableList<E>>.safeGet(index: Int): MutableList<E> {
-	while(size <= index)
-		add(mutableListOf())
-	return get(index)
-}

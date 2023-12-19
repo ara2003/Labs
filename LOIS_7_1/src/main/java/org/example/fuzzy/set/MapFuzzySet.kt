@@ -1,3 +1,9 @@
+/**
+Лабораторная работа № 4 по дисциплине "Логические основы интеллектуальных систем"
+Выполнена студентами группы 021702 БГУИР Кавковым М.А., Латышев А.Т., Семченков Н.А.
+Файл класс, реализующий изменяемое нечеткое множество на основе Map
+Дата: 10.12.23
+ */
 package org.example.fuzzy.set
 
 class MapFuzzySet : MutableFuzzySet {
@@ -12,7 +18,8 @@ class MapFuzzySet : MutableFuzzySet {
 
 	override fun contains(element: String) = map.containsKey(element)
 
-	override operator fun get(element: String) = map[element] ?: throw NullPointerException("element $element not contains")
+	override operator fun get(element: String) =
+		map[element] ?: throw NullPointerException("element $element not contains")
 
 	override fun remove(element: String) {
 		map.remove(element)
