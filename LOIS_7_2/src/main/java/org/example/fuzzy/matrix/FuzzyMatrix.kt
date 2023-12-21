@@ -6,10 +6,20 @@
  */
 package org.example.fuzzy.matrix
 
-interface ImplicationMatrix {
+interface FuzzyMatrix {
 
 	val first: Iterable<String>
 	val second: Iterable<String>
 
 	operator fun get(firstElement: String, secondElement: String): Float
 }
+
+fun FuzzyMatrix.toMutableFuzzyMatrix(): MutableFuzzyMatrix {
+	val result = MapFuzzyMatrix()
+	for(f in first)
+		for(s in second)
+			result[f, s] = get(f, s)
+	return result
+}
+
+fun FuzzyMatrix.toFuzzyMatrix(): FuzzyMatrix = toMutableFuzzyMatrix()

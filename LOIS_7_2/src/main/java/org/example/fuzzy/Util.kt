@@ -13,3 +13,33 @@ fun impl(a: Float, b: Float) =
 		b / a
 
 fun tNorm(a: Float, b: Float) = a * b
+
+fun String.joinBackets(
+	begin: Char,
+	body: Char,
+	end: Char,
+	begin2Line: Char = begin,
+	enf2Line: Char = end,
+	center: Char = body,
+) =
+	when(count { it == '\n' }) {
+		0 -> this
+		1 -> "!${this}".replace("\n", "\n!")
+			.replaceFirst('!', begin2Line)
+			.replaceLast('!', enf2Line)
+
+		else -> "!${this}".replace("\n", "\n!")
+			.replaceFirst('!', begin)
+			.replaceLast('!', end)
+			.replace('!', body)
+	}
+
+fun String.replaceLast(oldChar: Char, newChar: Char): String {
+	var index = indexOfLast {
+		it == oldChar
+	}
+
+	if(index == -1)
+		return this
+	return "${substring(0, index)}$newChar${substring(index + 1)}"
+}

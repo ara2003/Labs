@@ -47,3 +47,10 @@ class MapFuzzySet : MutableFuzzySet {
 	override val elements: Collection<String>
 		get() = map.keys
 }
+
+fun MapFuzzySet(vararg elements: Pair<String, Float>): MapFuzzySet {
+	val result = MapFuzzySet()
+	for(element in elements)
+		result[element.first] = element.second
+	return result
+}

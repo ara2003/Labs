@@ -17,6 +17,9 @@ data object CloseBracket : Token
 data object OpenSetBracket : Token
 data object CloseSetBracket : Token
 
+data object OpenContourBracket : Token
+data object CloseContourBracket : Token
+
 data object Equals : Token
 
 data object Comma : Token
@@ -40,6 +43,8 @@ fun String.tokens() = sequence {
 			')' -> yield(CloseBracket)
 			'{' -> yield(OpenSetBracket)
 			'}' -> yield(CloseSetBracket)
+			'<' -> yield(OpenContourBracket)
+			'>' -> yield(CloseContourBracket)
 			else -> {
 				when {
 					c.isDigit -> {

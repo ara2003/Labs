@@ -6,11 +6,13 @@
  */
 package org.example.fuzzy.set
 
+import org.example.fuzzy.set.FuzzySet.*
+
 /**
  * Интерфейс описывающий нечеткое множесво
  * @param E - над каким типом задоно множество
  */
-interface FuzzySet : Iterable<FuzzySet.FuzzyElement> {
+interface FuzzySet : Iterable<FuzzyElement> {
 
 	override fun iterator(): Iterator<FuzzyElement> = elements.map { SimpleFuzzyElement(it, get(it)) }.iterator()
 
@@ -34,7 +36,10 @@ interface FuzzySet : Iterable<FuzzySet.FuzzyElement> {
 
 		val element: String
 		val degree: Float
+
+		operator fun component1() = element
+		operator fun component2() = degree
 	}
 }
 
-data class SimpleFuzzyElement(override val element: String, override val degree: Float) : FuzzySet.FuzzyElement
+data class SimpleFuzzyElement(override val element: String, override val degree: Float) : FuzzyElement

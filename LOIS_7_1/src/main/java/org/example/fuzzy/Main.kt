@@ -44,6 +44,8 @@ object RuleReadMode : ReadMode {
 			for(second in secondFact)
 				rule[first.element, second.element] = impl(first.degree, second.degree)
 		rules[name] = rule
+
+		println(rule)
 	}
 }
 

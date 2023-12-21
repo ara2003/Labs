@@ -6,15 +6,21 @@
  */
 package org.example.fuzzy
 
-import org.example.fuzzy.matrix.ImplicationMatrix
-import org.example.fuzzy.matrix.MapImplicationMatrix
+import org.example.fuzzy.matrix.FuzzyMatrix
+import org.example.fuzzy.matrix.MapFuzzyMatrix
+import org.example.fuzzy.matrix.toMutableFuzzyMatrix
 import org.example.fuzzy.set.FuzzySet
 import org.example.fuzzy.set.MapFuzzySet
+import org.example.fuzzy.solution.PlusSolution
+import org.example.fuzzy.solution.Solution
+import org.example.fuzzy.solution.TimesSolution
+import org.example.fuzzy.solution.ValueSolution
+import org.example.fuzzy.value.range
 import java.io.FileInputStream
 import java.io.InputStreamReader
 
 val facts = mutableMapOf<String, FuzzySet>()
-val rules = mutableMapOf<String, ImplicationMatrix>()
+val rules = mutableMapOf<String, FuzzyMatrix>()
 
 interface ReadMode {
 
@@ -35,14 +41,11 @@ object FactReadMode : ReadMode {
 object RuleReadMode : ReadMode {
 
 	override fun read(line: String) {
-		val node = RuleNode(line.tokens)
+		val node = FuzzyRelationNode(line.tokens)
 		val name = node.name
-		val firstFact = facts[node.firstFact]!!
-		val secondFact = facts[node.secondFact]!!
-		val rule = MapImplicationMatrix()
-		for(first in firstFact)
-			for(second in secondFact)
-				rule[first.element, second.element] = impl(first.degree, second.degree)
+		val rule = MapFuzzyMatrix()
+		for(element in node.elements)
+			rule[element.arguments.first, element.arguments.second] = element.degree
 		rules[name] = rule
 	}
 }
@@ -52,32 +55,29 @@ object TaskReadMode : ReadMode {
 	override fun read(line: String) {
 		val node = TaskNode(line.tokens)
 		val fact = facts[node.fact]!!
-		val rule = rules[node.rule]!!
-		val resultMax = MapFuzzySet()
-		val resultMin = MapFuzzySet()
-
-		for(e in rule.first)
-			resultMax[e] = rule.second.minOf {
-				val a = fact[it]
-				val b = rule[e, it]
-				return@minOf when(b) {
-					1f -> a
-					0f -> 1f
-					else -> a / b
-				}
+		val rule = rules[node.rule]!!.toMutableFuzzyMatrix()
+		val result = mutableListOf<Solution>()
+		println(rule)
+		println(fact)
+		for((y, degree) in fact) {
+			val yresult = mutableListOf<Solution>()
+			for(x in rule.first) {
+				if(rule[x, y] < degree)
+					continue
+				val xresult = mutableListOf<Solution>()
+				xresult.add(ValueSolution(x, degree / rule[x, y]))
+				for(ox in rule.first)
+					if(ox != x) {
+						val a = degree / rule[ox, y]
+						if(a <= 1f)
+							xresult.add(ValueSolution(ox, range(0f, a)))
+					}
+				yresult.add(TimesSolution.newSolution(xresult))
 			}
-		for(e in rule.first)
-			resultMin[e] = rule.second.minOf {
-				val a = fact[it]
-				val b = rule[e, it]
-				return@minOf when(b) {
-					1f -> 0f
-					0f -> 0f
-					else -> a / b
-				}
-			}
-		println("$line min => {$resultMin}")
-		println("$line max => {$resultMax}")
+			result.add(PlusSolution.newSolution(yresult))
+		}
+		println(TimesSolution.newSolution(result))
+		println()
 	}
 }
 

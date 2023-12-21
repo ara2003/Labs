@@ -6,7 +6,7 @@
  */
 package org.example.fuzzy.matrix
 
-interface MutableImplicationMatrix : ImplicationMatrix {
+interface MutableFuzzyMatrix : FuzzyMatrix {
 
 	operator fun set(firstElement: String, secondElement: String, degree: Float)
 }
