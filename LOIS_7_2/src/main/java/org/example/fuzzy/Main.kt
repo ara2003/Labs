@@ -57,8 +57,8 @@ object TaskReadMode : ReadMode {
 		val fact = facts[node.fact]!!
 		val rule = rules[node.rule]!!.toMutableFuzzyMatrix()
 		val result = mutableListOf<Solution>()
-		println(rule)
-		println(fact)
+//		println(rule)
+//		println(fact)
 		for((y, degree) in fact) {
 			val yresult = mutableListOf<Solution>()
 			for(x in rule.first) {
