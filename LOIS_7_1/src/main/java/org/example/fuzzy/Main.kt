@@ -44,8 +44,6 @@ object RuleReadMode : ReadMode {
 			for(second in secondFact)
 				rule[first.element, second.element] = impl(first.degree, second.degree)
 		rules[name] = rule
-
-		println(rule)
 	}
 }
 
@@ -61,7 +59,9 @@ object TaskReadMode : ReadMode {
 			result[e] = rule.first.maxOf {
 				tNorm(fact[it], rule[it, e])
 			}
-		println("$line => {$result}")
+//		println(rule)
+		println("$line\n{$result}")
+		println()
 	}
 }
 
