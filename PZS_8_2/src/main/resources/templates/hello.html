@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main page</title>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" rel="stylesheet">
+
+    <script src="data.js"></script>
+
+</head>
+<body>
+
+<div id='auth-buttons'></div>
+
+<div id='add-article'>
+    Add Article <br/>
+    <input id="add-article-title" name="title" placeholder="Title" type="text"/>
+    <input id="add-article-text" name="text" placeholder="Text" type="text"/>
+    <button onClick="addArticle()" type="submit">Add</button>
+    <br/> <br/>
+</div>
+
+<div id="my-tables">
+    My Articles
+    <table class="table table-hover">
+
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Text</th>
+            <th scope="col">Add Comment</th>
+            <th scope="col">Delete</th>
+        </tr>
+        </thead>
+
+        <tbody id='my-articles'>
+        </tbody>
+
+    </table>
+
+    My Comments
+    <table class="table table-hover">
+
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Article</th>
+            <th scope="col">Text</th>
+            <th scope="col">Delete</th>
+        </tr>
+        </thead>
+
+        <tbody id='my-comments'>
+        </tbody>
+
+    </table>
+</div>
+
+Articles
+<table class="table table-hover">
+
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Title</th>
+        <th scope="col">Text</th>
+        <th id='add-comment-articles' scope="col">Add Comment</th>
+    </tr>
+    </thead>
+
+    <tbody id='table'>
+    </tbody>
+
+</table>
+
+
+</body>
+</html>
+<script>
+    async function init() {
+        const buttons = document.getElementById('auth-buttons')
+
+        if (await isAuthorized()) {
+            const logOutButton = document.createElement("button");
+            logOutButton.textContent = 'Log Out'
+            logOutButton.type = 'submit'
+            logOutButton.onclick = () => {
+                logout()
+                window.location.reload()
+            }
+            buttons.appendChild(logOutButton)
+
+
+            const me = getMe()
+
+            me.then((x) => {
+                buttons.appendChild(document.createTextNode(x.username))
+            })
+
+            const articles = await me.then(user => {
+                return user.articles.map(articleId => getArticle(articleId))
+            }).then(async articles => {
+                for (const articleId in articles)
+                    articles[articleId] = await articles[articleId]
+                return articles
+            })
+            addArticles(document.getElementById('my-articles'), articles, true, true, true)
+
+            const comments = await me.then(user => {
+                return user.comments.map(articleId => getComment(articleId))
+            }).then(async comments => {
+                for (const commentId in comments)
+                    comments[commentId] = await comments[commentId]
+                return comments
+            })
+            addComments(document.getElementById('my-comments'), comments)
+
+            const table = document.getElementById('table')
+            addArticles(table, await getArticles(), false, true, false)
+
+        } else {
+            document.getElementById('my-tables').style.display = "none"
+            document.getElementById('add-comment-articles').style.display = "none"
+            document.getElementById('add-article').style.display = "none"
+            const signInButton = document.createElement("button");
+            signInButton.textContent = 'Sign In'
+            signInButton.type = 'submit'
+            signInButton.onclick = () => window.location = '/signin'
+            buttons.appendChild(signInButton)
+            const signUpButton = document.createElement("button");
+            signUpButton.textContent = 'Sign Up'
+            signUpButton.type = 'submit'
+            signUpButton.onclick = () => window.location = '/signup'
+            buttons.appendChild(signUpButton)
+
+            const table = document.getElementById('table')
+            const articles = await getArticles()
+            addArticles(table, articles, false, false)
+        }
+
+    }
+
+    function addArticles(table, articles, canDelete, canAddComment, canWrite) {
+        for (const article of articles) {
+            const tr = table.appendChild(document.createElement("tr"))
+            const td0 = tr.appendChild(document.createElement("td"))
+            const td1 = tr.appendChild(document.createElement("td"))
+            const td2 = tr.appendChild(document.createElement("td"))
+
+            const idNode = document.createTextNode(article.id);
+
+            let titleNode;
+            let textNode;
+
+            if (canWrite) {
+                titleNode = document.createElement("input");
+                titleNode.value = article.title
+                textNode = document.createElement("input");
+                textNode.value = article.text
+
+                titleNode.onchange = () => {
+                    replaceArticle(article.id, {
+                        "title": titleNode.value
+                    }).then((_) => {
+                        window.location.reload()
+                    })
+                }
+                textNode.onchange = () => {
+                    replaceArticle(article.id, {
+                        "text": textNode.value
+                    }).then((_) => {
+                        window.location.reload()
+                    })
+                }
+            } else {
+                titleNode = document.createTextNode(article.title);
+                textNode = document.createTextNode(article.text);
+            }
+
+            td0.appendChild(idNode)
+            td1.appendChild(titleNode)
+            td2.appendChild(textNode)
+
+            if (canAddComment) {
+                const td3 = tr.appendChild(document.createElement("td"))
+                const input = document.createElement("input");
+                input.placeholder = 'Enter comment'
+
+                const button = document.createElement("button");
+                button.textContent = 'Add'
+                button.onclick = () => addComment(article.id, input.value)
+                td3.appendChild(input)
+                td3.appendChild(button)
+            }
+
+            if (canDelete) {
+                const td4 = tr.appendChild(document.createElement("td"))
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = 'Delete'
+                deleteButton.onclick = () => {
+                    deleteArticle(article.id).then((_) => {
+                        window.location.reload()
+                    })
+                }
+                td4.appendChild(deleteButton)
+            }
+        }
+    }
+
+    function addComments(table, comments) {
+        for (const comment of comments) {
+            const tr = table.appendChild(document.createElement("tr"))
+            const td0 = tr.appendChild(document.createElement("td"))
+            const td1 = tr.appendChild(document.createElement("td"))
+            const td2 = tr.appendChild(document.createElement("td"))
+
+            const idNode = document.createTextNode(comment.id);
+
+            const articleNode = document.createTextNode(comment.id);
+            const textNode = document.createElement("input");
+            textNode.value = comment.text
+
+            textNode.onchange = () => {
+                replaceComment(comment.id, {
+                    "text": textNode.value
+                })
+            }
+
+            td0.appendChild(idNode)
+            td1.appendChild(articleNode)
+            td2.appendChild(textNode)
+
+            const td3 = tr.appendChild(document.createElement("td"))
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = 'Delete'
+            deleteButton.onclick = () => {
+                deleteComment(comment.id).then((_) => {
+                    window.location.reload()
+                })
+            }
+            td3.appendChild(deleteButton)
+        }
+    }
+
+    init()
+
+    function addArticle() {
+        const title = document.getElementById('add-article-title').value
+        const text = document.getElementById('add-article-text').value
+        console.log(`Add article ${title}, ${text}`)
+        createArticle({
+            "title": title,
+            "text": text
+        }).then((_) => {
+            window.location.reload()
+        })
+    }
+
+    function addComment(article, text) {
+        console.log(`Add comment ${article}, ${text}`)
+        createComment(article, text).then((_) => {
+            window.location.reload()
+        })
+    }
+
+</script>

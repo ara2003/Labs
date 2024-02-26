@@ -1,18 +1,37 @@
 package com.example.labs.prolog.expression
 
-val String.isQ
-	get() = first().isUpperCase()
+import com.example.labs.prolog.size
+import com.example.labs.prolog.term.False
+import com.example.labs.prolog.term.PredicateResult
+import com.example.labs.prolog.term.Term
+import com.example.labs.prolog.term.foldAnd
 
 data class PredicateExpression(
 	val predicateName: String,
-	val arguments: Iterable<String>,
+	val arguments: Iterable<Term>,
 ) : Expression {
+
+	override fun match(expression: Expression): PredicateResult {
+		if(expression is PredicateExpression) {
+			if(expression.predicateName != predicateName)
+				return False
+			val a = arguments
+			val b = expression.arguments
+			if(a.size != b.size)
+				return False
+			return a.zip(b) { a, b ->
+				a.match(b)
+			}.foldAnd()
+		}
+		return False
+	}
 
 	override fun solve(context: Expression.Context) = context.solve(this)
 
-	override fun values(values: Map<String, String>) =
-		PredicateExpression(predicateName, arguments.map { values[it] ?: it })
-//	override fun solve(context: Expression.Context, expression: Expression): PredicateResult {
+	override fun values(values: Map<String, Term>) =
+		PredicateExpression(predicateName, arguments.map { it.values(values) })
+
+	//	override fun solve(context: Expression.Context, expression: Expression): PredicateResult {
 //		return when(expression) {
 //			is PredicateExpression -> {
 //				if(predicateName != expression.predicateName)
@@ -43,4 +62,5 @@ data class PredicateExpression(
 //			is AndExpression -> TODO()
 //		}
 //	}
+	override fun toString() = "$predicateName(${arguments.joinToString(", ") { it.toString() }})"
 }

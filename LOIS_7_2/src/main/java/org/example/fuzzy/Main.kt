@@ -11,9 +11,7 @@ import org.example.fuzzy.matrix.MapFuzzyMatrix
 import org.example.fuzzy.matrix.toMutableFuzzyMatrix
 import org.example.fuzzy.set.FuzzySet
 import org.example.fuzzy.set.MapFuzzySet
-import org.example.fuzzy.solution.PlusSolution
 import org.example.fuzzy.solution.Solution
-import org.example.fuzzy.solution.TimesSolution
 import org.example.fuzzy.solution.ValueSolution
 import org.example.fuzzy.value.range
 import java.io.FileInputStream
@@ -56,27 +54,26 @@ object TaskReadMode : ReadMode {
 		val node = TaskNode(line.tokens)
 		val fact = facts[node.fact]!!
 		val rule = rules[node.rule]!!.toMutableFuzzyMatrix()
-		val result = mutableListOf<Solution>()
+		var result: Solution = Solution.AnySolution
 //		println(rule)
 //		println(fact)
 		for((y, degree) in fact) {
-			val yresult = mutableListOf<Solution>()
+			var yresult: Solution = Solution.NothingSolution
 			for(x in rule.first) {
 				if(rule[x, y] < degree)
 					continue
-				val xresult = mutableListOf<Solution>()
-				xresult.add(ValueSolution(x, degree / rule[x, y]))
+				var xresult: Solution = ValueSolution(x, degree / rule[x, y])
 				for(ox in rule.first)
 					if(ox != x) {
 						val a = degree / rule[ox, y]
 						if(a <= 1f)
-							xresult.add(ValueSolution(ox, range(0f, a)))
+							xresult *= ValueSolution(ox, range(0f, a))
 					}
-				yresult.add(TimesSolution.newSolution(xresult))
+				yresult += xresult
 			}
-			result.add(PlusSolution.newSolution(yresult))
+			result *= yresult
 		}
-		println(TimesSolution.newSolution(result))
+		println(result)
 		println()
 	}
 }

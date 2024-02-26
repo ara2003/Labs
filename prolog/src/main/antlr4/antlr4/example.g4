@@ -15,15 +15,16 @@ stmt
  ;
 
 factStmt
- : predicateName '(' (term (',' term)*)? ')' '.'
+ : expr '.'
  ;
 
 ruleStmt
- : predicateName '(' (term (',' term)*)? ')' ':-' expr '.'
+ : expr ':-' expr '.'
  ;
 
 goalStmt
  : '?-' expr '.'
+ | expr '?'
  ;
 
 predicateName
@@ -31,7 +32,26 @@ predicateName
  ;
 
 term
+ : nameTerm
+ | listTermComma
+ | listTermHeadTail
+ | emptyTerm
+ ;
+
+nameTerm
  : ID
+ ;
+
+listTermComma
+ : '[' (term (',' term)*)? ']'
+ ;
+
+listTermHeadTail
+ : '[' term '|' term ']'
+ ;
+
+emptyTerm
+ : '_'
  ;
 
 expr
@@ -64,6 +84,7 @@ SKIP_
 
 fragment COMMENT
  : '//' ~[\r\n\f]*
+ | '%' ~[\r\n\f]*
  ;
 
 fragment SPACES

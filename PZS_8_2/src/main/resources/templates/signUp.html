@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SignUp</title>
+    <link href="style.css" rel="stylesheet">
+
+    <script src="data.js"></script>
+
+    <script>
+        function register() {
+            const username = document.getElementById('username').value
+            const password = document.getElementById('password').value
+            console.log('SignUp', username, password)
+            signup(username, password).then(() => {
+                window.location = '/'
+            })
+        }
+    </script>
+
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="form-signin">
+        <h2 class="form-signin-heading">Please Sign Up</h2>
+        <input autofocus="" class="form-control" id="username" name="username" placeholder="Username" required=""
+               type="text"/>
+        <input class="form-control" id="password" name="password" placeholder="Password" required="" type="password"/>
+        <br/>
+        <button class="btn btn-lg btn-primary btn-block" onClick="register()">Sign Up</button>
+    </div>
+</div>
+</body>
+</html>

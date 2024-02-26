@@ -27,6 +27,21 @@ sealed interface Value {
 	fun isEmpty(): Boolean
 }
 
+data object AnyValue : Value {
+
+	override fun plus(other: Value) = this
+
+	override fun times(other: Value) = other
+
+	override fun contains(value: Float) = true
+
+	override fun contains(value: Value) = true
+
+	override fun toString() = "Any"
+
+	override fun isEmpty() = false
+}
+
 data object NothingValue : Value {
 
 	override fun plus(other: Value) = other

@@ -11,6 +11,8 @@ val Iterable<*>.size: Int
 		return size
 	}
 
+fun Iterable<*>.isEmpty() = !iterator().hasNext()
+
 interface TreeScope<in T> {
 
 	fun yield(node: T)

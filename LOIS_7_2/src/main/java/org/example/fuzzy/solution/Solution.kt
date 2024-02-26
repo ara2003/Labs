@@ -7,55 +7,64 @@
 package org.example.fuzzy.solution
 
 import org.example.fuzzy.joinBackets
-import org.example.fuzzy.value.NothingValue
 import org.example.fuzzy.value.NumberValue
 import org.example.fuzzy.value.Value
 import org.example.fuzzy.value.number
 
 sealed interface Solution {
-	data object Empty : Solution {
+	data object AnySolution : Solution {
 
-		override fun contains(other: Solution) = false
+		override fun times(other: Solution): Solution = other
 
-		override fun injectTimes(name: String, value: Value) = this
+		override fun plus(other: Solution): Solution = this
 
-		override fun injectPlus(name: String, value: Value) = this
+		override fun contains(other: Solution) = true
+	}
+
+	data object NothingSolution : Solution {
+
+		override fun times(other: Solution): Solution = this
+
+		override fun plus(other: Solution): Solution = other
+
+		override fun contains(other: Solution) = other == this
+	}
+
+	operator fun times(other: Solution): Solution = when {
+		this in other -> this
+		other in this -> other
+		else -> TimesSolution(this, other)
+	}
+
+	operator fun plus(other: Solution): Solution = when {
+		this in other -> other
+		other in this -> this
+		else -> PlusSolution(this, other)
 	}
 
 	operator fun contains(other: Solution): Boolean
-
-	fun injectTimes(name: String, value: Value): Solution
-	fun injectPlus(name: String, value: Value): Solution
 }
-
-fun ValueSolution(
-	name: String,
-	value: Float,
-) = ValueSolution(name, number(value))
 
 data class ValueSolution(
 	val name: String,
 	val value: Value,
 ) : Solution {
 
+	constructor(
+		name: String,
+		value: Float,
+	) : this(name, number(value))
+
 	override fun contains(other: Solution): Boolean = when(other) {
-		is ValueSolution -> other.value in value
-		is PlusSolution -> other.arguments.all { contains(it) }
-		is TimesSolution -> other[name] in value
-		Solution.Empty -> true
+		is ValueSolution -> other.name == name && other.value in value
+//		is PlusSolution -> other.arguments.all { contains(it) }
+//		is TimesSolution -> other.arguments.all { contains(it) }
+		Solution.AnySolution -> false
+		Solution.NothingSolution -> true
+		else -> {
+			TODO("$this\n$other")
+		}
 	}
-
-	override fun injectTimes(name: String, value: Value) =
-		if(this.name == name) {
-			ValueSolution(name, value * this.value)
-		} else
-			this
-
-	override fun injectPlus(name: String, value: Value) =
-		if(this.name == name)
-			ValueSolution(name, value + this.value)
-		else
-			this
 
 	override fun toString(): String {
 		if(value is NumberValue)
@@ -64,117 +73,28 @@ data class ValueSolution(
 	}
 }
 
-data class PlusSolution private constructor(
+data class PlusSolution(
 	val arguments: Iterable<Solution>,
 ) : Solution {
+
+	constructor(vararg arguments: Solution) : this(listOf(*arguments))
 
 	override fun contains(other: Solution) = arguments.any { other in it }
 
 	override fun toString() = arguments.joinToString("\n") { it.toString() }
 		.joinBackets('\u23a1', '\u23a2', '\u23a3')
-
-	override fun injectTimes(name: String, value: Value) =
-		newSolution(arguments.map { it.injectTimes(name, value) }.filter { it != ValueSolution(name, value) })
-
-	override fun injectPlus(name: String, value: Value) =
-		newSolution(arguments.map { it.injectPlus(name, value) })
-
-	companion object {
-
-		fun newSolution(
-			arguments: Collection<Solution>,
-		): Solution {
-			var arguments: Collection<Solution> = arguments.flatMap {
-				when(it) {
-					is PlusSolution -> it.arguments
-					else -> listOf(it)
-				}
-			}.toSet()
-			val injectListValues = mutableMapOf<String, MutableList<Value>>()
-			for(arg in arguments)
-				if(arg is ValueSolution)
-					injectListValues.getOrPut(arg.name) { mutableListOf() }.add(arg.value)
-			val injectValues = injectListValues
-				.mapValues { (_, it) -> it.fold(NothingValue as Value) { a, b -> a + b } }
-			arguments = arguments
-				.map {
-					var result: Solution = it
-					for((name, value) in injectValues)
-						result = result.injectPlus(name, value)
-					result
-				}.filter { it !is Solution.Empty }.flatMap {
-					when(it) {
-						is PlusSolution -> it.arguments
-						else -> listOf(it)
-					}
-				}.toSet()
-			if(arguments.any { it is ValueSolution && it.value is NothingValue })
-				return Solution.Empty
-			return when {
-				arguments.size == 1 -> arguments.first()
-				else -> {
-					PlusSolution(arguments)
-				}
-			}
-		}
-	}
 }
 
-data class TimesSolution private constructor(
+data class TimesSolution(
 	val arguments: Iterable<Solution>,
 ) : Solution {
 
-	override fun injectTimes(name: String, value: Value) =
-		newSolution(arguments.map { it.injectTimes(name, value) })
-
-	override fun injectPlus(name: String, value: Value) =
-		newSolution(arguments.map { it.injectPlus(name, value) })
+	constructor(vararg arguments: Solution) : this(listOf(*arguments))
 
 	override fun contains(other: Solution) = arguments.all { other in it }
 
 	override fun toString() = arguments.joinToString("\n") { it.toString() }
 		.joinBackets('\u23a7', '\u23a2', '\u23a9', '\u23b0', '\u23b1')
-
-	operator fun get(name: String) = arguments.filterIsInstance<ValueSolution>().first { it.name == name }.value
-
-	companion object {
-
-		fun newSolution(
-			arguments: Collection<Solution>,
-		): Solution {
-			var arguments: Collection<Solution> = arguments.flatMap {
-				when(it) {
-					is TimesSolution -> it.arguments
-					else -> listOf(it)
-				}
-			}.toSet()
-			val injectListValues = mutableMapOf<String, MutableList<Value>>()
-			for(arg in arguments)
-				if(arg is ValueSolution)
-					injectListValues.getOrPut(arg.name) { mutableListOf() }.add(arg.value)
-			val injectValues = injectListValues.mapValues { (_, it) -> it.fold(Value.All) { a, b -> a * b } }
-			arguments = arguments
-				.map {
-					var result: Solution = it
-					for((name, value) in injectValues)
-						result = result.injectTimes(name, value)
-					result
-				}.filter { it !is Solution.Empty }.flatMap {
-					when(it) {
-						is TimesSolution -> it.arguments
-						else -> listOf(it)
-					}
-				}.toSet()
-			if(arguments.any { it is ValueSolution && it.value is NothingValue })
-				return Solution.Empty
-			return when {
-				arguments.size == 1 -> arguments.first()
-				else -> {
-					TimesSolution(arguments)
-				}
-			}
-		}
-	}
 }
 
 fun <T, R> Iterable<T>.reduceOne(block: (T, T) -> R): Iterable<R> {
@@ -200,4 +120,17 @@ private fun <T> repeatResult(value: T, block: (T) -> T): T {
 			return result
 		result = a
 	}
+}
+
+private fun <T> table(
+	collection: Iterable<T>,
+	block: (T, T) -> Unit,
+) {
+	val list = collection.toList()
+	for(a in list)
+		for(b in list)
+			if(a == b)
+				break
+			else
+				block(a, b)
 }
