@@ -9,7 +9,6 @@ import com.example.pzs.dto.request.ArticleCreateRequest;
 import com.example.pzs.entity.Article;
 import com.example.pzs.entity.User;
 import com.example.pzs.repository.ArticleRepository;
-import com.example.pzs.repository.CommentRepository;
 import com.example.pzs.repository.UserRepository;
 import com.example.pzs.security.JwtProvider;
 import com.example.pzs.service.impl.ArticleServiceImpl;
@@ -77,8 +76,6 @@ public class ApplicationTests {
     private UserRepository userRepository;
     @Autowired
     private ArticleRepository articleRepository;
-    @Autowired
-    private CommentRepository commentRepository;
 
     @Test
     void getOneUser() throws Exception {
@@ -97,7 +94,6 @@ public class ApplicationTests {
 
     @BeforeEach
     void createUsers() {
-        commentRepository.deleteAll();
         articleRepository.deleteAll();
         userRepository.deleteAll();
     }
@@ -119,7 +115,7 @@ public class ApplicationTests {
                         .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andReturn();
-        var articleId = objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asInt();
+        var articleId = objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asLong();
         mvc.perform(get("/api/articles/{id}", articleId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -128,7 +124,6 @@ public class ApplicationTests {
                         .owner(userRepository.getReferenceById(userId))
                         .text(request.getText())
                         .title(request.getTitle())
-                        .comments(Set.of())
                         .build())));
         assertEquals(getOneUser(userId).get("articles").size(), 1);
     }

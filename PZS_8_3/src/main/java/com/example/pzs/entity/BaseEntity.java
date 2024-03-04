@@ -1,7 +1,7 @@
 package com.example.pzs.entity;
 
-public interface BaseEntity {
+public interface BaseEntity<ID> {
 
-    long getId();
+    ID getId();
 
 }

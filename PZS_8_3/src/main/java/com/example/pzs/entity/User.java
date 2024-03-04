@@ -2,7 +2,6 @@ package com.example.pzs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,37 +9,26 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
-@Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "client")
-public class User implements BaseEntity, UserDetails {
+public class User implements MutableBaseEntity<Long>, UserDetails {
 
-    @Id
-    @GeneratedValue
-    private long id;
+    private Long id;
 
-    @Column(nullable = false, unique = true)
     private String username;
 
     @JsonIgnore
-    @Column(nullable = false)
     private String password;
 
     @JsonSerialize(using = EntityAsIdOnlySerializer.class)
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Article> articles;
+    private Set<Article> articles = new HashSet<>();
 
     @JsonSerialize(using = EntityAsIdOnlySerializer.class)
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
     @JsonIgnore
     @Override

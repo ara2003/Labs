@@ -1,10 +1,8 @@
 package com.example.pzs.config;
 
 import com.example.pzs.entity.Article;
-import com.example.pzs.entity.Comment;
 import com.example.pzs.entity.User;
 import com.example.pzs.repository.ArticleRepository;
-import com.example.pzs.repository.CommentRepository;
 import com.example.pzs.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -12,7 +10,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 @Configuration
@@ -20,13 +17,11 @@ public class RepoConfiguration {
 
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
-    private final CommentRepository commentRepository;
 
     private final PasswordEncoder passwordEncoder;
 
     private final ObjectMapper objectMapper;
 
-    @Transactional
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
 //        articleRepository.deleteAll();
@@ -62,13 +57,6 @@ public class RepoConfiguration {
             m.setText("Text");
             m.setOwner(maksim);
             return articleRepository.save(m);
-        });
-        final var comment1 = commentRepository.findByText("Some Text").orElseGet(() -> {
-            var m = new Comment();
-            m.setArticle(title1);
-            m.setText("Some Text");
-            m.setOwner(arseny);
-            return commentRepository.save(m);
         });
     }
 

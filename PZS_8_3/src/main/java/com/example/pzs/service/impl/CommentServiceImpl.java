@@ -10,7 +10,6 @@ import com.example.pzs.repository.UserRepository;
 import com.example.pzs.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 
@@ -47,7 +46,6 @@ public class CommentServiceImpl implements CommentService {
         return repository.save(user);
     }
 
-    @Transactional
     @Override
     public Comment createComment(CommentCreateRequest request, long author) {
         return repository.save(Comment

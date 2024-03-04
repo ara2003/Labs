@@ -1,41 +1,45 @@
 package com.example.pzs.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Article implements BaseEntity {
+public class Article implements MutableBaseEntity<Long> {
 
-    @Id
-    @GeneratedValue
-    private long id;
+    private Long id;
 
-    @Column(nullable = false, unique = true)
     private String title;
 
-    @Column(nullable = false)
     private String text;
 
     @JsonSerialize(using = EntityAsIdOnlySerializer.class)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private User owner;
 
     @JsonSerialize(using = EntityAsIdOnlySerializer.class)
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Article article = (Article) o;
+        return Objects.equals(id, article.id);
+    }
 
     @Override
     public String toString() {

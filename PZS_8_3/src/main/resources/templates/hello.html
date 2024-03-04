@@ -66,6 +66,7 @@ Articles
         <th scope="col">#</th>
         <th scope="col">Title</th>
         <th scope="col">Text</th>
+        <th scope="col">Owner</th>
         <th id='add-comment-articles' scope="col">Add Comment</th>
     </tr>
     </thead>
@@ -99,14 +100,14 @@ Articles
                 buttons.appendChild(document.createTextNode(x.username))
             })
 
-            const articles = await me.then(user => {
+            const myArticles = await me.then(user => {
                 return user.articles.map(articleId => getArticle(articleId))
             }).then(async articles => {
                 for (const articleId in articles)
                     articles[articleId] = await articles[articleId]
                 return articles
             })
-            addArticles(document.getElementById('my-articles'), articles, true, true, true)
+            addArticles(document.getElementById('my-articles'), myArticles, true, true, true, false)
 
             const comments = await me.then(user => {
                 return user.comments.map(articleId => getComment(articleId))
@@ -118,7 +119,8 @@ Articles
             addComments(document.getElementById('my-comments'), comments)
 
             const table = document.getElementById('table')
-            addArticles(table, await getArticles(), false, true, false)
+            const articles = await getArticles()
+            addArticles(table, articles, false, true, false, true)
 
         } else {
             document.getElementById('my-tables').style.display = "none"
@@ -137,17 +139,18 @@ Articles
 
             const table = document.getElementById('table')
             const articles = await getArticles()
-            addArticles(table, articles, false, false)
+            addArticles(table, articles, false, false, true, true)
         }
 
     }
 
-    function addArticles(table, articles, canDelete, canAddComment, canWrite) {
+    async function addArticles(table, articles, canDelete, canAddComment, canWrite, viewOwner) {
         for (const article of articles) {
             const tr = table.appendChild(document.createElement("tr"))
             const td0 = tr.appendChild(document.createElement("td"))
             const td1 = tr.appendChild(document.createElement("td"))
             const td2 = tr.appendChild(document.createElement("td"))
+            const td3 = tr.appendChild(document.createElement("td"))
 
             const idNode = document.createTextNode(article.id);
 
@@ -182,6 +185,9 @@ Articles
             td0.appendChild(idNode)
             td1.appendChild(titleNode)
             td2.appendChild(textNode)
+
+            if (viewOwner)
+                td3.appendChild(document.createTextNode(await getUser(article.owner).then(user => user.username)))
 
             if (canAddComment) {
                 const td3 = tr.appendChild(document.createElement("td"))

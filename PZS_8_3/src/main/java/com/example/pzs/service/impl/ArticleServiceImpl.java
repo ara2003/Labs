@@ -5,14 +5,12 @@ import com.example.pzs.dto.request.ArticleCreateRequest;
 import com.example.pzs.dto.request.ArticleReplaceRequest;
 import com.example.pzs.entity.Article;
 import com.example.pzs.repository.ArticleRepository;
-import com.example.pzs.repository.CommentRepository;
 import com.example.pzs.repository.UserRepository;
 import com.example.pzs.service.ArticleService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Set;
 
 @AllArgsConstructor
 @Service("articleService")
@@ -20,7 +18,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository repository;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
 
     @Override
     public Article getOneArticle(long id) {
@@ -56,7 +53,6 @@ public class ArticleServiceImpl implements ArticleService {
                 .title(request.getTitle())
                 .owner(userRepository.getReferenceById(author))
                 .text(request.getText())
-                .comments(Set.of())
                 .build());
     }
 

@@ -5,7 +5,6 @@ import com.example.pzs.config.SecurityConfig;
 import com.example.pzs.dto.request.SignUserRequest;
 import com.example.pzs.entity.User;
 import com.example.pzs.repository.ArticleRepository;
-import com.example.pzs.repository.CommentRepository;
 import com.example.pzs.repository.UserRepository;
 import com.example.pzs.security.JwtProvider;
 import com.example.pzs.service.AuthService;
@@ -45,8 +44,6 @@ public class AuthServiceTest {
 
     @MockBean
     private UserRepository userRepository;
-    @MockBean
-    private CommentRepository commentRepository;
     @MockBean
     private ArticleRepository articleRepository;
 

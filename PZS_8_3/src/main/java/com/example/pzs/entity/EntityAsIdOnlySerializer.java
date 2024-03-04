@@ -20,12 +20,11 @@ public class EntityAsIdOnlySerializer extends StdSerializer<Object> {
     @Override
     public void serialize(Object entity, JsonGenerator generator, SerializerProvider provider) throws IOException {
         if (entity instanceof BaseEntity) {
-            BaseEntity e = (BaseEntity) entity;
+            var e = (BaseEntity<Long>) entity;
             generator.writeNumber(e.getId());
             return;
         }
-        if (entity instanceof Iterable<?>) {
-            Iterable<?> c = (Iterable<?>) entity;
+        if (entity instanceof Iterable<?> c) {
             generator.writeStartArray();
             for (var e : c) {
                 serialize(e, generator, provider);
