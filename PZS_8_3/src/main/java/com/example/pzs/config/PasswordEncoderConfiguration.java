@@ -2,7 +2,7 @@ package com.example.pzs.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
@@ -16,7 +16,10 @@ public class PasswordEncoderConfiguration {
 //        encoders.put("noop", NoOpPasswordEncoder.getInstance());
 //        encoders.put("sha256", new StandardPasswordEncoder());
 //        return new DelegatingPasswordEncoder(idForEncode, encoders);
-        return NoOpPasswordEncoder.getInstance();
+//
+//        return NoOpPasswordEncoder.getInstance();
+//
+        return new BCryptPasswordEncoder();
     }
 
 }

@@ -2,18 +2,21 @@ package com.example.pzs.repository;
 
 import com.example.pzs.entity.MutableBaseEntity;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public abstract class AbstractJpaRepository<E extends MutableBaseEntity<ID>, ID> implements JpaRepository<E, ID> {
 
-    protected final List<E> entities = new ArrayList<>();
+    protected final Set<E> entities = new HashSet<>();
 
     @Override
     public E save(E e) {
-        e.setId(nextId());
-        entities.add(e);
+        if (e.getId() == null) {
+            e.setId(nextId());
+            entities.add(e);
+        }
         return e;
     }
 
@@ -21,7 +24,7 @@ public abstract class AbstractJpaRepository<E extends MutableBaseEntity<ID>, ID>
 
     @Override
     public List<E> findAll() {
-        return entities;
+        return entities.stream().toList();
     }
 
     @Override

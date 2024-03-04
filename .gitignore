@@ -1,4 +1,9 @@
 **/.idea/
 **/target/
+**/dumps/
+
+!**/src/**/target/
+!**/src/**/dumps/
+
 **.iml
 LPIS_1/src/main/resources/tests/
