@@ -30,7 +30,7 @@
             <th scope="col">#</th>
             <th scope="col">Title</th>
             <th scope="col">Text</th>
-            <th scope="col">Add Comment</th>
+            <!--            <th scope="col">Add Comment</th>-->
             <th scope="col">Delete</th>
         </tr>
         </thead>
@@ -40,22 +40,22 @@
 
     </table>
 
-    My Comments
-    <table class="table table-hover">
+    <!--    My Comments-->
+    <!--    <table class="table table-hover">-->
 
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Article</th>
-            <th scope="col">Text</th>
-            <th scope="col">Delete</th>
-        </tr>
-        </thead>
+    <!--        <thead>-->
+    <!--        <tr>-->
+    <!--            <th scope="col">#</th>-->
+    <!--            <th scope="col">Article</th>-->
+    <!--            <th scope="col">Text</th>-->
+    <!--            <th scope="col">Delete</th>-->
+    <!--        </tr>-->
+    <!--        </thead>-->
 
-        <tbody id='my-comments'>
-        </tbody>
+    <!--        <tbody id='my-comments'>-->
+    <!--        </tbody>-->
 
-    </table>
+    <!--    </table>-->
 </div>
 
 Articles
@@ -67,7 +67,7 @@ Articles
         <th scope="col">Title</th>
         <th scope="col">Text</th>
         <th scope="col">Owner</th>
-        <th id='add-comment-articles' scope="col">Add Comment</th>
+        <!--        <th id='add-comment-articles' scope="col">Add Comment</th>-->
     </tr>
     </thead>
 
@@ -93,7 +93,6 @@ Articles
             }
             buttons.appendChild(logOutButton)
 
-
             const me = getMe()
 
             me.then((x) => {
@@ -109,14 +108,14 @@ Articles
             })
             addArticles(document.getElementById('my-articles'), myArticles, true, true, true, false)
 
-            const comments = await me.then(user => {
-                return user.comments.map(articleId => getComment(articleId))
-            }).then(async comments => {
-                for (const commentId in comments)
-                    comments[commentId] = await comments[commentId]
-                return comments
-            })
-            addComments(document.getElementById('my-comments'), comments)
+            // const comments = await me.then(user => {
+            //     return user.comments.map(articleId => getComment(articleId))
+            // }).then(async comments => {
+            //     for (const commentId in comments)
+            //         comments[commentId] = await comments[commentId]
+            //     return comments
+            // })
+            // addComments(document.getElementById('my-comments'), comments)
 
             const table = document.getElementById('table')
             const articles = await getArticles()
@@ -124,7 +123,6 @@ Articles
 
         } else {
             document.getElementById('my-tables').style.display = "none"
-            document.getElementById('add-comment-articles').style.display = "none"
             document.getElementById('add-article').style.display = "none"
             const signInButton = document.createElement("button");
             signInButton.textContent = 'Sign In'
@@ -150,7 +148,6 @@ Articles
             const td0 = tr.appendChild(document.createElement("td"))
             const td1 = tr.appendChild(document.createElement("td"))
             const td2 = tr.appendChild(document.createElement("td"))
-            const td3 = tr.appendChild(document.createElement("td"))
 
             const idNode = document.createTextNode(article.id);
 
@@ -186,20 +183,21 @@ Articles
             td1.appendChild(titleNode)
             td2.appendChild(textNode)
 
-            if (viewOwner)
-                td3.appendChild(document.createTextNode(await getUser(article.owner).then(user => user.username)))
-
-            if (canAddComment) {
+            if (viewOwner) {
                 const td3 = tr.appendChild(document.createElement("td"))
-                const input = document.createElement("input");
-                input.placeholder = 'Enter comment'
-
-                const button = document.createElement("button");
-                button.textContent = 'Add'
-                button.onclick = () => addComment(article.id, input.value)
-                td3.appendChild(input)
-                td3.appendChild(button)
+                td3.appendChild(document.createTextNode(await getUser(article.owner).then(user => user.username)))
             }
+            // if (canAddComment) {
+            //     const td3 = tr.appendChild(document.createElement("td"))
+            //     const input = document.createElement("input");
+            //     input.placeholder = 'Enter comment'
+            //
+            //     const button = document.createElement("button");
+            //     button.textContent = 'Add'
+            //     button.onclick = () => addComment(article.id, input.value)
+            //     td3.appendChild(input)
+            //     td3.appendChild(button)
+            // }
 
             if (canDelete) {
                 const td4 = tr.appendChild(document.createElement("td"))

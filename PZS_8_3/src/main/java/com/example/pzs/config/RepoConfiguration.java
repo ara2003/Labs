@@ -6,6 +6,8 @@ import com.example.pzs.repository.ArticleRepository;
 import com.example.pzs.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
@@ -14,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @AllArgsConstructor
 @Configuration
 public class RepoConfiguration {
+
+    private static final Logger LOG = LogManager.getLogger(RepoConfiguration.class);
 
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
@@ -38,12 +42,6 @@ public class RepoConfiguration {
             m.setPassword(passwordEncoder.encode("1234"));
             return userRepository.save(m);
         });
-        final var nikita = userRepository.findByUsername("Nikita").orElseGet(() -> {
-            var m = new User();
-            m.setUsername("Nikita");
-            m.setPassword(passwordEncoder.encode("1234"));
-            return userRepository.save(m);
-        });
         final var title1 = articleRepository.findByTitle("Title 1").orElseGet(() -> {
             var m = new Article();
             m.setTitle("Title 1");
@@ -58,6 +56,7 @@ public class RepoConfiguration {
             m.setOwner(maksim);
             return articleRepository.save(m);
         });
+        LOG.info("used memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
     }
 
 }

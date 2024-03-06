@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 @AllArgsConstructor
 @Service("articleService")
@@ -53,6 +54,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .title(request.getTitle())
                 .owner(userRepository.getReferenceById(author))
                 .text(request.getText())
+                .comments(new HashSet<>())
                 .build());
     }
 
