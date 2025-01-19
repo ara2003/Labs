@@ -3,19 +3,21 @@ package com.example.lab;
 import java.util.List;
 import java.util.Objects;
 
-public record Function(String name, List<? extends Type> parametrs, ReturnType returnType) {
-	public Function {
-		Objects.requireNonNull(parametrs);
-		Objects.requireNonNull(name);
-	}
-	
-	
-	public Function(FunctionSignature signature, ReturnType returnType) {
-		this(signature.name(), signature.argumentTypes(), returnType);
-	}
-	
-	public FunctionSignature signature() {
-		return new FunctionSignature(name, parametrs);
-	}
-	
+import static com.example.lab.expression.Expression.Type;
+
+public record Function(String name, List<? extends Type> parameters, Type returnType) {
+
+    public Function(FunctionSignature signature, Type returnType) {
+        this(signature.name(), signature.argumentTypes(), returnType);
+    }
+
+    public Function {
+        Objects.requireNonNull(parameters);
+        Objects.requireNonNull(name);
+    }
+
+    public FunctionSignature signature() {
+        return new FunctionSignature(name, parameters);
+    }
+
 }

@@ -58,8 +58,13 @@ program
  ;
 
 code
- : stmt*
+ : stmt
+ | mergeCode
  | passStat
+ ;
+
+mergeCode
+ : stmt code
  ;
 
 stmt
@@ -67,13 +72,11 @@ stmt
  | assignStmt
  | whileStmt
  | forStmt
- | ifStmt
- | funcCallStmt
  | codeBlockStmt
  | breakStmt
  | continueStmt
  | returnStmt
- | switchStmt
+ | rvalue
  ;
 
 passStat: PASS;
@@ -83,13 +86,12 @@ assignStmt: lvalue '=' rvalue;
 funcDefStmt: 'func' ID '(' paramiters ')' ':' BEGIN code END;
 paramiters: (paramiter (',' paramiter)*)?;
 paramiter: type? ID;
-funcCallStmt: funcCallExpr ;
 whileStmt: WHILE rvalue ':' codeBlockStmt;
-switchStmt: SWITCH rvalue ':' BEGIN caseStat+ defaultStat? END;
+switchExpr: SWITCH rvalue ':' BEGIN caseStat+ defaultStat? END;
 caseStat: CASE NUMBER ':' codeBlockStmt;
 defaultStat: DEFAULT ':' codeBlockStmt;
 forStmt: FOR ID 'in' rvalue ':' codeBlockStmt;
-ifStmt: IF rvalue ':' codeBlockStmt elseStmt?;
+ifExpr: IF rvalue ':' codeBlockStmt elseStmt?;
 elseStmt: ELSE ':' codeBlockStmt;
 breakStmt: BREAK ;
 continueStmt: CONTINUE ;
@@ -105,6 +107,8 @@ atomExpr
     | numberExpr
     | funcCallExpr
     | inBracketsRvalue
+    | ifExpr
+    | switchExpr
     ;
 unaryExpr
     : unaryExprPrefix? atomExpr

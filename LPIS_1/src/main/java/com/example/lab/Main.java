@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.BitSet;
 import java.util.List;
 
+import static com.example.lab.expression.Expression.Type;
+
 public class Main {
 
     public static void main(String[] args) throws IOException {
@@ -61,20 +63,18 @@ public class Main {
         //		var listener = new PrintAllTreeListener(parser);
         //		var t = new ParseTreeWalker();
         //		t.walk(listener, code);
-        var visitor = new StatementParseTreeVisitor(new ExpressionParseTreeVisitor(), new LValueParseTreeVisitor());
-        var result = visitor.visit(code);
         var context = new StatementContextImpl();
-        context.funcDef(new Function("input", List.of(), ReturnType.ELEMENT));
-        context.funcDef(new Function("print", List.of(Type.ELEMENT), ReturnType.VOID));
-        context.funcDef(new Function("print", List.of(Type.LIST), ReturnType.VOID));
-        context.funcDef(new Function("add", List.of(Type.LIST, Type.ELEMENT), ReturnType.VOID));
-        context.funcDef(new Function("range", List.of(Type.ELEMENT), ReturnType.LIST));
-        context.funcDef(new Function("range", List.of(Type.ELEMENT, Type.ELEMENT), ReturnType.LIST));
-        context.funcDef(new Function("range", List.of(Type.ELEMENT, Type.ELEMENT, Type.ELEMENT), ReturnType.LIST));
-        result.checkContextSemantic(context);
+        context.funcDef(new Function("input", List.of(), Type.ELEMENT));
+        context.funcDef(new Function("print", List.of(Type.ELEMENT), Type.UNIT));
+        context.funcDef(new Function("print", List.of(Type.LIST), Type.UNIT));
+        context.funcDef(new Function("add", List.of(Type.LIST, Type.ELEMENT), Type.UNIT));
+        context.funcDef(new Function("range", List.of(Type.ELEMENT), Type.LIST));
+        context.funcDef(new Function("range", List.of(Type.ELEMENT, Type.ELEMENT), Type.LIST));
+        context.funcDef(new Function("range", List.of(Type.ELEMENT, Type.ELEMENT, Type.ELEMENT), Type.LIST));
+        var result = ExpressionParseTreeVisitor.INSTANCE.visit(code).provide(context);
         var ctx = new InterpreterContextImpl(context);
         result.runInterpreter(ctx);
-//        System.out.println(context.getReturnType(new FunctionSignature("fact", List.of(Type.ELEMENT))));
+//        System.out.println(context.getType(new FunctionSignature("fact", List.of(Type.ELEMENT))));
 //        		System.out.println(result.toCodeString(context));
 //        		for(var e : result.usedExpressions().toList()) {
 //        			System.out.println(e.toMathString());
